@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    tools:context=".activities.authentication.PhoneAuth">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="One more step..."
+        android:id="@+id/last_lable"
+        android:textSize="36sp"
+        android:textColor="@color/colorPrimaryDark"
+        android:layout_marginTop="32dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="16dp"/>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_below="@id/last_lable"
+        android:id="@+id/layout"
+        android:layout_margin="16dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="8dp"
+            android:id="@+id/auth_title_text"
+            android:textColor="@color/blue_grey_active"
+            android:text="Dear kibrom,"
+            android:textStyle="bold"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:layout_width="match_parent"
+            android:id="@+id/auth_first_text"
+            android:layout_marginBottom="16dp"
+            android:layout_marginStart="16dp"
+            android:textColor="@color/blue_grey_active"
+            android:text="We will send you a verification code to verify your phone number."
+            android:layout_height="wrap_content" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+251 938777730"
+            android:visibility="visible"
+            android:id="@+id/auth_Phone_label"
+            android:gravity="center_horizontal"
+            android:textSize="36sp"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_margin="16dp"
+            android:layout_alignParentTop="true"/>
+
+        <com.chaos.view.PinView
+            android:id="@+id/pinView"
+            style="@style/PinWidget.PinView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:padding="10dp"
+            android:layout_margin="16dp"
+            android:textColor="#222222"
+            android:textSize="18sp"
+            android:cursorVisible="true"
+            app:cursorColor="@color/colorAccent"
+            app:cursorWidth="2dp"
+            android:layout_gravity="center_horizontal"
+            app:itemCount="6"
+            app:itemHeight="48dp"
+            app:itemRadius="4dp"
+            app:itemSpacing="5dp"
+            app:itemWidth="36dp"
+            app:lineColor="@color/colorPrimary"
+            app:lineWidth="2dp"
+            android:visibility="gone"
+            app:viewType="rectangle" />
+        <Button
+            android:id="@+id/btnVerify"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="32dp"
+            android:background="@drawable/bg_ui"
+            android:text="Continue"
+            android:textColor="@android:color/white"
+            android:textStyle="bold" />
+        <TextView
+            android:layout_width="match_parent"
+            android:id="@+id/auth_second_text"
+            android:layout_height="wrap_content"
+            android:textColor="@color/blue_grey_active"
+            android:text="By pressing Continue you accept our Data Policy, cookie use, Privacy Policy and Terms of Service"
+            android:textAlignment="center"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp"/>
+
+    </LinearLayout>
+
+
+
+
+</RelativeLayout>
