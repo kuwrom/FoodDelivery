@@ -19,6 +19,7 @@ import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.database.DataSnapshot;
@@ -26,7 +27,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.habeshastudio.fooddelivery.Common.Common;
+import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.Home;
 import com.habeshastudio.fooddelivery.Model.User;
 import com.habeshastudio.fooddelivery.R;
@@ -34,6 +35,7 @@ import com.habeshastudio.fooddelivery.R;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class PhoneAuth extends AppCompatActivity {
@@ -53,7 +55,6 @@ public class PhoneAuth extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
     private String mVerificationId;
-    private PhoneAuthProvider.ForceResendingToken mResendToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,23 +74,22 @@ public class PhoneAuth extends AppCompatActivity {
         pinView = findViewById(R.id.pinView);
         mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
-        users = database.getReference().child("Users");
+        users = database.getReference().child("User");
         mDialog = new ProgressDialog(PhoneAuth.this);
 
-        phoneText.setText("+251 " + phone);
-        textTitle.setText("Dear " + username);
+        phoneText.setText(new StringBuilder(R.string.dear + phone));
+        textTitle.setText(new StringBuilder(R.string.et_code + username));
 
         btnContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!status.equals("blocked"))
                 if (firstTime) {
                     if (Common.isConnectedToInternet(getBaseContext())) {
-                        btnContinue.setText("Verify");
+                        btnContinue.setText(getString(R.string.verify));
                         canVerify = true;
                         phoneText.setVisibility(View.GONE);
                         pinView.setVisibility(View.VISIBLE);
-                        textTitle.setText("Code sent to: " + phone);
+                        textTitle.setText(new StringBuilder(getString(R.string.code_sent_to) + phone));
                         secondText.setVisibility(View.GONE);
                         firstTime = false;
                         new CountDownTimer(60000, 1000) {
@@ -97,24 +97,24 @@ public class PhoneAuth extends AppCompatActivity {
                             public void onTick(long millisUntilFinished) {
                                 if (isJobDone)
                                     cancel();
-                                firstText.setText("It might take a while for your code to arrive. we will send you a new code in " + millisUntilFinished / 1000);
+                                firstText.setText(new StringBuilder(getString(R.string.arrival_count_down) + (millisUntilFinished / 1000)) );
                             }
 
                             @Override
                             public void onFinish() {
                                 canResend = true;
-                                btnContinue.setText("Resend");
-                                firstText.setText("");
+                                btnContinue.setText(getString(R.string.resend));
+                                //firstText.setText("");
                                 canVerify = false;
                             }
                         }.start();
                         sendVerificationCode(phone);
                     } else
-                        Toast.makeText(PhoneAuth.this, "Please Check your Internet Connection", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(PhoneAuth.this, "Sorry, We can't make it to the internet!", Toast.LENGTH_SHORT).show();
                 } else if (canResend) {
                     if (Common.isConnectedToInternet(getBaseContext())) {
                         canResend = false;
-                        btnContinue.setText("Verify");
+                        btnContinue.setText(R.string.verify);
                         canVerify = true;
                         sendVerificationCode(phone);
                         new CountDownTimer(60000 * ++interval, 1000) {
@@ -122,14 +122,14 @@ public class PhoneAuth extends AppCompatActivity {
                             public void onTick(long millisUntilFinished) {
                                 if (isJobDone)
                                     cancel();
-                                firstText.setText("It might take a while for your code to arrive. we will send you a new code in " + millisUntilFinished / 1000);
+                                firstText.setText(new StringBuilder(getString(R.string.arrival_count_down) + (millisUntilFinished / 1000)) );
                             }
 
                             @Override
                             public void onFinish() {
                                 canResend = true;
                                 canVerify = false;
-                                btnContinue.setText("Resend");
+                                btnContinue.setText(R.string.resend);
                             }
                         }.start();
                     } else
@@ -137,7 +137,7 @@ public class PhoneAuth extends AppCompatActivity {
 
                 } else if (canVerify) {
                     if (Common.isConnectedToInternet(getBaseContext())) {
-                        String verificationCode = pinView.getText().toString();
+                        String verificationCode = Objects.requireNonNull(pinView.getText()).toString();
                         if (verificationCode.isEmpty()) {
                             Toast.makeText(PhoneAuth.this, "Enter verification code", Toast.LENGTH_SHORT).show();
                         } else {
@@ -148,7 +148,8 @@ public class PhoneAuth extends AppCompatActivity {
                         }
                     } else
                         Toast.makeText(PhoneAuth.this, "Please Check your Internet Connection", Toast.LENGTH_SHORT).show();
-                } else Toast.makeText(PhoneAuth.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                } else
+                    Toast.makeText(PhoneAuth.this, "Something went wrong", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -170,7 +171,6 @@ public class PhoneAuth extends AppCompatActivity {
 
                 // Save verification ID and resending token so we can use them later
                 mVerificationId = verificationId;
-                mResendToken = token;
 
                 // ...
             }
@@ -206,17 +206,21 @@ public class PhoneAuth extends AppCompatActivity {
                                 public void onDataChange(DataSnapshot dataSnapshot) {
 
                                     mDialog.dismiss();
+                                    FirebaseUser cursor = FirebaseAuth.getInstance().getCurrentUser();
+                                    assert cursor != null;
+                                    phone = cursor.getPhoneNumber();
                                     User user = new User(username, "");
                                     users.child(phone).setValue(user);
-                                    if (status.equals("new")){
-                                    users.child(phone).child("Created at").setValue(new SimpleDateFormat
-                                            ("dd-MMM-yyyy hh:mm a", Locale.getDefault()).format(new Date()));
-                                    users.child(phone).child("status").setValue("normal");
+                                    user.setPhone(phone);
+                                    if (status.equals("new")) {
+                                        users.child(phone).child("Created at").setValue(new SimpleDateFormat
+                                                ("dd-MMM-yyyy hh:mm a", Locale.getDefault()).format(new Date()));
+                                        users.child(phone).child("status").setValue("normal");
                                     }
+                                    Common.currentUser = user;
                                     Toast.makeText(PhoneAuth.this, "Signed in Successfully !", Toast.LENGTH_SHORT).show();
                                     startActivity(new Intent(PhoneAuth.this, Home.class));
                                     finish();
-
                                 }
 
                                 @Override
@@ -231,7 +235,7 @@ public class PhoneAuth extends AppCompatActivity {
                             Toast.makeText(PhoneAuth.this, "Something went wrong", Toast.LENGTH_SHORT).show();
                             Log.w("PhoneAuthError", "signInWithCredential:failure", task.getException());
                             if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
-
+                                Toast.makeText(PhoneAuth.this, "Invalid Credentials", Toast.LENGTH_SHORT).show();
                             }
                         }
                     }

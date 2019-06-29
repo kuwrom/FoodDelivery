@@ -5,269 +5,308 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Profile">
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
         android:layout_above="@id/bottom_navigation_view_linear"
+        android:layout_alignParentTop="true"
         android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:layout_height="match_parent">
-    <LinearLayout
-        android:id="@+id/btnBlablad"
-        android:orientation="horizontal"
-        android:paddingLeft="16dp"
-        android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:gravity="center_vertical"
-        android:clickable="true"
-        android:background="@drawable/bg_ui_round"
-        android:layout_marginTop="32dp">
-        <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:tint="@color/blue_grey_active"
-            android:src="@drawable/ic_place_black_24dp"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_marginLeft="24dp"
-            android:text="Manage order address"
-            android:textSize="18sp"
-            android:textColor="#333333"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/gery_inactive"/>
         <LinearLayout
-            android:id="@+id/btnBlabljad"
-            android:orientation="horizontal"
-            android:paddingLeft="16dp"
             android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:gravity="center_vertical"
-            android:clickable="true"
-            android:background="@drawable/bg_ui_round">
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:tint="@color/blue_grey_active"
-                android:src="@drawable/ic_translate_black_24dp"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_marginLeft="24dp"
-                android:text="Change your language"
-                android:textColor="#333333"
-                android:textSize="18sp"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/gery_inactive"/>
-        <LinearLayout
-            android:id="@+id/btnBlamblad"
-            android:orientation="horizontal"
-            android:paddingLeft="16dp"
-            android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:gravity="center_vertical"
-            android:clickable="true"
-            android:background="@drawable/bg_ui_round">
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:tint="@color/blue_grey_active"
-                android:src="@drawable/ic_notifications_black_24dp"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_marginLeft="24dp"
-                android:text="Notification messages"
-                android:textColor="#333333"
-                android:textSize="18sp"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="16dp"/>
-        <LinearLayout
-            android:id="@+id/btnBnlablad"
-            android:orientation="horizontal"
-            android:paddingLeft="16dp"
-            android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:gravity="center_vertical"
-            android:clickable="true"
-            android:background="@drawable/bg_ui_round">
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:tint="@color/blue_grey_active"
-                android:src="@drawable/ic_payment_black_24dp"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_marginLeft="24dp"
-                android:text="Setup payment method"
-                android:textColor="#333333"
-                android:textSize="18sp"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/gery_inactive"/>
-        <LinearLayout
-            android:id="@+id/btnBladblad"
-            android:orientation="horizontal"
-            android:paddingLeft="16dp"
-            android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:gravity="center_vertical"
-            android:clickable="true"
-            android:background="@drawable/bg_ui_round">
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:tint="@color/blue_grey_active"
-                android:src="@drawable/ic_local_offer_black_24dp"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_marginLeft="24dp"
-                android:text="Coupons and promo codes"
-                android:textColor="#333333"
-                android:textSize="18sp"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/gery_inactive"/>
-        <LinearLayout
-            android:id="@+id/bstnBladblad"
-            android:orientation="horizontal"
-            android:paddingLeft="16dp"
-            android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:gravity="center_vertical"
-            android:clickable="true"
-            android:background="@drawable/bg_ui_round">
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:tint="@color/blue_grey_active"
-                android:src="@drawable/ic_local_atm_black_24dp"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_marginLeft="24dp"
-                android:text="Change your currency"
-                android:textColor="#333333"
-                android:textSize="18sp"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/gery_inactive"/>
-        <LinearLayout
-            android:id="@+id/btnBsladblad"
-            android:orientation="horizontal"
-            android:paddingLeft="16dp"
-            android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:gravity="center_vertical"
-            android:clickable="true"
-            android:background="@drawable/bg_ui_round">
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:tint="@color/blue_grey_active"
-                android:src="@drawable/ic_account_balance_black_24dp"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_marginLeft="24dp"
-                android:text="App balance and transactions"
-                android:textSize="18sp"
-                android:textColor="#333333"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="16dp"/>
-        <LinearLayout
-            android:id="@+id/btnBdladblad"
-            android:orientation="horizontal"
-            android:paddingLeft="16dp"
-            android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:gravity="center_vertical"
-            android:clickable="true"
-            android:background="@drawable/bg_ui_round">
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:tint="@color/blue_grey_active"
-                android:src="@drawable/ic_feedback_black_24dp"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_marginLeft="24dp"
-                android:textColor="#333333"
-                android:text="Send feedback"
-                android:textSize="18sp"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/gery_inactive"/>
-        <LinearLayout
-            android:id="@+id/btnBladbladnm"
-            android:orientation="horizontal"
-            android:paddingLeft="16dp"
-            android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:gravity="center_vertical"
-            android:clickable="true"
-            android:background="@drawable/bg_ui_round">
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:tint="@color/blue_grey_active"
-                android:src="@drawable/ic_security_black_24dp"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_marginLeft="24dp"
-                android:text="Change your password"
-                android:textColor="#333333"
-                android:textSize="18sp"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="16dp"/>
-        <Button
-            android:id="@+id/btnBlablads"
-            android:paddingLeft="16dp"
-            android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:background="@drawable/bg_ui_round"
-            android:text="About"
-            android:gravity="left|center_vertical"
-            android:textColor="#666666"
-            style="?borderlessButtonStyle"
-            android:layout_marginBottom="8dp" />
-    </LinearLayout>
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-</ScrollView>
+            <LinearLayout
+                android:id="@+id/btnOrderAddress"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:layout_marginTop="32dp"
+                android:background="@drawable/bg_ui_round"
+                android:clickable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="16dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_place_black_24dp"
+                    android:tint="@color/blue_grey_active" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="24dp"
+                    android:text="Manage order address"
+                    android:textColor="#333333"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/gery_inactive" />
+
+            <LinearLayout
+                android:id="@+id/btnLanguage"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:background="@drawable/bg_ui_round"
+                android:clickable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="16dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_translate_black_24dp"
+                    android:tint="@color/blue_grey_active" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="24dp"
+                    android:text="Change your language"
+                    android:textColor="#333333"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/gery_inactive" />
+
+            <LinearLayout
+                android:id="@+id/btnNotification"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:background="@drawable/bg_ui_round"
+                android:clickable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="16dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_notifications_black_24dp"
+                    android:tint="@color/blue_grey_active" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="24dp"
+                    android:text="Notification messages"
+                    android:textColor="#333333"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="16dp" />
+
+            <LinearLayout
+                android:id="@+id/btnPaymentMethod"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:background="@drawable/bg_ui_round"
+                android:clickable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="16dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_payment_black_24dp"
+                    android:tint="@color/blue_grey_active" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="24dp"
+                    android:text="Setup payment method"
+                    android:textColor="#333333"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/gery_inactive" />
+
+            <LinearLayout
+                android:id="@+id/btnPromoCode"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:background="@drawable/bg_ui_round"
+                android:clickable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="16dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_local_offer_black_24dp"
+                    android:tint="@color/blue_grey_active" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="24dp"
+                    android:text="Coupons and promo codes"
+                    android:textColor="#333333"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/gery_inactive" />
+
+            <LinearLayout
+                android:id="@+id/bstnCurrency"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:background="@drawable/bg_ui_round"
+                android:clickable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="16dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_local_atm_black_24dp"
+                    android:tint="@color/blue_grey_active" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="24dp"
+                    android:text="Change your currency"
+                    android:textColor="#333333"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/gery_inactive" />
+
+            <LinearLayout
+                android:id="@+id/btnTransactions"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:background="@drawable/bg_ui_round"
+                android:clickable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="16dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_account_balance_black_24dp"
+                    android:tint="@color/blue_grey_active" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="24dp"
+                    android:text="App balance and transactions"
+                    android:textColor="#333333"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="16dp" />
+
+            <LinearLayout
+                android:id="@+id/btnFeedBack"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:background="@drawable/bg_ui_round"
+                android:clickable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="16dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_feedback_black_24dp"
+                    android:tint="@color/blue_grey_active" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="24dp"
+                    android:text="Send feedback"
+                    android:textColor="#333333"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/gery_inactive" />
+
+            <LinearLayout
+                android:id="@+id/btnchangePass"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:background="@drawable/bg_ui_round"
+                android:clickable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="16dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_security_black_24dp"
+                    android:tint="@color/blue_grey_active" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="24dp"
+                    android:text="Change your password"
+                    android:textColor="#333333"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="16dp" />
+
+            <Button
+                android:id="@+id/btnBlablads"
+                style="?borderlessButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/bg_ui_round"
+                android:gravity="left|center_vertical"
+                android:paddingLeft="16dp"
+                android:text="About"
+                android:textColor="#666666" />
+        </LinearLayout>
+
+    </ScrollView>
+
     <com.gauravk.bubblenavigation.BubbleNavigationLinearView
         android:id="@+id/bottom_navigation_view_linear"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
         android:layout_alignParentBottom="true"
+        android:background="@color/white"
         android:elevation="8dp"
         android:orientation="horizontal"
         android:padding="12dp"
@@ -280,10 +319,10 @@
             android:id="@+id/l_item_profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:bt_active="true"
             app:bt_colorActive="@color/colorPrimaryDark"
             app:bt_colorInactive="@color/blue_inactive"
             app:bt_icon="@drawable/ic_person"
-            app:bt_active="true"
             app:bt_shape="@drawable/transition_background_drawable_person"
             app:bt_title="@string/profile" />
 

@@ -2,7 +2,7 @@ package com.habeshastudio.fooddelivery.Model;
 
 public class ShippingInformation {
     private String orderId, shipperPhone;
-    private Double lat ,lng;
+    private Double lat, lng;
 
     public ShippingInformation() {
     }

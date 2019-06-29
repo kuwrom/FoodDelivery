@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Derash</string>
-    <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="home">Home</string>
@@ -14,4 +13,26 @@
     <string name="shop">Shop</string>
     <string name="photos">Pics</string>
     <string name="call">Call</string>
+    <string name="title_activity_home">Home</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="action_refresh">Refresh</string>
+
+    <string name="facebook_app_id">440220469885998</string>
+    <string name="facebook_login_protocol_name">fb440220469885998</string>
+    <string name="title_activity_tracking_order">Map</string>
+    <string name="title_activity_maps">Map</string>
+
+
+    <string name="dear">Dear </string>
+    <string name="et_code">+251 </string>
+    <string name="wait_message">Please wait</string>
+    <string name="verify">Verify</string>
+    <string name="code_sent_to">Code sent to:</string>
+    <string name="no_connection">No Internet Connection</string>
+    <string name="arrival_count_down">It might take a while for your code to arrive. we will send you a new code in</string>
+    <string name="resend">Resend</string>
 </resources>

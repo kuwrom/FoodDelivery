@@ -14,20 +14,21 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.habeshastudio.fooddelivery.Common.Common;
+import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.R;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
+import java.util.Objects;
+
 public class Register extends AppCompatActivity {
 
-    public static String name, phone, userStatus;
-    MaterialEditText edtPhone, edtName, edtPassword;
+    public static String name, phone;
+    MaterialEditText edtPhone, edtName;
     TextView btnTrouble;
     Button btnSignUp;
     RelativeLayout rootLayout;
@@ -46,12 +47,11 @@ public class Register extends AppCompatActivity {
 
         edtPhone = findViewById(R.id.edtPhone);
         edtName = findViewById(R.id.edtName);
-        edtPassword = findViewById(R.id.edtPassword);
         btnTrouble = findViewById(R.id.btn_trouble);
         btnSignUp = findViewById(R.id.btnRegister);
         database = FirebaseDatabase.getInstance();
         rootLayout = findViewById(R.id.root_register_layout);
-        users = database.getReference().child("Users");
+        users = database.getReference().child("User");
         final Animation animShake = AnimationUtils.loadAnimation(this, R.anim.shake);
 
         isInternet();
@@ -61,7 +61,6 @@ public class Register extends AppCompatActivity {
             public void onClick(View v) {
                 startActivity(new Intent(Register.this, TroubleAuth.class));
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                finish();
             }
         });
         mDialog = new ProgressDialog(Register.this);
@@ -70,10 +69,10 @@ public class Register extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (Common.isConnectedToInternet(getBaseContext())) {
-                    mDialog.setMessage("Please wait...");
+                    mDialog.setMessage(getString(R.string.wait_message));
                     mDialog.show();
 
-                    if (!edtPhone.getText().toString().isEmpty() && !edtPassword.getText().toString().isEmpty() && !edtName.getText().toString().isEmpty()) {
+                    if (!Objects.requireNonNull(edtPhone.getText()).toString().isEmpty() && !Objects.requireNonNull(edtName.getText()).toString().isEmpty()) {
 
                         name = edtName.getText().toString();
                         phone = edtPhone.getText().toString().trim();
@@ -86,7 +85,7 @@ public class Register extends AppCompatActivity {
                                     Intent phoneAuth = new Intent(Register.this, PhoneAuth.class);
                                     phoneAuth.putExtra("name", name);
                                     phoneAuth.putExtra("phone", phone);
-                                    phoneAuth.putExtra("status", dataSnapshot.child(phone).child("status").getValue().toString());
+                                    phoneAuth.putExtra("status", "not_new");
                                     startActivity(phoneAuth);
                                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                                     finish();
@@ -123,21 +122,19 @@ public class Register extends AppCompatActivity {
 
     }
 
-    boolean isInternet() {
+    void isInternet() {
         if (!Common.isConnectedToInternet(getBaseContext())) {
             final Snackbar snackbar = Snackbar.make(rootLayout, "Connection lost", Snackbar.LENGTH_INDEFINITE);
             snackbar.setAction("RETRY", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (Common.isConnectedToInternet(getBaseContext())) {
-                        snackbar.dismiss();
+                    if (!Common.isConnectedToInternet(getBaseContext())) {
+                        isInternet();
                     }
                 }
             });
             snackbar.setActionTextColor(Color.YELLOW);
             snackbar.show();
-            return false;
         }
-        return true;
     }
 }

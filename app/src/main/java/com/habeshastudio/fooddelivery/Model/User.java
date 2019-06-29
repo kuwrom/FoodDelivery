@@ -5,7 +5,8 @@ package com.habeshastudio.fooddelivery.Model;
  */
 
 public class User {
-    private String Name, Password, Phone, IsStaff, SecureCode, HomeAddress,
+    String Password = "";
+    private String Name, Phone, IsStaff, SecureCode, HomeAddress,
             IsVerified, CreatedAt;
     private Object Balance;
 
