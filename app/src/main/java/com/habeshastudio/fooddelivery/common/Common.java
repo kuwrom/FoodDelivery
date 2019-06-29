@@ -4,11 +4,11 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-import com.habeshastudio.fooddelivery.Model.User;
-import com.habeshastudio.fooddelivery.Remote.APIService;
-import com.habeshastudio.fooddelivery.Remote.GoogleRetrofitClient;
-import com.habeshastudio.fooddelivery.Remote.IGoogleService;
-import com.habeshastudio.fooddelivery.Remote.RetrofitClient;
+import com.habeshastudio.fooddelivery.models.User;
+import com.habeshastudio.fooddelivery.remote.APIService;
+import com.habeshastudio.fooddelivery.remote.GoogleRetrofitClient;
+import com.habeshastudio.fooddelivery.remote.IGoogleService;
+import com.habeshastudio.fooddelivery.remote.RetrofitClient;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;

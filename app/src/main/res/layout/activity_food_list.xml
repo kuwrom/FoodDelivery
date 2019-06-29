@@ -5,7 +5,7 @@
     android:id="@+id/foodSwipeLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".FoodList">
+    tools:context=".activities.FoodList">
 
     <RelativeLayout
         android:layout_width="match_parent"
