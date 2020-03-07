@@ -80,4 +80,5 @@
     <string name="pay_with_app_balence">Pay with app balance</string>
     <string name="cod" translatable="false">Pay when delivered to you</string>
     <string name="food_name">Food Name</string>
+    <string name="loading">…</string>
 </resources>

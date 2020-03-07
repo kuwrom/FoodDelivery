@@ -77,4 +77,5 @@
     <string name="pay_wiz_paypal">Pay With Paypal</string>
     <string name="pay_with_app_balence">Pay with app balance</string>
     <string name="food_name">Food Name</string>
+    <string name="loading">...</string>
 </resources>

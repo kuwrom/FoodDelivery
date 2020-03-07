@@ -34,7 +34,7 @@
             android:background="@drawable/edit_style_small"
             android:textColor="@color/grey_active"
             android:textStyle="bold"
-            android:text="..."/>
+            android:text="@string/loading" />
         <ImageView
             android:layout_width="28dp"
             android:layout_alignParentEnd="true"
