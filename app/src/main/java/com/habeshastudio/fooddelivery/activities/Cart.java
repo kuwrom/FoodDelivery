@@ -2,12 +2,14 @@ package com.habeshastudio.fooddelivery.activities;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -26,10 +28,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -70,7 +74,6 @@ import com.paypal.android.sdk.payments.PayPalPayment;
 import com.paypal.android.sdk.payments.PayPalService;
 import com.paypal.android.sdk.payments.PaymentActivity;
 import com.paypal.android.sdk.payments.PaymentConfirmation;
-import com.rengwuxian.materialedittext.MaterialEditText;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -85,6 +88,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import io.paperdb.Paper;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -104,24 +108,32 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
     static PayPalConfiguration config = new PayPalConfiguration()
             .environment(PayPalConfiguration.ENVIRONMENT_SANDBOX)
             .clientId(Config.PAYPAL_CLIENT_ID);
-    public TextView txtTotalPrice;
+    public TextView txtTotalPrice, subTotalView, taxView, deliveryFeeView, paymentMethodDisplay, addPromoText;
+    public Double currentDeliveryPrice;
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
     FirebaseDatabase database;
     DatabaseReference requests;
-    Button btnPlace;
+    Button checkout_button;
+    LinearLayout btnPromoCode;
+    RelativeLayout btnCashChange;
+    int paymentMethodSelected = 0;
+    EditText addComment, addPromo;
     List<Order> cart = new ArrayList<>();
     CartAdapter adapter;
     APIService mService;
     String address, comment;
     Place shippingAddress;
+    ProgressDialog mDialog;
     //Google Map API Retrofit
     IGoogleService mGoogleMapService;
     RelativeLayout rootLayout;
+    private LocationManager mLocationManager;
     //Location
     private LocationRequest mLocationRequest;
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
+
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -139,7 +151,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
         setContentView(R.layout.activity_cart);
 
         mGoogleMapService = Common.getGoogleMapApi();
-
+        mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
         //Runtime permission
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
@@ -176,20 +188,71 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
         ItemTouchHelper.SimpleCallback itemTouchHelperCallBack = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, this);
         new ItemTouchHelper(itemTouchHelperCallBack).attachToRecyclerView(recyclerView);
 
-        txtTotalPrice = findViewById(R.id.total);
-        btnPlace = findViewById(R.id.btnPlaceOrder);
+        txtTotalPrice = findViewById(R.id.total_text);
+        addPromoText = findViewById(R.id.add_promo_text);
+        addComment = findViewById(R.id.add_note);
+        addPromo = findViewById(R.id.enter_promo);
+        subTotalView = findViewById(R.id.subtotal);
+        paymentMethodDisplay = findViewById(R.id.payment_method_display);
+        taxView = findViewById(R.id.tax);
+        deliveryFeeView = findViewById(R.id.delivery_fee);
+        btnPromoCode = findViewById(R.id.btnPromoCode);
+        btnCashChange = findViewById(R.id.btnCashChange);
+        checkout_button = findViewById(R.id.checkout_layout);
 
-        btnPlace.setOnClickListener(new View.OnClickListener() {
+        Paper.init(Cart.this);
+        btnPromoCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (cart.size() > 0)
-                    showAlertDialog();
+                addPromo.setVisibility(View.VISIBLE);
+                addPromoText.setText(getString(R.string.apply));
+            }
+        });
+        btnCashChange.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (paymentMethodSelected == 0) {
+                    paymentMethodDisplay.setText(getString(R.string.pay_wiz_paypal));
+                    paymentMethodDisplay.setTextColor(getResources().getColor(R.color.blue_active));
+                    paymentMethodSelected = 1;
+                } else if (paymentMethodSelected == 1) {
+                    paymentMethodDisplay.setText(getString(R.string.pay_with_app_balence));
+                    paymentMethodDisplay.setTextColor(getResources().getColor(R.color.orange_active));
+                    paymentMethodSelected = 2;
+                } else if (paymentMethodSelected == 2) {
+                    paymentMethodDisplay.setText(getString(R.string.cod));
+                    paymentMethodDisplay.setTextColor(getResources().getColor(R.color.grey_active));
+                    paymentMethodSelected = 0;
+                }
+            }
+        });
+
+        checkout_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                    showGpsDisabledDialog();
+                } else if (cart.size() > 0)
+                    if (Common.isConnectedToInternet(getBaseContext())) {
+                        showAlertDialog();
+                    } else {
+                        Toast.makeText(getBaseContext(), "Please Check your connection", Toast.LENGTH_SHORT).show();
+                    }
+
                 else
                     Toast.makeText(Cart.this, "Your cart is Empty", Toast.LENGTH_SHORT).show();
             }
         });
 
-        loadListFood();
+
+        if (!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            showGpsDisabledDialog();
+        }
+        mDialog = new ProgressDialog(this);
+        mDialog.setMessage("Calculating Total...");
+        mDialog.setCancelable(false);
+        mDialog.setCanceledOnTouchOutside(false);
+        mDialog.show();
     }
 
     private void createLocationRequest() {
@@ -226,7 +289,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
     private void showAlertDialog() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(Cart.this);
         alertDialog.setTitle("One more Step...");
-        alertDialog.setMessage("Enter your Address: ");
+        alertDialog.setMessage("Delivering to your current address.");
 
         final LayoutInflater inflater = this.getLayoutInflater();
         View order_address_comment = inflater.inflate(R.layout.order_address_comment, null);
@@ -236,7 +299,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
         editAddress.getView().findViewById(R.id.place_autocomplete_search_button).setVisibility(View.GONE);
         //set hint for Auto Complete
         ((EditText) editAddress.getView().findViewById(R.id.place_autocomplete_search_input))
-                .setHint("Enter your address");
+                .setHint("Tap to select Different Address");
         //set text Size
         ((EditText) editAddress.getView().findViewById(R.id.place_autocomplete_search_input))
                 .setTextSize(14);
@@ -253,16 +316,13 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
                 Log.e("Error", status.getStatusMessage());
             }
         });
-        final MaterialEditText editComment = order_address_comment.findViewById(R.id.editComment);
 
         //radio Choice
         final RadioButton rdiShipToAddress = order_address_comment.findViewById(R.id.rdiShipToAddress);
         final RadioButton rdiHomeAddress = order_address_comment.findViewById(R.id.rdiHomeAddress);
-        final RadioButton rdiPayPal = order_address_comment.findViewById(R.id.rdiPaypal);
-        final RadioButton rdiCOD = order_address_comment.findViewById(R.id.rdiCOD);
-        final RadioButton rdiBalance = order_address_comment.findViewById(R.id.rdiDerashBalance);
 
         //Event Radio
+
 
         rdiHomeAddress.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -274,6 +334,8 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
                         ((EditText) editAddress.getView().findViewById(R.id.place_autocomplete_search_input)).setText(address);
                     } else {
                         Toast.makeText(Cart.this, "Please set your Home address", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(Cart.this, Profile.class));
+                        finish();
                     }
                 }
             }
@@ -313,12 +375,19 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
 
         alertDialog.setView(order_address_comment);
         alertDialog.setIcon(R.drawable.ic_shopping_cart_black_24dp);
-
-        alertDialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+        alertDialog.setCancelable(false);
+        alertDialog.setPositiveButton("Proceed", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
                 //Show paypal to payment
+                ////////////////////////////////////////////////////////////////
+                if (!TextUtils.isEmpty(Common.currentUser.getHomeAddress()) ||
+                        Common.currentUser.getHomeAddress() != null) {
+                    address = Common.currentUser.getHomeAddress();
+                    ((EditText) editAddress.getView().findViewById(R.id.place_autocomplete_search_input)).setText(address);
+                }
+                ////////////////////////////////////////////////////////////////
 
                 //first get address and comment from dialog
                 if (!rdiShipToAddress.isChecked() && !rdiHomeAddress.isChecked()) {
@@ -334,38 +403,34 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
                     }
                 }
                 if (TextUtils.isEmpty(address)) {
-                    Toast.makeText(Cart.this, "Please Select Payment Method", Toast.LENGTH_SHORT).show();
-
                     getFragmentManager().beginTransaction()
                             .remove(getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment))
                             .commit();
                     return;
                 }
 
-                comment = editComment.getText().toString();
+                comment = addComment.getText().toString();
 
                 //Check Payment
-                if (!rdiCOD.isChecked() && !rdiPayPal.isChecked() && !rdiBalance.isChecked()) {
-                    Toast.makeText(Cart.this, "Please Enter or Select your Address", Toast.LENGTH_SHORT).show();
-
-                    getFragmentManager().beginTransaction()
-                            .remove(getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment))
-                            .commit();
-                    return;
-                } else if (rdiPayPal.isChecked()) {
+                if (paymentMethodSelected == 1) {  //papal
 
                     String formatAmount = txtTotalPrice.getText().toString()
                             .replace("$", "")
                             .replace(",", "");
-                    float amount = Float.parseFloat(formatAmount);
-
-                    PayPalPayment payPalPayment = new PayPalPayment(new BigDecimal(formatAmount)
-                            , "USD", "Derash App Order", PayPalPayment.PAYMENT_INTENT_SALE);
+                    String formatAmountETB = txtTotalPrice.getText().toString()
+                            .replace("ETB", "")
+                            .replace(" ", "");
+                    double amount;
+                    if (Common.isUsdSelected)
+                        amount = Double.parseDouble(formatAmount);
+                    else amount = Double.parseDouble(formatAmountETB) / Common.ETB_RATE;
+                    PayPalPayment payPalPayment = new PayPalPayment(new BigDecimal(amount)
+                            , "USD", "Dine Food Delivery", PayPalPayment.PAYMENT_INTENT_SALE);
                     Intent intent = new Intent(getApplicationContext(), PaymentActivity.class);
                     intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config);
                     intent.putExtra(PaymentActivity.EXTRA_PAYMENT, payPalPayment);
                     startActivityForResult(intent, PAYPAL_REQUEST_CODE);
-                } else if (rdiBalance.isChecked()) {
+                } else if (paymentMethodSelected == 2) {//app balance
                     double amount = 0.0;
                     try {
                         amount = Common.formatCurrency(txtTotalPrice.getText().toString(), Locale.US).doubleValue();
@@ -384,6 +449,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
                                 "Paid",
                                 "App Balance",
                                 String.format("%s,%s", mLastLocation.getLatitude(), mLastLocation.getLongitude()),
+                                //String.format("%s,%s", 13.501090, 39.475850),
                                 cart,
                                 false
                         );
@@ -407,7 +473,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()) {
-                                            //Refresh User
+                                            //Refresh user status
                                             FirebaseDatabase.getInstance().getReference("User")
                                                     .child(Common.currentUser.getPhone())
                                                     .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -425,11 +491,19 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
                                         }
                                     }
                                 });
+                        sendNotificationOrder(orderNumber);
+                        //Toast.makeText(Cart.this, "Thank you, Order placed!", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(Cart.this, OrderStatus.class));
+                        Common.currentrestaurantID = null;
+                        Paper.book().delete("restId");
+                        Common.alreadyBeenToCart = false;
+                        Paper.book().delete("beenToCart");
+                        finish();
                     } else {
                         Toast.makeText(Cart.this, "You don't Have enough balance, please Choose Other Method", Toast.LENGTH_SHORT).show();
                     }
 
-                } else if (rdiCOD.isChecked()) {
+                } else if (paymentMethodSelected == 0) {
                     // Create new Request
                     Request request = new Request(
                             Common.currentUser.getPhone(),
@@ -454,7 +528,12 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
                     new Database(getBaseContext()).cleanCart(Common.currentUser.getPhone());
 
                     sendNotificationOrder(orderNumber);
-                    Toast.makeText(Cart.this, "Thank you, Order placed!", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(Cart.this, "Thank you, Order placed!", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(Cart.this, OrderStatus.class));
+                    Common.currentrestaurantID = null;
+                    Paper.book().delete("restId");
+                    Common.alreadyBeenToCart = false;
+                    Paper.book().delete("beenToCart");
                     finish();
                 }
 
@@ -467,7 +546,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
             }
         });
 
-        alertDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -535,7 +614,12 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
                         new Database(getBaseContext()).cleanCart(Common.currentUser.getPhone());
 
                         sendNotificationOrder(orderNumber);
-                        Toast.makeText(Cart.this, "Thank you, Order placed!", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(Cart.this, "Thank you, Order placed!", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(Cart.this, OrderStatus.class));
+                        Common.currentrestaurantID = null;
+                        Paper.book().delete("restId");
+                        Common.alreadyBeenToCart = false;
+                        Paper.book().delete("beenToCart");
                         finish();
 
 
@@ -576,7 +660,12 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
                                 public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
                                     if (response.code() == 200) {
                                         if (response.body().success == 1) {
-                                            Toast.makeText(Cart.this, "Thank you, Order placed!", Toast.LENGTH_SHORT).show();
+                                            //Toast.makeText(Cart.this, "Thank you, Order placed!", Toast.LENGTH_SHORT).show();
+                                            startActivity(new Intent(Cart.this, OrderStatus.class));
+                                            Common.currentrestaurantID = null;
+                                            Paper.book().delete("restId");
+                                            Common.alreadyBeenToCart = false;
+                                            Paper.book().delete("beenToCart");
                                             finish();
                                         } else {
                                             Toast.makeText(Cart.this, "Failed!", Toast.LENGTH_SHORT).show();
@@ -613,8 +702,17 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
             total += (Integer.parseInt(order.getPrice())) * (Integer.parseInt(order.getQuantity()));
         Locale locale = new Locale("en", "US");
         NumberFormat fmt = NumberFormat.getCurrencyInstance(locale);
-
-        txtTotalPrice.setText(fmt.format(total));
+        if (Common.isUsdSelected)
+            txtTotalPrice.setText(fmt.format((total + currentDeliveryPrice) / Common.ETB_RATE));
+        else txtTotalPrice.setText(String.format("ETB %s", total + currentDeliveryPrice));
+        updatePriceTexts();
+        if (total == 0) {
+            Common.currentrestaurantID = null;
+            Paper.book().delete("restId");
+            Common.alreadyBeenToCart = false;
+            Paper.book().delete("beenToCart");
+            finish();
+        }
     }
 
     @Override
@@ -655,9 +753,13 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
         }
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (mLastLocation != null) {
+            Common.currentUserLocation = mLastLocation;
+            //Common.currentRestaurantLocation = mLastLocation;
             Log.d("LOCATION", "Your location: " + mLastLocation.getLatitude() + "," + mLastLocation.getLongitude());
+            calculateTotalPrice();
         } else {
             Log.d("LOCATION", "Couldn't get your Location");
+            Toast.makeText(this, "Couldn't get your Location", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -693,8 +795,10 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
                 total += (Integer.parseInt(item.getPrice())) * (Integer.parseInt(item.getQuantity()));
             Locale locale = new Locale("en", "US");
             NumberFormat fmt = NumberFormat.getCurrencyInstance(locale);
-            txtTotalPrice.setText(fmt.format(total));
-
+            if (Common.isUsdSelected)
+                txtTotalPrice.setText(fmt.format((total + currentDeliveryPrice) / Common.ETB_RATE));
+            else txtTotalPrice.setText(String.format("ETB %s", total + currentDeliveryPrice));
+            calculateTotalPrice();
             //make snackbar
             Snackbar snackbar = Snackbar.make(rootLayout, name + " removed from cart!", Snackbar.LENGTH_LONG);
             snackbar.setAction("UNDO", new View.OnClickListener() {
@@ -710,12 +814,86 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
                         total += (Integer.parseInt(item.getPrice())) * (Integer.parseInt(item.getQuantity()));
                     Locale locale = new Locale("en", "US");
                     NumberFormat fmt = NumberFormat.getCurrencyInstance(locale);
-                    txtTotalPrice.setText(fmt.format(total));
+                    if (Common.isUsdSelected)
+                        txtTotalPrice.setText(fmt.format((total + currentDeliveryPrice) / Common.ETB_RATE));
+                    else
+                        txtTotalPrice.setText(String.format("ETB %s", total + currentDeliveryPrice));
+                    calculateTotalPrice();
                 }
+
+
             });
             snackbar.setActionTextColor(Color.YELLOW);
+            snackbar.addCallback(new Snackbar.Callback() {
+
+                @Override
+                public void onDismissed(Snackbar snackbar, int event) {
+                    if (event == Snackbar.Callback.DISMISS_EVENT_TIMEOUT) {
+                        int total = 0;
+                        List<Order> orders = new Database(getBaseContext()).getCarts(Common.currentUser.getPhone());
+                        for (Order item : orders)
+                            total += (Integer.parseInt(item.getPrice())) * (Integer.parseInt(item.getQuantity()));
+                        if (total == 0) {
+                            Common.currentrestaurantID = null;
+                            Paper.book().delete("restId");
+                            Common.alreadyBeenToCart = false;
+                            Paper.book().delete("beenToCart");
+                            finish();
+                        }
+
+                    }
+                }
+            });
             snackbar.show();
 
         }
+    }
+
+    public void calculateTotalPrice() {
+        currentDeliveryPrice = Common.getDeliveryPrice();
+        loadListFood();
+        updatePriceTexts();
+        mDialog.dismiss();
+    }
+
+    public void updatePriceTexts() {
+        Locale locale = new Locale("en", "US");
+        NumberFormat fmt = NumberFormat.getCurrencyInstance(locale);
+        String formatAmount = txtTotalPrice.getText().toString()
+                .replace("$", "")
+                .replace(",", "");
+        String formatAmountEtb = txtTotalPrice.getText().toString()
+                .replace("ETB", "")
+                .replace(" ", "")
+                .replace(",", "");
+        double amount;
+        double subTotal;
+        if (Common.isUsdSelected) {
+            amount = Double.parseDouble(formatAmount);
+            subTotal = (amount - (currentDeliveryPrice / Common.ETB_RATE)) / 1.15;
+            double tax = subTotal * 0.15;
+            deliveryFeeView.setText(fmt.format(currentDeliveryPrice / Common.ETB_RATE));
+            subTotalView.setText(fmt.format(subTotal));
+            taxView.setText(fmt.format(tax));
+        } else {
+            amount = Double.parseDouble(formatAmountEtb);
+            subTotal = (amount - currentDeliveryPrice) / 1.15;
+            double tax = subTotal * 0.15;
+            deliveryFeeView.setText(String.format("ETB %s", currentDeliveryPrice));
+            subTotalView.setText(String.format("ETB %s", (int) subTotal));
+            taxView.setText(String.format("ETB %s", (int) tax));
+        }
+    }
+
+    public void showGpsDisabledDialog() {
+        final android.support.v7.app.AlertDialog.Builder alertDialog = new AlertDialog.Builder(Cart.this);
+        alertDialog.setTitle("GPS Disabled, Enable gps?");
+        alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                startActivity(new Intent("android.settings.LOCATION_SOURCE_SETTINGS"));
+            }
+        });
+        alertDialog.show();
     }
 }

@@ -2,45 +2,53 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="4dp"
-    app:cardElevation="4dp">
+    android:layout_marginBottom="1dp"
+    android:layout_height="92dp">
 
     <RelativeLayout
         android:id="@+id/view_background"
+        android:background="@color/bgRawBackground"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="8dp">
+        android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/delete_icon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_alignParentRight="true"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_centerVertical="true"
-            android:src="@drawable/ic_delete_sweep_black_24dp" />
+            android:textColor="@color/white"
+            android:layout_alignParentEnd="true"
+            android:text="Delete"
+            android:textStyle="bold"
+            android:textSize="13sp"
+            android:layout_marginEnd="16dp"
+            android:layout_height="wrap_content" />
 
     </RelativeLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/view_foreground"
         android:layout_width="match_parent"
+        android:padding="8dp"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:background="@android:color/white">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_alignParentLeft="true"
+            android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/cart_image"
-            android:layout_width="120dp"
-            android:layout_height="120dp" />
+            android:src="@drawable/chickenburger"
+            android:scaleType="centerCrop"
+            android:layout_width="80dp"
+            android:layout_height="80dp" />
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
+            android:layout_marginLeft="4dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:layout_weight="9"
             android:orientation="vertical">
 
             <TextView
@@ -48,43 +56,50 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
+                android:layout_marginTop="8dp"
                 android:gravity="center_vertical|start"
                 android:text="Food 01"
+                android:textColor="@color/colorLightBlack"
                 android:textAllCaps="true"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/cart_item_Price"
-                android:layout_width="wrap_content"
+            <com.cepheuen.elegantnumberbutton.view.ElegantNumberButton
+                android:id="@+id/btn_quantity"
+                android:layout_width="64dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:gravity="center_vertical|start"
-                android:text="100,1000"
-                android:textAllCaps="true"
-                android:textStyle="italic" />
+                app:backGroundColor="@color/white"
+                app:textColor="@color/blue_grey_active"
+                app:finalNumber="20"
+                app:initialNumber="1"
+                app:textSize="8sp">
+
+            </com.cepheuen.elegantnumberbutton.view.ElegantNumberButton>
+
 
         </LinearLayout>
 
-
-        <com.cepheuen.elegantnumberbutton.view.ElegantNumberButton
-            android:id="@+id/btn_quantity"
-            android:layout_width="80dp"
+        </LinearLayout>
+        <TextView
+            android:id="@+id/cart_item_Price"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            app:backGroundColor="@color/colorPrimary"
-            app:finalNumber="20"
-            app:initialNumber="1"
-            app:textSize="8sp">
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/edit_style_small"
+            android:layout_marginBottom="24dp"
+            android:text="..."
+            android:textAllCaps="true"
+            android:textStyle="italic" />
 
-        </com.cepheuen.elegantnumberbutton.view.ElegantNumberButton>
 
-        <!--<ImageView-->
-        <!--android:id="@+id/cart_item_count"-->
-        <!--android:layout_width="20dp"-->
-        <!--android:layout_height="20dp"-->
-        <!--android:layout_gravity="center_vertical|end"-->
-        <!--android:layout_marginRight="16dp" />-->
-
-    </LinearLayout>
+    </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_marginStart="80dp"
+        android:visibility="gone"
+        android:layout_gravity="bottom"
+        android:background="@color/grey_active"
+        android:layout_marginEnd="16dp"
+        android:layout_height="1dp" />
 
 </android.support.v7.widget.CardView>

@@ -4,303 +4,527 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/grey_bg_light"
     tools:context=".activities.Profile">
 
-    <ScrollView
+    <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/bottom_navigation_view_linear"
+        android:id="@+id/main_coordinator"
+        android:layout_above="@id/btn_checkout_cart"
         android:layout_alignParentTop="true"
-        android:orientation="vertical">
-
-        <LinearLayout
+        android:layout_height="wrap_content">
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/materialup.appbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:id="@+id/btnOrderAddress"
+            android:layout_height="wrap_content"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+            ​
+            <android.support.design.widget.CollapsingToolbarLayout
+                android:id="@+id/main.collapsing"
                 android:layout_width="match_parent"
-                android:layout_height="64dp"
-                android:layout_marginTop="32dp"
-                android:background="@drawable/bg_ui_round"
-                android:clickable="true"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingLeft="16dp">
-
+                android:background="@color/grey_bg_light"
+                android:layout_height="200dp"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                >
+                ​
                 <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_place_black_24dp"
-                    android:tint="@color/blue_grey_active" />
+                    android:id="@+id/materialup.profile_backdrop"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/cover"
+                    android:tint="@color/blue_grey_active"
+                    app:layout_collapseMode="parallax"
+                    />
+            </android.support.design.widget.CollapsingToolbarLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="24dp"
-                    android:text="Manage order address"
-                    android:textColor="#333333"
-                    android:textSize="18sp" />
-            </LinearLayout>
+            ​
+        </android.support.design.widget.AppBarLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/gery_inactive" />
-
+        <android.support.v4.widget.NestedScrollView
+            android:layout_width="match_parent"
+            app:behavior_overlapTop="80dp"
+            app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior"
+            android:layout_height="match_parent">
             <LinearLayout
-                android:id="@+id/btnLanguage"
                 android:layout_width="match_parent"
-                android:layout_height="64dp"
-                android:background="@drawable/bg_ui_round"
-                android:clickable="true"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingLeft="16dp">
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_translate_black_24dp"
-                    android:tint="@color/blue_grey_active" />
-
-                <TextView
-                    android:layout_width="wrap_content"
+                <com.mikhaellopez.circularimageview.CircularImageView
+                    android:layout_width="120dp"
+                    android:layout_gravity="center_horizontal"
+                    android:id="@+id/profile_pic"
+                    android:layout_height="120dp"
+                    android:elevation="10dp"
+                    android:src="@drawable/profile_pic"
+                    app:layout_scrollFlags="scroll"
+                    app:civ_border="true"
+                    app:civ_border_color="@color/colorWhite"
+                    app:civ_border_width="2dp"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="24dp"
-                    android:text="Change your language"
-                    android:textColor="#333333"
-                    android:textSize="18sp" />
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <android.support.v7.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:visibility="visible"
+                        app:cardCornerRadius="2dp"
+                        app:cardElevation="2dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:elevation="10dp"
+                                android:id="@+id/name_display"
+                                android:text="..."
+                                android:textStyle="bold"
+                                android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"
+                                android:textColor="@color/colorLightBlack" />
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="15dp"
+                                android:gravity="center_horizontal"
+                                android:orientation="horizontal">
+
+                                <ImageView
+                                    android:layout_width="15dp"
+                                    android:layout_height="15dp"
+                                    android:layout_marginEnd="15dp"
+                                    android:layout_marginRight="15dp"
+                                    android:src="@drawable/ic_place_black_24dp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/address_display"
+                                    android:text="Address not set yet"
+                                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                                    android:textColor="@color/colorLightBlack" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="15dp"
+                                android:gravity="center_horizontal"
+                                android:orientation="horizontal">
+
+                                <ImageView
+                                    android:layout_width="15dp"
+                                    android:layout_height="15dp"
+                                    android:layout_marginEnd="15dp"
+                                    android:layout_marginRight="15dp"
+                                    android:src="@drawable/ic_account_balance_black_24dp" />
+
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:orientation="horizontal"
+                                    android:layout_height="wrap_content">
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="balance: "
+                                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                                        android:textColor="@color/colorLightBlack" />
+                                    <TextView
+                                        android:id="@+id/balance_display"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="ETB 0"
+                                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                                        android:textColor="@color/colorLightBlack" />
+                                </LinearLayout>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="15dp"
+                                android:layout_marginTop="25dp"
+                                android:padding="2dp"
+                                android:layout_marginRight="15dp"
+                                android:layout_marginBottom="10dp"
+                                android:orientation="horizontal"
+                                android:weightSum="2">
+
+                                <Button
+                                    android:id="@+id/loved_button"
+                                    android:layout_width="0dp"
+                                    android:layout_height="35dp"
+                                    android:layout_marginRight="10dp"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/bg_ui"
+                                    android:backgroundTint="@color/media"
+                                    android:text="@string/loved"
+                                    android:textColor="@color/colorWhite" />
+
+                                <Button
+                                    android:id="@+id/promo_button"
+                                    android:layout_width="0dp"
+                                    android:layout_height="35dp"
+                                    android:layout_marginLeft="10dp"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/bg_ui"
+                                    android:backgroundTint="@color/media"
+                                    android:text="@string/promo"
+                                    android:textColor="@color/colorWhite" />
+
+                            </LinearLayout>
+
+
+                        </LinearLayout>
+
+                    </android.support.v7.widget.CardView>
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="15dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:orientation="horizontal"
+                        android:padding="15dp">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:minWidth="80dp"
+                            android:orientation="vertical">
+
+                            <android.support.design.widget.FloatingActionButton
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:clickable="true"
+                                android:id="@+id/easy_mode_switch"
+                                app:backgroundTint="@android:color/white"
+                                app:elevation="2dp"
+                                android:layout_margin="2dp"
+                                app:fabSize="normal"
+                                app:rippleColor="@color/white"
+                                android:tint="@color/grey_active"
+                                app:srcCompat="@drawable/ic_wb_sunny_black_24dp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:minWidth="80dp"
+                            android:orientation="vertical">
+
+                            <android.support.design.widget.FloatingActionButton
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:clickable="true"
+                                android:id="@+id/language_switch"
+                                app:backgroundTint="@android:color/white"
+                                app:elevation="2dp"
+                                android:layout_margin="2dp"
+                                app:fabSize="normal"
+                                app:rippleColor="@color/red_inactive"
+                                app:srcCompat="@drawable/ic_translate_black_24dp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:minWidth="80dp"
+                            android:orientation="vertical">
+
+                            <android.support.design.widget.FloatingActionButton
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:clickable="true"
+                                app:backgroundTint="@android:color/white"
+                                app:elevation="2dp"
+                                android:id="@+id/notification_switch"
+                                app:fabSize="normal"
+                                android:layout_margin="2dp"
+                                app:rippleColor="@color/red_inactive"
+                                app:srcCompat="@drawable/ic_notifications_black_24dp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:minWidth="80dp"
+                            android:orientation="vertical">
+
+                            <android.support.design.widget.FloatingActionButton
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:clickable="true"
+                                app:backgroundTint="@android:color/white"
+                                app:elevation="2dp"
+                                app:fabSize="normal"
+                                android:id="@+id/currency_switch"
+                                android:layout_margin="2dp"
+                                app:rippleColor="@color/red_inactive"
+                                app:srcCompat="@drawable/ic_local_atm_black_24dp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="15dp"
+                        android:text="@string/more_options"
+                        android:textColor="@color/colorLightBlack"
+                        android:textSize="20sp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/btnPaymentMethod"
+                    android:layout_width="match_parent"
+                    android:layout_height="64dp"
+                    android:background="@drawable/bg_ui_white"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingLeft="16dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_payment_black_24dp"
+                        android:tint="@color/blue_grey_active" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="24dp"
+                        android:text="@string/setup_payment_method"
+                        android:textColor="@color/colorLightBlack"
+                        android:textSize="18sp" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/gery_inactive" />
+
+                <LinearLayout
+                    android:id="@+id/btnPromoCode"
+                    android:layout_width="match_parent"
+                    android:layout_height="64dp"
+                    android:background="@drawable/bg_ui_white"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingLeft="16dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_home_black_24dp"
+                        android:tint="@color/blue_grey_active" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="24dp"
+                        android:text="@string/set_home_address"
+                        android:textColor="@color/colorLightBlack"
+                        android:textSize="18sp" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/gery_inactive" />
+
+                <LinearLayout
+                    android:id="@+id/btnTransactions"
+                    android:layout_width="match_parent"
+                    android:layout_height="64dp"
+                    android:background="@drawable/bg_ui_white"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingLeft="16dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_account_balance_black_24dp"
+                        android:tint="@color/blue_grey_active" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="24dp"
+                        android:text="@string/history_and_transactions"
+                        android:textColor="@color/colorLightBlack"
+                        android:textSize="18sp" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/gery_inactive" />
+
+                <LinearLayout
+                    android:id="@+id/btnShare"
+                    android:layout_width="match_parent"
+                    android:layout_height="64dp"
+                    android:background="@drawable/bg_ui_white"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingLeft="16dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_share_black_24dp"
+                        android:tint="@color/blue_grey_active" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="24dp"
+                        android:text="Share Dine"
+                        android:textColor="@color/colorLightBlack"
+                        android:textSize="18sp" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/gery_inactive" />
+
+                <LinearLayout
+                    android:id="@+id/btn_help"
+                    android:layout_width="match_parent"
+                    android:layout_height="64dp"
+                    android:background="@drawable/bg_ui_white"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingLeft="16dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_help_black_24dp"
+                        android:tint="@color/blue_grey_active" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="24dp"
+                        android:text="@string/help"
+                        android:textColor="@color/colorLightBlack"
+                        android:textSize="18sp" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="16dp" />
+
+                <Button
+                    android:id="@+id/btn_about"
+                    style="?borderlessButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="64dp"
+                    android:background="@drawable/bg_ui_white"
+                    android:gravity="left|center_vertical"
+                    android:paddingLeft="16dp"
+                    android:text="@string/about"
+                    android:textColor="#666666" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/gery_inactive" />
+                <Button
+                    android:id="@+id/btn_feedback"
+                    style="?borderlessButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="64dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/bg_ui_white"
+                    android:gravity="left|center_vertical"
+                    android:paddingLeft="16dp"
+                    android:text="@string/send_feedback"
+                    android:textColor="#666666" />
             </LinearLayout>
+        </android.support.v4.widget.NestedScrollView>
+    </android.support.design.widget.CoordinatorLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/gery_inactive" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:id="@+id/btn_checkout_cart"
+        android:orientation="horizontal"
+        android:weightSum="3"
+        android:visibility="visible"
+        android:layout_above="@id/bottom_navigation_view_linear"
+        android:clickable="true"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:background="@color/colorPrimary"
+        android:layout_height="48dp">
 
-            <LinearLayout
-                android:id="@+id/btnNotification"
-                android:layout_width="match_parent"
-                android:layout_height="64dp"
-                android:background="@drawable/bg_ui_round"
-                android:clickable="true"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingLeft="16dp">
+        <TextView
+            android:layout_width="0dp"
+            android:id="@+id/checkout_layout_price"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="ETB 200"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/checkout"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:layout_weight="1"
+            android:text="1"
+            android:id="@+id/items_count"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
 
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_notifications_black_24dp"
-                    android:tint="@color/blue_grey_active" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="24dp"
-                    android:text="Notification messages"
-                    android:textColor="#333333"
-                    android:textSize="18sp" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="16dp" />
-
-            <LinearLayout
-                android:id="@+id/btnPaymentMethod"
-                android:layout_width="match_parent"
-                android:layout_height="64dp"
-                android:background="@drawable/bg_ui_round"
-                android:clickable="true"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingLeft="16dp">
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_payment_black_24dp"
-                    android:tint="@color/blue_grey_active" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="24dp"
-                    android:text="Setup payment method"
-                    android:textColor="#333333"
-                    android:textSize="18sp" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/gery_inactive" />
-
-            <LinearLayout
-                android:id="@+id/btnPromoCode"
-                android:layout_width="match_parent"
-                android:layout_height="64dp"
-                android:background="@drawable/bg_ui_round"
-                android:clickable="true"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingLeft="16dp">
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_local_offer_black_24dp"
-                    android:tint="@color/blue_grey_active" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="24dp"
-                    android:text="Coupons and promo codes"
-                    android:textColor="#333333"
-                    android:textSize="18sp" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/gery_inactive" />
-
-            <LinearLayout
-                android:id="@+id/bstnCurrency"
-                android:layout_width="match_parent"
-                android:layout_height="64dp"
-                android:background="@drawable/bg_ui_round"
-                android:clickable="true"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingLeft="16dp">
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_local_atm_black_24dp"
-                    android:tint="@color/blue_grey_active" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="24dp"
-                    android:text="Change your currency"
-                    android:textColor="#333333"
-                    android:textSize="18sp" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/gery_inactive" />
-
-            <LinearLayout
-                android:id="@+id/btnTransactions"
-                android:layout_width="match_parent"
-                android:layout_height="64dp"
-                android:background="@drawable/bg_ui_round"
-                android:clickable="true"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingLeft="16dp">
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_account_balance_black_24dp"
-                    android:tint="@color/blue_grey_active" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="24dp"
-                    android:text="App balance and transactions"
-                    android:textColor="#333333"
-                    android:textSize="18sp" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="16dp" />
-
-            <LinearLayout
-                android:id="@+id/btnFeedBack"
-                android:layout_width="match_parent"
-                android:layout_height="64dp"
-                android:background="@drawable/bg_ui_round"
-                android:clickable="true"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingLeft="16dp">
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_feedback_black_24dp"
-                    android:tint="@color/blue_grey_active" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="24dp"
-                    android:text="Send feedback"
-                    android:textColor="#333333"
-                    android:textSize="18sp" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/gery_inactive" />
-
-            <LinearLayout
-                android:id="@+id/btnchangePass"
-                android:layout_width="match_parent"
-                android:layout_height="64dp"
-                android:background="@drawable/bg_ui_round"
-                android:clickable="true"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingLeft="16dp">
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_security_black_24dp"
-                    android:tint="@color/blue_grey_active" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="24dp"
-                    android:text="Change your password"
-                    android:textColor="#333333"
-                    android:textSize="18sp" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="16dp" />
-
-            <Button
-                android:id="@+id/btnBlablads"
-                style="?borderlessButtonStyle"
-                android:layout_width="match_parent"
-                android:layout_height="64dp"
-                android:layout_marginBottom="8dp"
-                android:background="@drawable/bg_ui_round"
-                android:gravity="left|center_vertical"
-                android:paddingLeft="16dp"
-                android:text="About"
-                android:textColor="#666666" />
-        </LinearLayout>
-
-    </ScrollView>
-
+    </LinearLayout>
     <com.gauravk.bubblenavigation.BubbleNavigationLinearView
         android:id="@+id/bottom_navigation_view_linear"
         android:layout_width="match_parent"
@@ -309,29 +533,29 @@
         android:background="@color/white"
         android:elevation="8dp"
         android:orientation="horizontal"
-        android:padding="12dp"
+        android:padding="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
 
         <com.gauravk.bubblenavigation.BubbleToggleView
-            android:id="@+id/l_item_profile"
+            android:id="@+id/l_item_home"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:bt_active="true"
             app:bt_colorActive="@color/colorPrimaryDark"
-            app:bt_colorInactive="@color/blue_inactive"
-            app:bt_icon="@drawable/ic_person"
-            app:bt_shape="@drawable/transition_background_drawable_person"
-            app:bt_title="@string/profile" />
+            app:bt_colorInactive="@color/blue_active"
+            app:bt_icon="@drawable/ic_home_black_24dp"
+            app:bt_shape="@drawable/transition_background_drawable_home"
+            app:bt_title="@string/home" />
+
 
         <com.gauravk.bubblenavigation.BubbleToggleView
             android:id="@+id/l_item_orders"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:bt_colorActive="@color/colorPrimaryDark"
-            app:bt_colorInactive="@color/colorPrimary"
+            app:bt_colorActive="@color/green_active"
+            app:bt_colorInactive="@color/green_inactive"
             app:bt_icon="@drawable/ic_playlist"
             app:bt_shape="@drawable/transition_background_drawable_list"
             app:bt_title="Orders" />
@@ -340,32 +564,34 @@
             android:id="@+id/l_item_profile_list"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:bt_colorActive="@color/colorPrimaryDark"
-            app:bt_colorInactive="@color/colorPrimary"
-            app:bt_icon="@drawable/ic_like"
+            app:bt_colorActive="@color/purple_active"
+            app:bt_colorInactive="@color/purple_inactive"
+            app:bt_icon="@drawable/ic_search"
             app:bt_shape="@drawable/transition_background_drawable_like"
-            app:bt_title="@string/likes" />
+            app:bt_title="@string/search" />
 
 
         <com.gauravk.bubblenavigation.BubbleToggleView
             android:id="@+id/l_item_search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:bt_colorActive="@color/colorPrimaryDark"
-            app:bt_colorInactive="@color/colorPrimary"
+            app:bt_colorActive="@color/orange_active"
+            app:bt_colorInactive="@color/orange_inactive"
             app:bt_icon="@drawable/ic_search"
+            android:visibility="gone"
             app:bt_shape="@drawable/transition_background_drawable_search"
             app:bt_title="@string/search" />
 
         <com.gauravk.bubblenavigation.BubbleToggleView
-            android:id="@+id/l_item_home"
+            android:id="@+id/l_item_profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:bt_colorActive="@color/colorPrimaryDark"
-            app:bt_colorInactive="@color/colorPrimary"
-            app:bt_icon="@drawable/ic_restaurant"
-            app:bt_shape="@drawable/transition_background_drawable_home"
-            app:bt_title="@string/home" />
+            app:bt_active="true"
+            app:bt_colorActive="@color/red_active"
+            app:bt_colorInactive="@color/red_inactive"
+            app:bt_icon="@drawable/ic_person"
+            app:bt_shape="@drawable/transition_background_drawable_person"
+            app:bt_title="@string/profile" />
 
 
     </com.gauravk.bubblenavigation.BubbleNavigationLinearView>

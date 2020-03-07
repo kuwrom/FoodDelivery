@@ -16,6 +16,7 @@ import com.habeshastudio.fooddelivery.R;
 public class MenuViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     public TextView txtMenuName;
+    public TextView restaurantTime;
     public ImageView imageView;
 
     private ItemClickListener itemClickListener;
@@ -25,6 +26,7 @@ public class MenuViewHolder extends RecyclerView.ViewHolder implements View.OnCl
 
         txtMenuName = itemView.findViewById(R.id.menu_name);
         imageView = itemView.findViewById(R.id.menu_image);
+        restaurantTime = itemView.findViewById(R.id.time_to_restaurant);
 
         itemView.setOnClickListener(this);
 

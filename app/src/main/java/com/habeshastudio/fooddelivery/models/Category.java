@@ -1,5 +1,7 @@
 package com.habeshastudio.fooddelivery.models;
 
+import java.util.HashMap;
+
 /**
  * Created by kibrom on 2017/11/17.
  */
@@ -7,13 +9,23 @@ package com.habeshastudio.fooddelivery.models;
 public class Category {
     private String Name;
     private String Image;
+    private String Location;
 
     public Category() {
     }
 
-    public Category(String name, String image) {
+    public Category(String name, String image, String location) {
         Name = name;
         Image = image;
+        Location = location;
+    }
+
+    public String getName() {
+        return Name;
+    }
+
+    public void setName(String name) {
+        Name = name;
     }
 
     public String getImage() {
@@ -24,11 +36,11 @@ public class Category {
         Image = image;
     }
 
-    public String getName() {
-        return Name;
+    public String getLocation() {
+        return Location;
     }
 
-    public void setName(String name) {
-        Name = name;
+    public void setLocation(String location) {
+        this.Location = location;
     }
 }

@@ -1,69 +1,132 @@
 package com.habeshastudio.fooddelivery.activities;
 
+import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.location.GpsStatus;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.daimajia.slider.library.Animations.DescriptionAnimation;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
+import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
 import com.daimajia.slider.library.SliderTypes.TextSliderView;
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.GeoQuery;
+import com.firebase.geofire.GeoQueryEventListener;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.gauravk.bubblenavigation.BubbleNavigationLinearView;
 import com.gauravk.bubblenavigation.listener.BubbleNavigationChangeListener;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.habeshastudio.fooddelivery.R;
 import com.habeshastudio.fooddelivery.common.Common;
+import com.habeshastudio.fooddelivery.database.Database;
 import com.habeshastudio.fooddelivery.interfaces.ItemClickListener;
 import com.habeshastudio.fooddelivery.models.Banner;
 import com.habeshastudio.fooddelivery.models.Category;
+import com.habeshastudio.fooddelivery.models.Order;
 import com.habeshastudio.fooddelivery.models.Token;
+import com.habeshastudio.fooddelivery.remote.APIService;
+import com.habeshastudio.fooddelivery.remote.IGoogleService;
 import com.habeshastudio.fooddelivery.viewHolder.MenuViewHolder;
+import com.habeshastudio.fooddelivery.viewHolder.RestaurantAdapter;
 import com.squareup.picasso.Picasso;
 
+import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 
+import io.paperdb.Paper;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
-public class Home extends AppCompatActivity {
+public class Home extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener, LocationListener {
+
+
+    private static final int UPDATE_INTERVAL = 5000;
+    private static final int FASTEST_INTERVAL = 3000;
+    private static final int DISPLACEMENT = 10;
+    private static final int LOCATION_REQUEST_CODE = 9999;
+    private static final int PLAY_SERVICE_REQUEST = 9997;
+
 
     FirebaseDatabase database;
-    DatabaseReference category;
+    DatabaseReference category, geoRef, geoRestRef;
     DatabaseReference users;
+    Query filteredRestaurant;
+
+    //Google Map API Retrofit
+    IGoogleService mGoogleMapService;
+    private LocationManager mLocationManager;
+    APIService mService;
+    //Location
+    private LocationRequest mLocationRequest;
+    private GoogleApiClient mGoogleApiClient;
+    private Location mLastLocation;
+
     //CounterFab fab;
-
-    TextView txtFullName, menu_name;
-
+    TextView itemsCount, priceTag;
+    GeoQuery geoQuery;
+    private GeoFire geoFire;
+    LinearLayout checkoutButton;
     RecyclerView recycler_menu;
+    RelativeLayout rootLayout;
     RecyclerView.LayoutManager layoutManager;
-
-    FirebaseRecyclerAdapter<Category, MenuViewHolder> adapter;
+    ProgressDialog mDialog;
+//    FirebaseRecyclerAdapter<Category, MenuViewHolder> adapter;
+    RestaurantAdapter adapter;
 
     SwipeRefreshLayout swipeRefreshLayout;
+    HashMap <String, Category> availableRestaurants = new HashMap<>();
 
     //Slider
     HashMap<String, String> image_list;
@@ -74,6 +137,7 @@ public class Home extends AppCompatActivity {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,18 +150,28 @@ public class Home extends AppCompatActivity {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             getWindow().setStatusBarColor(Color.WHITE);
         }
-
-
+        isInternet();
         //Init Firebase
-        database = FirebaseDatabase.getInstance();
+        Paper.init(Home.this);        database = FirebaseDatabase.getInstance();
+        geoRef = database.getReference("CurrentUserLocation");
+        geoRestRef = database.getReference("RerstaurantLocation");
+        geoFire = new GeoFire(geoRestRef);
+//        geoFire.setLocation("-Lkh48CfaBbN00QuVFZY", new GeoLocation(13.496113,39.476868));
+        rootLayout = findViewById(R.id.container_home);
         users = FirebaseDatabase.getInstance().getReference("User");
         category = database.getReference("Category");
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        Common.currentUser.setPhone(user.getPhoneNumber());
+        mGoogleMapService = Common.getGoogleMapApi();
+        mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
-        FirebaseRecyclerOptions<Category> options = new FirebaseRecyclerOptions.Builder<Category>()
-                .setQuery(category, Category.class)
-                .build();
+
+        checkoutButton =findViewById(R.id.btn_checkout_cart);
+        checkoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent cartIntent = new Intent(Home.this, Cart.class);
+                startActivity(cartIntent);
+            }
+        });
 
         final BubbleNavigationLinearView bubbleNavigationLinearView = findViewById(R.id.bottom_navigation_view_linear);
         bubbleNavigationLinearView.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/rf.ttf"));
@@ -105,53 +179,66 @@ public class Home extends AppCompatActivity {
             @Override
             public void onNavigationChanged(View view, int position) {
                 if (position == 0) {
-                    startActivity(new Intent(Home.this, Profile.class));
-                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+
                 } else if (position == 1) {
                     startActivity(new Intent(Home.this, OrderStatus.class));
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                    finish();
                 } else if (position == 2) {
-                    startActivity(new Intent(Home.this, FavoritesActivity.class));
+                    startActivity(new Intent(Home.this, SearchActivity.class));
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                    finish();
                 } else if (position == 3) {
                     startActivity(new Intent(Home.this, SearchActivity.class));
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                    finish();
                 } else if (position == 4) {
-
+                    startActivity(new Intent(Home.this, Profile.class));
+                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                    finish();
                 } else {
 
                 }
             }
         });
-        adapter = new FirebaseRecyclerAdapter<Category, MenuViewHolder>(options) {
-            @Override
-            protected void onBindViewHolder(@NonNull MenuViewHolder viewHolder, int position, @NonNull Category model) {
 
-                viewHolder.txtMenuName.setText(model.getName());
-                Picasso.with(getBaseContext()).load(model.getImage())
-                        .into(viewHolder.imageView);
-                final Category clickItem = model;
-                viewHolder.setItemClickListener(new ItemClickListener() {
-                    @Override
-                    public void onClick(View view, int position, boolean isLongClik) {
-                        //Get CategoryId and Send to new activity
-                        Intent intent = new Intent(Home.this, FoodList.class);
-                        intent.putExtra("CategoryId", adapter.getRef(position).getKey());
-                        startActivity(intent);
-                    }
-                });
+        isInternet();
 
 
-            }
+//        FirebaseRecyclerOptions<Category> options = new FirebaseRecyclerOptions.Builder<Category>()
+//                .setQuery(category, Category.class)
+//                .build();
+//
+//        adapter = new FirebaseRecyclerAdapter<Category, MenuViewHolder>(options) {
+//            @Override
+//            protected void onBindViewHolder(@NonNull MenuViewHolder viewHolder, int position, @NonNull Category model) {
+//
+//                viewHolder.txtMenuName.setText(model.getName());
+//                Picasso.with(getBaseContext()).load(model.getImage())
+//                        .into(viewHolder.imageView);
+//                final Category clickItem = model;
+//                viewHolder.setItemClickListener(new ItemClickListener() {
+//                    @Override
+//                    public void onClick(View view, int position, boolean isLongClik) {
+//                        //Get CategoryId and Send to new activity
+//                        Intent intent = new Intent(Home.this, FoodList.class);
+//                        intent.putExtra("CategoryId", adapter.getRef(position).getKey());
+//                        startActivity(intent);
+//                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+//                    }
+//                });
+//            }
+//
+//            @NonNull
+//            @Override
+//            public MenuViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+//                View itemView = LayoutInflater.from(parent.getContext())
+//                        .inflate(R.layout.menu_item, parent, false);
+//                return new MenuViewHolder(itemView);
+//            }
+//        };
 
-            @NonNull
-            @Override
-            public MenuViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View itemView = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.menu_item, parent, false);
-                return new MenuViewHolder(itemView);
-            }
-        };
+
 
         swipeRefreshLayout = findViewById(R.id.homeSwipeLayout);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary,
@@ -166,6 +253,7 @@ public class Home extends AppCompatActivity {
                     loadMenu();
                 } else {
                     Toast.makeText(getBaseContext(), "Please Check your connection", Toast.LENGTH_SHORT).show();
+                    swipeRefreshLayout.setRefreshing(false);
                     return;
                 }
             }
@@ -181,27 +269,19 @@ public class Home extends AppCompatActivity {
                     loadMenu();
                 } else {
                     Toast.makeText(getBaseContext(), "Please Check your connection", Toast.LENGTH_SHORT).show();
+                    swipeRefreshLayout.setRefreshing(false);
                     return;
                 }
             }
         });
 
+        //////checkout button///////////
+        setCartStatus();
 
-        /*
-        fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent cartIntent = new Intent(Home.this, Cart.class);
-                startActivity(cartIntent);
-            }
-        });
-        fab.setCount(new Database(this).getCountCart(Common.currentUser.getPhone()));
+        ////////////////////////////////
 
 
-        */
 
-        //Load Menu
         recycler_menu = findViewById(R.id.recycler_menu);
         //recycler_menu.setHasFixedSize(true);
         //layoutManager = new LinearLayoutManager(this);
@@ -216,9 +296,143 @@ public class Home extends AppCompatActivity {
 
         //setup Slider
         setupSlider();
+
+        //Runtime permission
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+            }, LOCATION_REQUEST_CODE);
+        } else {
+            if (checkPlayServices()) {
+                buildGoogleApiClient();
+                createLocationRequest();
+            }
+        }
+        if (!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            showGpsDisabledDialog();
+        }
+        mDialog = new ProgressDialog(this);
+        mDialog.setMessage("Loading Restaurants...");
+        mDialog.setCancelable(false);
+        mDialog.setCanceledOnTouchOutside(false);
+        mDialog.show();
+//        mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+//        if (mLocationManager.getAllProviders().indexOf(LocationManager.GPS_PROVIDER) >= 0) {
+//            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//                return;
+//            }
+//            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 500, 0, this);
+//        } else {
+//            Log.w("MainActivity", "No GPS location provider found. GPS data display will not be available.");
+//        }
+//
+//        mLocationManager.addGpsStatusListener(this);
+//        if(Common.currentUser.getHomeAddress() == null || Common.currentUser.getHomeAddress().isEmpty()){
+//            final android.support.v7.app.AlertDialog.Builder alertDialog = new AlertDialog.Builder(Home.this);
+//            alertDialog.setTitle("Set Delivery Address?");
+//            alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//                @Override
+//                public void onClick(DialogInterface dialog, int which) {
+//                    startActivity(new Intent(Home.this, Profile.class));
+//                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+//                    Toast.makeText(Home.this, "Please Set Your Home Address", Toast.LENGTH_SHORT).show();
+//                }
+//            });
+//            alertDialog.show();
+//        }
+
+    }
+
+    private final GeoQueryEventListener geoQueryEventListener = new GeoQueryEventListener() {
+
+        @Override
+        public void onKeyEntered(final String key, GeoLocation location) {
+            Log.d("entered", String.format("Key %s entered the search area at [%f,%f]", key, location.latitude, location.longitude));
+
+            //retrieve the restaurant from the database with an async task
+            if (!availableRestaurants.containsKey(key)){
+                category.child(key).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Category category = dataSnapshot.getValue(Category.class);
+                        if (category != null) {
+                            availableRestaurants.put(key, category);
+                            //recycler_menu.getAdapter().notifyDataSetChanged();
+                            loadMenu();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.d("Error", "onCancelled() called with: databaseError = [" + databaseError + "]");
+                        Log.w("Error", "onCancelled: ", databaseError.toException());
+                    }
+                });
+            }
+
+
+        }
+
+
+        @Override
+        public void onKeyExited(String key) {
+            Log.d("Error", String.format("Key %s is no longer in the search area", key));
+            availableRestaurants.remove(key);
+            //recycler_menu.getAdapter().notifyDataSetChanged();
+            loadMenu();
+        }
+
+
+        @Override
+        public void onKeyMoved(String key, GeoLocation location) {
+            Log.d("Log", String.format("Key %s moved within the search area to [%f,%f]", key, location.latitude, location.longitude));
+
+
+        }
+
+        @Override
+        public void onGeoQueryReady() {
+
+        }
+
+        @Override
+        public void onGeoQueryError(DatabaseError error) {
+
+        }
+    };
+
+    private void updateQuery(GeoLocation myLocation) {
+        if (geoQuery == null) {
+            geoQuery = geoFire.queryAtLocation(myLocation, 3);
+            geoQuery.addGeoQueryEventListener(geoQueryEventListener);
+        } else {
+            geoQuery.setLocation(myLocation, 3);
+        }
+    }
+
+
+    private void createLocationRequest() {
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(UPDATE_INTERVAL);
+        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setSmallestDisplacement(DISPLACEMENT);
+    }
+
+
+    private synchronized void buildGoogleApiClient() {
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API).build();
+        mGoogleApiClient.connect();
     }
 
     private void setupSlider() {
+        isInternet();
         mSlider = findViewById(R.id.slider);
         image_list = new HashMap<>();
 
@@ -236,24 +450,22 @@ public class Home extends AppCompatActivity {
                     String idOfFood = keySplit[1];
 
                     //crete slider
-                    final TextSliderView textSliderView = new TextSliderView(getBaseContext());
+                    final DefaultSliderView textSliderView = new DefaultSliderView(getBaseContext());
                     textSliderView
-                            .description(nameOffood)
                             .image(image_list.get(key))
                             .setScaleType(BaseSliderView.ScaleType.Fit)
                             .setOnSliderClickListener(new BaseSliderView.OnSliderClickListener() {
                                 @Override
                                 public void onSliderClick(BaseSliderView slider) {
-                                    Intent intent = new Intent(Home.this, FoodDetail.class);
-                                    //send food id to food detail
-                                    intent.putExtras(textSliderView.getBundle());
-                                    startActivity(intent);
+//                                    Intent intent = new Intent(Home.this, FoodDetail.class);
+//                                    //send food id to food detail
+//                                    intent.putExtras(textSliderView.getBundle());
+//                                    startActivity(intent);
                                 }
                             });
                     //Add extra Bundle
                     textSliderView.bundle(new Bundle());
                     textSliderView.getBundle().putString("FoodId", idOfFood);
-
                     mSlider.addSlider(textSliderView);
                     //remove Event after finish
                     banners.removeEventListener(this);
@@ -268,18 +480,26 @@ public class Home extends AppCompatActivity {
             }
         });
 
-        mSlider.setPresetTransformer(SliderLayout.Transformer.FlipHorizontal);
-        mSlider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
+        mSlider.setPresetTransformer(SliderLayout.Transformer.Default);
+        mSlider.setPresetIndicator(SliderLayout.PresetIndicators.Left_Bottom);
         mSlider.setCustomAnimation(new DescriptionAnimation());
-        mSlider.setDuration(4000);
+        mSlider.setDuration(15000);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onResume() {
+        isInternet();
         super.onResume();
-        //////fab.setCount(new Database(this).getCountCart(Common.currentUser.getPhone()));
-        if (adapter != null)
-            adapter.startListening();
+        if (Common.currentUser.getPhone() == null)
+            if (Paper.book().read("userPhone") != null)
+                Common.currentUser.setPhone(Paper.book().read("userPhone").toString());
+            else finish();
+        checkPermission();
+
+        if (!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            showGpsDisabledDialog();
+        }
     }
 
     private void updateToken(String token) {
@@ -292,24 +512,178 @@ public class Home extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        adapter.stopListening();
+        //adapter.stopListening();
         mSlider.stopAutoCycle();
+        if (geoQuery != null) {
+            geoQuery.removeAllListeners();
+            geoQuery = null;
+        }
     }
 
     private void loadMenu() {
+        isInternet();
+        if (mLastLocation != null){
+            adapter = new RestaurantAdapter(availableRestaurants, this);
+            //adapter.startListening();
+            recycler_menu.setAdapter(adapter);
+            swipeRefreshLayout.setRefreshing(false);
 
-        adapter.startListening();
-        recycler_menu.setAdapter(adapter);
-        swipeRefreshLayout.setRefreshing(false);
+            //Animation
+            //recycler_menu.getAdapter().notifyDataSetChanged();
+            recycler_menu.scheduleLayoutAnimation();
+        }
 
-        //Animation
-        recycler_menu.getAdapter().notifyDataSetChanged();
-        recycler_menu.scheduleLayoutAnimation();
     }
 
+
+    public void showGpsDisabledDialog(){
+        final android.support.v7.app.AlertDialog.Builder alertDialog = new AlertDialog.Builder(Home.this);
+        alertDialog.setTitle("GPS Disabled, Enable gps?");
+        alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                startActivity(new Intent("android.settings.LOCATION_SOURCE_SETTINGS"));
+            }
+        });
+        alertDialog.show();
+    }
+
+
+    public void setCartStatus(){
+        priceTag = findViewById(R.id.checkout_layout_price);
+        itemsCount = findViewById(R.id.items_count);
+        int totalCount = new Database(this).getCountCart(Common.currentUser.getPhone());
+        if (totalCount == 0)
+            checkoutButton.setVisibility(View.GONE);
+        else{
+            checkoutButton.setVisibility(View.VISIBLE);
+            itemsCount.setText(String.valueOf(totalCount));
+            int total = 0;
+            List<Order> orders = new Database(getBaseContext()).getCarts(Common.currentUser.getPhone());
+            for (Order item : orders)
+                total += (Integer.parseInt(item.getPrice())) * (Integer.parseInt(item.getQuantity()));
+            Locale locale = new Locale("en", "US");
+            NumberFormat fmt = NumberFormat.getCurrencyInstance(locale);
+            if (Common.isUsdSelected)
+                priceTag.setText(fmt.format(total/Common.ETB_RATE));
+            else priceTag.setText(String.format("ETB %s", total));
+            //priceTag.setText(fmt.format(total));
+        }
+
+    }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (geoQuery != null) {
+            geoQuery.removeAllListeners();
+            geoQuery = null;
+        }
+    }
+    private boolean checkPlayServices() {
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode))
+                GooglePlayServicesUtil.getErrorDialog(resultCode, this, PLAY_SERVICE_REQUEST).show();
+            else {
+                Toast.makeText(this, "Sorry, Device not Supported", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case LOCATION_REQUEST_CODE: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if (checkPlayServices()) {
+                        buildGoogleApiClient();
+                        createLocationRequest();
+                    }
+                }
+            }
+            break;
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        isInternet();
+        super.onStart();
+        setCartStatus();
+        checkPermission();
+    }
+
+
+    private void checkPermission() {
+        //Runtime permission
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+            }, LOCATION_REQUEST_CODE);
+        } else {
+
+        }
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        mLastLocation = location;
+//        GeoFire geoFire = new GeoFire(geoRef);
+//        geoFire.setLocation(Common.currentUser.getPhone(), new GeoLocation(location.getLatitude(), location.getLongitude()));
+        updateQuery(new GeoLocation(location.getLatitude(), location.getLongitude()));
+        Common.currentUserLocation = mLastLocation;
+        mDialog.dismiss();
+    }
+
+    void isInternet() {
+        if (!Common.isConnectedToInternet(getBaseContext())) {
+            final Snackbar snackbar = Snackbar.make(rootLayout, "Connection lost", Snackbar.LENGTH_INDEFINITE);
+            snackbar.setAction("RETRY", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!Common.isConnectedToInternet(getBaseContext())) {
+                        isInternet();
+                    }
+                }
+            });
+            snackbar.setActionTextColor(Color.YELLOW);
+            snackbar.show();
+        }
+    }
+
+    private void startLocationUpdates() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+    }
+
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        startLocationUpdates();
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
     }
 }

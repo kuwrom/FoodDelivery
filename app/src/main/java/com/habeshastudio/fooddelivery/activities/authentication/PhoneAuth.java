@@ -1,17 +1,22 @@
 package com.habeshastudio.fooddelivery.activities.authentication;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.chaos.view.PinView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -19,7 +24,6 @@ import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.database.DataSnapshot;
@@ -27,6 +31,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.habeshastudio.fooddelivery.MainActivity;
 import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.activities.Home;
 import com.habeshastudio.fooddelivery.models.User;
@@ -38,14 +43,18 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
+import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
+
 public class PhoneAuth extends AppCompatActivity {
 
     public String username, phone, status;
-    TextView textTitle, firstText, phoneText, secondText;
+    TextView textTitle, firstText, phoneText, secondText, btnTrouble;
     Button btnContinue;
     PinView pinView;
     boolean firstTime = true;
     int interval = 1;
+    ProgressBar progressBar;
     boolean canResend = false;
     boolean canVerify = false;
     DatabaseReference users;
@@ -57,28 +66,53 @@ public class PhoneAuth extends AppCompatActivity {
     private String mVerificationId;
 
     @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
+                .setDefaultFontPath("fonts/fr.ttf")
+                .setFontAttrId(R.attr.fontPath)
+                .build());
         setContentView(R.layout.activity_phone_auth);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            getWindow().setStatusBarColor(Color.WHITE);
+        }
 
         Intent intent = getIntent();
         username = intent.getStringExtra("name");
         phone = intent.getStringExtra("phone");
         status = intent.getStringExtra("status");
+
         //view
+        progressBar = findViewById(R.id.progressBarResend);
         textTitle = findViewById(R.id.auth_title_text);
         firstText = findViewById(R.id.auth_first_text);
         phoneText = findViewById(R.id.auth_Phone_label);
         secondText = findViewById(R.id.auth_second_text);
         btnContinue = findViewById(R.id.btnVerify);
+        btnTrouble = findViewById(R.id.btn_trouble);
         pinView = findViewById(R.id.pinView);
         mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         users = database.getReference().child("User");
         mDialog = new ProgressDialog(PhoneAuth.this);
 
-        phoneText.setText(new StringBuilder(R.string.dear + phone));
-        textTitle.setText(new StringBuilder(R.string.et_code + username));
+        phoneText.setText(new StringBuilder(phone));
+        textTitle.setText(new StringBuilder("Dear " + username));
+
+        btnTrouble.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(PhoneAuth.this, TroubleAuth.class));
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            }
+        });
 
         btnContinue.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,19 +123,23 @@ public class PhoneAuth extends AppCompatActivity {
                         canVerify = true;
                         phoneText.setVisibility(View.GONE);
                         pinView.setVisibility(View.VISIBLE);
-                        textTitle.setText(new StringBuilder(getString(R.string.code_sent_to) + phone));
+                        textTitle.setText(new StringBuilder(getString(R.string.code_sent_to)+ " " + phone));
                         secondText.setVisibility(View.GONE);
+                        progressBar.setVisibility(View.VISIBLE);
                         firstTime = false;
                         new CountDownTimer(60000, 1000) {
                             @Override
                             public void onTick(long millisUntilFinished) {
                                 if (isJobDone)
                                     cancel();
-                                firstText.setText(new StringBuilder(getString(R.string.arrival_count_down) + (millisUntilFinished / 1000)) );
+                                firstText.setText(new StringBuilder(getString(R.string.arrival_count_down) + " " +(millisUntilFinished / 1000)) );
+                                progressBar.setProgress(progressBar.getProgress()-1);
                             }
 
                             @Override
                             public void onFinish() {
+                                firstText.setText(new StringBuilder("didn't get the verification code yet? press resend to request a new one"));
+                                progressBar.setVisibility(View.GONE);
                                 canResend = true;
                                 btnContinue.setText(getString(R.string.resend));
                                 //firstText.setText("");
@@ -122,7 +160,7 @@ public class PhoneAuth extends AppCompatActivity {
                             public void onTick(long millisUntilFinished) {
                                 if (isJobDone)
                                     cancel();
-                                firstText.setText(new StringBuilder(getString(R.string.arrival_count_down) + (millisUntilFinished / 1000)) );
+                                firstText.setText(new StringBuilder(getString(R.string.arrival_count_down) + " " + (millisUntilFinished / 1000)) );
                             }
 
                             @Override
@@ -175,17 +213,36 @@ public class PhoneAuth extends AppCompatActivity {
                 // ...
             }
         };
+    }
 
+    @Override
+    public void onBackPressed() {
+        final android.support.v7.app.AlertDialog.Builder alertDialog = new AlertDialog.Builder(PhoneAuth.this);
+        alertDialog.setTitle("Cancel verification process?");
+        alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                startActivity(new Intent(PhoneAuth.this, MainActivity.class));
+                finish();
+            }
+        });
+        alertDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        alertDialog.show();
 
     }
 
     private void sendVerificationCode(String phoneNumber) {
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
                 phoneNumber,        // Phone number to verify
-                60,                 // Timeout duration
+                60,               // Timeout duration
                 TimeUnit.SECONDS,   // Unit of timeout
-                PhoneAuth.this,               // Activity (for callback binding)
-                mCallbacks);// OnVerificationStateChangedCallbacks
+                PhoneAuth.this,// Activity (for callback binding)
+                mCallbacks);// OnVerificationStateChangedCallbacksd
 
     }
 
@@ -200,25 +257,30 @@ public class PhoneAuth extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             mDialog.dismiss();
                             isJobDone = true;
-                            Toast.makeText(PhoneAuth.this, "Verification Succeed!", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(PhoneAuth.this, "Verification Succeed!", Toast.LENGTH_SHORT).show();
                             users.addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
 
                                     mDialog.dismiss();
-                                    FirebaseUser cursor = FirebaseAuth.getInstance().getCurrentUser();
-                                    assert cursor != null;
-                                    phone = cursor.getPhoneNumber();
-                                    User user = new User(username, "");
-                                    users.child(phone).setValue(user);
-                                    user.setPhone(phone);
+//                                    FirebaseUser cursor = FirebaseAuth.getInstance().getCurrentUser();
+//                                    assert cursor != null;
+//                                    phone = cursor.getPhoneNumber();
+                                    User user = new User(username, phone);
                                     if (status.equals("new")) {
-                                        users.child(phone).child("Created at").setValue(new SimpleDateFormat
+                                        user.setBalance(0.0);
+                                        user.setCreatedAt(new SimpleDateFormat
                                                 ("dd-MMM-yyyy hh:mm a", Locale.getDefault()).format(new Date()));
-                                        users.child(phone).child("status").setValue("normal");
+                                        users.child(phone).setValue(user);
                                     }
+                                    else
+                                    {
+                                        user.setBalance(users.child(phone).child("balance"));
+                                        user.setHomeAddress(users.child(phone).child("j").toString());
+                                    }
+                                    //users.child(phone).setValue(user);
                                     Common.currentUser = user;
-                                    Toast.makeText(PhoneAuth.this, "Signed in Successfully !", Toast.LENGTH_SHORT).show();
+                                    //Toast.makeText(PhoneAuth.this, "Signed in Successfully !", Toast.LENGTH_SHORT).show();
                                     startActivity(new Intent(PhoneAuth.this, Home.class));
                                     finish();
                                 }

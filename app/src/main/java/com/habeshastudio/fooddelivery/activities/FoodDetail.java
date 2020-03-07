@@ -1,21 +1,33 @@
 package com.habeshastudio.fooddelivery.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.transition.TransitionInflater;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.andremion.counterfab.CounterFab;
 import com.cepheuen.elegantnumberbutton.view.ElegantNumberButton;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
@@ -24,47 +36,61 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.habeshastudio.fooddelivery.MainActivity;
 import com.habeshastudio.fooddelivery.R;
 import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.database.Database;
+import com.habeshastudio.fooddelivery.interfaces.ItemClickListener;
+import com.habeshastudio.fooddelivery.models.Category;
 import com.habeshastudio.fooddelivery.models.Food;
+import com.habeshastudio.fooddelivery.models.FoodMenu;
 import com.habeshastudio.fooddelivery.models.Order;
 import com.habeshastudio.fooddelivery.models.Rating;
+import com.habeshastudio.fooddelivery.viewHolder.FlavoursViewHolder;
+import com.habeshastudio.fooddelivery.viewHolder.FoodViewHolder;
+import com.habeshastudio.fooddelivery.viewHolder.MenuViewHolder;
 import com.squareup.picasso.Picasso;
 import com.stepstone.apprating.AppRatingDialog;
 import com.stepstone.apprating.listener.RatingDialogListener;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.text.NumberFormat;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
 
-import info.hoang8f.widget.FButton;
+import io.paperdb.Paper;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class FoodDetail extends AppCompatActivity implements RatingDialogListener {
 
-    TextView food_name, food_price, food_description;
+    TextView food_name, food_description,itemsCount, priceTag;
     ImageView food_image;
     CollapsingToolbarLayout collapsingToolbarLayout;
-    CounterFab btnCart;
-    FloatingActionButton btnRating;
-    ElegantNumberButton numberButton;
-    RatingBar ratingBar;
 
+    RatingBar ratingBar;
+    LinearLayout checkoutButton;
     String foodId = "";
 
+    RecyclerView recyclerView;
+    RecyclerView.LayoutManager layoutManager;
+    FirebaseRecyclerAdapter<FoodMenu, FlavoursViewHolder> adapter;
     FirebaseDatabase database;
-    DatabaseReference foods, ratingTbl;
+    DatabaseReference foods, ratingTbl, foodList;
 
-    FButton btnShowComment;
+    TextView btnShowComment;
     Food currentFood;
+
+    FoodMenu currentFoodMenu;
 
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,19 +99,100 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
                 .setFontAttrId(R.attr.fontPath)
                 .build());
         setContentView(R.layout.activity_food_detail);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            getWindow().setStatusBarColor(Color.WHITE);
+        }
 
-        btnShowComment = findViewById(R.id.btnShowComment);
+
+        food_image = findViewById(R.id.img_food);
+
+        getWindow().setSharedElementEnterTransition(TransitionInflater.from(this).inflateTransition(R.transition.shared_element_transation));
+        food_image.setTransitionName("thumbnailTransition");
+
+        btnShowComment = findViewById(R.id.show_comment_button);
+        checkoutButton =findViewById(R.id.btn_checkout_cart);
+        checkoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent cartIntent = new Intent(FoodDetail.this, Cart.class);
+                startActivity(cartIntent);
+            }
+        });
 
 
         //Firbase
         database = FirebaseDatabase.getInstance();
         foods = database.getReference("Foods");
+        foodList = foods.child(getIntent().getStringExtra("FoodId")).child("flavours");
         ratingTbl = database.getReference("Rating");
 
+        Paper.init(this);
+
+        FirebaseRecyclerOptions<FoodMenu> options = new FirebaseRecyclerOptions.Builder<FoodMenu>()
+                .setQuery(foodList, FoodMenu.class)
+                .build();
+
+        adapter = new FirebaseRecyclerAdapter<FoodMenu, FlavoursViewHolder>(options){
+
+            @NonNull
+            @Override
+            public FlavoursViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+                View itemView = LayoutInflater.from(viewGroup.getContext())
+                        .inflate(R.layout.flavour_layout, viewGroup, false);
+                return new FlavoursViewHolder(itemView);
+            }
+
+            @Override
+            protected void onBindViewHolder(@NonNull FlavoursViewHolder holder, int position, @NonNull final FoodMenu model) {
+                holder.textFlavourName.setText(model.getName());
+                Locale locale = new Locale("en", "US");
+                NumberFormat fmt = NumberFormat.getCurrencyInstance(locale);
+                int price = (Integer.parseInt(model.getPrice()));
+                //holder.textFlavourPrice.setText(fmt.format(price));
+                if (Common.isUsdSelected)
+                    holder.textFlavourPrice.setText(fmt.format(price/Common.ETB_RATE));
+                else holder.textFlavourPrice.setText(String.format("ETB %s", price));
+
+                if (!model.isVegetarian()) holder.vegetarianHolder.setVisibility(View.GONE);
+
+                if (Common.isConnectedToInternet(getBaseContext())) {
+
+                        holder.setItemClickListener(new ItemClickListener() {
+                            @Override
+                            public void onClick(View view, int position, boolean isLongClick) {
+
+                                if (Common.currentrestaurantID == null)Common.currentrestaurantID =Common.proposedrestaurantID;
+                                if (Common.currentrestaurantID .equals(Common.proposedrestaurantID)) {
+                                    Paper.book().write("restId", Common.currentrestaurantID);
+                                    new Database(getBaseContext()).addToCart(new Order(
+                                        Common.currentUser.getPhone(),
+                                        foodId + "&" + adapter.getRef(position).getKey(),
+                                        currentFood.getName() + "\n" + model.getName(),
+                                        "1",
+                                        model.getPrice(),
+                                        currentFood.getDiscount(),
+                                        currentFood.getImage()
+                                ));
+                                setCartStatus();
+                                }else{
+                                    Toast.makeText(FoodDetail.this, "Sorry, but you can only order from one restaurant at a time", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                } else {
+                    Toast.makeText(getBaseContext(), "Please Check your connection", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+
+            }
+        };
+        adapter.startListening();
+        adapter.notifyDataSetChanged();
+
         // Init view
-        numberButton = findViewById(R.id.number_button);
-        btnCart = findViewById(R.id.btnCart);
-        btnRating = findViewById(R.id.btn_rating);
+        //btnCart = findViewById(R.id.btnCart);
         ratingBar = findViewById(R.id.ratingBar);
 
         btnShowComment.setOnClickListener(new View.OnClickListener() {
@@ -105,36 +212,9 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
             }
         });
 
-        btnRating.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showRatingDialogue();
-            }
-        });
-
-        btnCart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new Database(getBaseContext()).addToCart(new Order(
-                        Common.currentUser.getPhone(),
-                        foodId,
-                        currentFood.getName(),
-                        numberButton.getNumber(),
-                        currentFood.getPrice(),
-                        currentFood.getDiscount(),
-                        currentFood.getImage()
-
-                ));
-
-                Toast.makeText(FoodDetail.this, "Added to cart", Toast.LENGTH_SHORT).show();
-            }
-        });
-        btnCart.setCount(new Database(this).getCountCart(Common.currentUser.getPhone()));
-
         food_description = findViewById(R.id.food_description);
         food_name = findViewById(R.id.food_name);
-        food_price = findViewById(R.id.food_price);
-        food_image = findViewById(R.id.img_food);
+        //food_price = findViewById(R.id.food_price);
 
         collapsingToolbarLayout = findViewById(R.id.collapsing);
         collapsingToolbarLayout.setExpandedTitleTextAppearance(R.style.ExpandedAppbar);
@@ -153,7 +233,63 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
                 Toast.makeText(FoodDetail.this, "Please Check your Interneet Connection!", Toast.LENGTH_SHORT).show();
             }
         }
+        recyclerView = findViewById(R.id.details_list);
+        recyclerView.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        LayoutAnimationController controller = AnimationUtils.loadLayoutAnimation(recyclerView.getContext(),
+                R.anim.layout_fall_down);
+        recyclerView.setLayoutAnimation(controller);
+        loadMenu();
+        setCartStatus();
 
+//        //notification
+//        Paper.init(FoodDetail.this);
+//        if (Paper.book().read("restId") != null)
+//            Common.currentrestaurantID = Paper.book().read("restId");
+    }
+    public void setCartStatus(){
+        priceTag = findViewById(R.id.checkout_layout_price);
+        itemsCount = findViewById(R.id.items_count);
+        int totalCount = new Database(this).getCountCart(Common.currentUser.getPhone());
+        if (totalCount == 0) {
+            checkoutButton.setVisibility(View.GONE);
+            Common.currentrestaurantID = null;
+            Paper.book().delete("restId");
+        }else{
+            checkoutButton.setVisibility(View.VISIBLE);
+            itemsCount.setText(String.valueOf(totalCount));
+            int total = 0;
+            List<Order> orders = new Database(getBaseContext()).getCarts(Common.currentUser.getPhone());
+            for (Order item : orders)
+                total += (Integer.parseInt(item.getPrice())) * (Integer.parseInt(item.getQuantity()));
+            Locale locale = new Locale("en", "US");
+            NumberFormat fmt = NumberFormat.getCurrencyInstance(locale);
+            if (Common.isUsdSelected)
+                priceTag.setText(fmt.format(total/Common.ETB_RATE));
+            else priceTag.setText(String.format("ETB %s", total));
+            Paper.init(FoodDetail.this);
+            if (Paper.book().read("beenToCart") != null)
+                Common.alreadyBeenToCart = Paper.book().read("beenToCart");
+            if (totalCount == 1 && !Common.alreadyBeenToCart){
+                Common.alreadyBeenToCart = true;
+                        Paper.book().write("beenToCart", true);
+                Intent cartIntent = new Intent(FoodDetail.this, Cart.class);
+                startActivity(cartIntent);
+            }
+            //priceTag.setText(fmt.format(total));
+        }
+
+    }
+
+    private void loadMenu() {
+
+        adapter.startListening();
+        adapter.notifyDataSetChanged();
+        recyclerView.setAdapter(adapter);
+        //Animation
+        recyclerView.getAdapter().notifyDataSetChanged();
+        recyclerView.scheduleLayoutAnimation();
     }
 
     private void getRatingFood(String foodId) {
@@ -186,16 +322,15 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
         new AppRatingDialog.Builder()
                 .setPositiveButtonText("Submit")
                 .setNegativeButtonText("Cancel")
-                .setNoteDescriptions(Arrays.asList("Very Bad", "NOt Good", "Quite Ok", "Verry Good", "Excellent"))
+                .setNoteDescriptions(Arrays.asList("Very Bad", "NOt Good", "Quite Ok", "Very Good", "Excellent"))
                 .setDefaultRating(1)
                 .setTitle("Rate this food")
-                .setDescription("Please Select some stars and give your feedback")
                 .setTitleTextColor(R.color.colorPrimary)
                 .setDescriptionTextColor(R.color.colorPrimary)
-                .setHint("Please write your Comment here")
-                .setHintTextColor(R.color.colorAccent)
-                .setCommentTextColor(android.R.color.white)
-                .setCommentBackgroundColor(R.color.colorPrimaryDark)
+                .setHint("Comment here")
+                .setHintTextColor(R.color.grey_active)
+                .setCommentTextColor(R.color.colorLightBlack)
+                .setCommentBackgroundColor(R.color.grey_bg_light)
                 .setWindowAnimation(R.style.RatingDialogueFadeAnim)
                 .create(FoodDetail.this)
                 .show();
@@ -213,11 +348,13 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
 
                 collapsingToolbarLayout.setTitle(currentFood.getName());
 
-                food_price.setText(currentFood.getPrice());
+                //food_price.setText(currentFood.getPrice());
 
                 food_name.setText(currentFood.getName());
 
                 food_description.setText(currentFood.getDescription());
+
+                loadMenu();
             }
 
             @Override
@@ -233,6 +370,32 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if (Common.currentUser.getPhone() == null)
+            if (Paper.book().read("userPhone") != null)
+                Common.currentUser.setPhone(Paper.book().read("userPhone").toString());
+            else finish();
+        if (adapter != null)
+            loadMenu();
+        setCartStatus();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        setCartStatus();
+        loadMenu();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (adapter != null)
+        adapter.stopListening();
+    }
+
+    @Override
     public void onPositiveButtonClicked(int value, @NotNull String comments) {
         final Rating rating = new Rating(Common.currentUser.getPhone(), foodId, String.valueOf(value), comments);
 
@@ -243,26 +406,5 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
                         Toast.makeText(FoodDetail.this, "Thanks for the rating", Toast.LENGTH_SHORT).show();
                     }
                 });
-        /*ratingTbl.child(Common.currentUser.getPhone()).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.child(Common.currentUser.getPhone()).exists()) {
-                    //Remove old value
-                    ratingTbl.child(Common.currentUser.getPhone()).removeValue();
-                    //Update new Value
-                    ratingTbl.child(Common.currentUser.getPhone()).setValue(rating);
-                } else {
-                    //Update new Value
-                    ratingTbl.child(Common.currentUser.getPhone()).setValue(rating);
-                }
-                Toast.makeText(FoodDetail.this, "Thank you for your rating", Toast.LENGTH_SHORT).show();
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });*/
     }
 }

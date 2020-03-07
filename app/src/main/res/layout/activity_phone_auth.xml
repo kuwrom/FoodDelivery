@@ -12,11 +12,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
-        android:text="One more step..."
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="48dp"
+        android:text="@string/one_more_step"
         android:textColor="@color/colorPrimaryDark"
-        android:textSize="36sp" />
+        android:textSize="24sp" />
 
 
     <LinearLayout
@@ -35,6 +35,7 @@
             android:layout_marginTop="16dp"
             android:layout_marginBottom="8dp"
             android:text="Dear kibrom,"
+            android:textSize="18sp"
             android:textColor="@color/blue_grey_active"
             android:textStyle="bold" />
 
@@ -44,8 +45,20 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginBottom="16dp"
-            android:text="We will send you a verification code to verify your phone number."
+            android:text="@string/we_will_send_you_a_verification_code_to_verify_your_phone_number"
             android:textColor="@color/blue_grey_active" />
+
+        <ProgressBar
+            android:id="@+id/progressBarResend"
+            android:progressTint="@color/colorPrimary"
+            android:max="60"
+            android:progress="60"
+            android:visibility="gone"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/auth_Phone_label"
@@ -56,7 +69,7 @@
             android:gravity="center_horizontal"
             android:text="+251 938777730"
             android:textColor="@color/colorPrimaryDark"
-            android:textSize="36sp"
+            android:textSize="24sp"
             android:visibility="visible" />
 
         <com.chaos.view.PinView
@@ -88,7 +101,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="32dp"
-            android:background="@drawable/bg_ui"
+            android:background="@drawable/bg_ui_cart"
+            android:backgroundTint="@color/media"
             android:text="Continue"
             android:textColor="@android:color/white"
             android:textStyle="bold" />
@@ -99,11 +113,25 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
-            android:text="By pressing Continue you accept our Data Policy, cookie use, Privacy Policy and Terms of Service"
+            android:text="@string/by_pressing_continue_you_accept_our_data_policy_cookie_use_privacy_policy_and_terms_of_service"
             android:textAlignment="center"
-            android:textColor="@color/blue_grey_active" />
+            android:textColor="@color/colorPrimaryDark" />
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/btn_trouble"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="32dp"
+        android:clickable="true"
+        android:contextClickable="true"
+        android:padding="16dp"
+        android:text="@string/having_trouble"
+        android:textColor="@color/grey_active"
+        android:textStyle="bold" />
 
 
 </RelativeLayout>

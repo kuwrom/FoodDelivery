@@ -27,28 +27,34 @@
                 android:layout_marginLeft="10dp"
                 android:gravity="center_vertical|start"
                 android:text="#111111"
+                android:textColor="@color/colorLightBlack"
                 android:textAllCaps="true"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/order_status"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:gravity="center_vertical|start"
-                android:text="Status"
-                android:textAllCaps="true"
-                android:textStyle="italic" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center_vertical|start"
+                    android:text="Status:"
+                    android:textAllCaps="true"
+                    android:textStyle="italic" />
+                <TextView
+                    android:id="@+id/order_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:gravity="center_vertical|start"
+                    android:text="Pending"
+                    android:textColor="@color/orange_active"
+                    android:textAllCaps="true"
+                    android:textStyle="italic" />
 
-            <TextView
-                android:id="@+id/order_phone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:gravity="center_vertical|start"
-                android:text="123456789"
-                android:textAllCaps="true"
-                android:textStyle="italic" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/order_address"
@@ -67,7 +73,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_margin="8dp"
+            android:padding="16dp"
+            android:tint="@color/red_active"
             android:src="@drawable/ic_delete_black_24dp" />
 
 

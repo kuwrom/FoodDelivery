@@ -10,10 +10,57 @@
         android:id="@+id/listOrders"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@id/btn_checkout_cart"
         android:layout_margin="8dp"
         android:background="@android:color/transparent">
 
     </android.support.v7.widget.RecyclerView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:id="@+id/btn_checkout_cart"
+        android:orientation="horizontal"
+        android:weightSum="3"
+        android:visibility="visible"
+        android:layout_above="@id/bottom_navigation_view_linear"
+        android:clickable="true"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:background="@color/colorPrimary"
+        android:layout_height="48dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:id="@+id/checkout_layout_price"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="ETB 200"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/checkout"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:layout_weight="1"
+            android:text="1"
+            android:id="@+id/items_count"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
 
     <com.gauravk.bubblenavigation.BubbleNavigationLinearView
         android:id="@+id/bottom_navigation_view_linear"
@@ -23,29 +70,31 @@
         android:background="@color/white"
         android:elevation="8dp"
         android:orientation="horizontal"
-        android:padding="12dp"
+        android:padding="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
 
         <com.gauravk.bubblenavigation.BubbleToggleView
-            android:id="@+id/l_item_profile"
+            android:id="@+id/l_item_home"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:bt_colorActive="@color/colorPrimary"
             app:bt_colorInactive="@color/blue_inactive"
-            app:bt_icon="@drawable/ic_person"
-            app:bt_shape="@drawable/transition_background_drawable_person"
-            app:bt_title="@string/profile" />
+            app:bt_icon="@drawable/ic_home_black_24dp"
+            app:bt_shape="@drawable/transition_background_drawable_home"
+            app:bt_title="@string/home" />
+
+
 
         <com.gauravk.bubblenavigation.BubbleToggleView
             android:id="@+id/l_item_orders"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:bt_active="true"
-            app:bt_colorActive="@color/colorPrimary"
-            app:bt_colorInactive="@color/blue_inactive"
+            app:bt_colorActive="@color/green_active"
+            app:bt_colorInactive="@color/green_inactive"
             app:bt_icon="@drawable/ic_playlist"
             app:bt_shape="@drawable/transition_background_drawable_list"
             app:bt_title="Orders" />
@@ -54,9 +103,9 @@
             android:id="@+id/l_item_profile_list"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:bt_colorActive="@color/colorPrimary"
-            app:bt_colorInactive="@color/blue_inactive"
-            app:bt_icon="@drawable/ic_like"
+            app:bt_colorActive="@color/purple_active"
+            app:bt_colorInactive="@color/purple_inactive"
+            app:bt_icon="@drawable/ic_search"
             app:bt_shape="@drawable/transition_background_drawable_like"
             app:bt_title="@string/likes" />
 
@@ -65,22 +114,23 @@
             android:id="@+id/l_item_search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:bt_colorActive="@color/colorPrimary"
-            app:bt_colorInactive="@color/blue_inactive"
+            android:visibility="gone"
+            app:bt_colorActive="@color/orange_active"
+            app:bt_colorInactive="@color/orange_inactive"
             app:bt_icon="@drawable/ic_search"
             app:bt_shape="@drawable/transition_background_drawable_search"
             app:bt_title="@string/search" />
 
+
         <com.gauravk.bubblenavigation.BubbleToggleView
-            android:id="@+id/l_item_home"
+            android:id="@+id/l_item_profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:bt_colorActive="@color/colorPrimary"
-            app:bt_colorInactive="@color/blue_inactive"
-            app:bt_icon="@drawable/ic_restaurant"
-            app:bt_shape="@drawable/transition_background_drawable_home"
-            app:bt_title="@string/home" />
-
+            app:bt_colorActive="@color/red_active"
+            app:bt_colorInactive="@color/red_inactive"
+            app:bt_icon="@drawable/ic_person"
+            app:bt_shape="@drawable/transition_background_drawable_person"
+            app:bt_title="@string/profile" />
 
     </com.gauravk.bubblenavigation.BubbleNavigationLinearView>
 

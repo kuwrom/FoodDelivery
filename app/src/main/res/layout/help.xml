@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:cardElevation="10dp"
+    tools:ignore="MissingDefaultResource">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:textColor="@color/colorLightBlack"
+                android:text="Navigation"
+                android:textStyle="bold"
+                android:textSize="16sp"/>
+            <ImageView
+                android:layout_width="match_parent"
+                android:src="@drawable/menu_help"
+                android:layout_height="64dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:textColor="@color/colorLightBlack"
+                android:text="❶ List of Restaurants\n❷ List of orders You make\n❸ Search any food\n❹ Profile and Settings\ni.e: Type in your delivery or home address before you order"
+                android:textSize="12sp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:textColor="@color/colorLightBlack"
+                android:text="Ordering a Food"
+                android:textStyle="bold"
+                android:textSize="16sp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:textColor="@color/colorLightBlack"
+                android:text="❶ Choose a restaurant\n❷ Select Food Category\n❸ Select a specific food\n❹ Go to Checkout\ni.e: you can add a note before you place order\n❺ Place order and Proceed"
+                android:textSize="12sp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:textColor="@color/colorLightBlack"
+                android:text="Cleaning a cart"
+                android:textStyle="bold"
+                android:textSize="16sp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:weightSum="3"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:layout_width="0dp"
+                    android:src="@drawable/deleting"
+                    android:layout_weight="2"
+                    android:layout_marginLeft="8dp"
+                    android:layout_height="100dp"/>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:textColor="@color/colorLightBlack"
+                    android:text="Swipe left to delete"
+                    android:textSize="12sp"/>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:textColor="@color/colorLightBlack"
+                android:text="Some important Notes"
+                android:textStyle="bold"
+                android:textSize="16sp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:textColor="@color/colorLightBlack"
+                android:text="◎ You only see restaurants from 3 KM away\n◎ Orders can only be deleted if they are not shipped\n◎ You can recommend us to add a new restaurant\n◎ Send us a feedback if you face any inconvenience\n"
+                android:textSize="12sp"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+
+
+</android.support.v7.widget.CardView>

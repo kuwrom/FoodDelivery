@@ -16,7 +16,7 @@
             android:id="@+id/editHomeAddress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Home Address"
+            android:hint="@string/home_address"
             android:inputType="textMultiLine"
             android:textColor="@color/colorPrimary"
             android:textColorHint="@color/colorPrimary"

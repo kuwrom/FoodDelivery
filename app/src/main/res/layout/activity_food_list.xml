@@ -1,35 +1,199 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/foodSwipeLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".activities.FoodList">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        <android.support.design.widget.CoordinatorLayout
+            android:layout_width="match_parent"
+            android:layout_above="@id/btn_checkout_cart"
+            app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior"
+            android:layout_height="match_parent">
 
+            <android.support.design.widget.AppBarLayout
+                android:id="@+id/app_bar_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorWhite"
+                android:fitsSystemWindows="true">
 
-        <com.mancj.materialsearchbar.MaterialSearchBar
-            android:id="@+id/searchBar"
+                <android.support.design.widget.CollapsingToolbarLayout
+                    android:id="@+id/collapsing"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fitsSystemWindows="true"
+                    android:layout_marginBottom="2dp"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginEnd="2dp"
+                    app:expandedTitleTextAppearance="@android:color/transparent"
+                    app:layout_scrollFlags="scroll|exitUntilCollapsed">
+                    <com.mancj.materialsearchbar.MaterialSearchBar
+                        android:id="@+id/searchBar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        app:mt_hint="Enter your food"
+                        app:mt_maxSuggestionsCount="10"
+                        app:mt_speechMode="false"
+
+                        />
+
+                </android.support.design.widget.CollapsingToolbarLayout>
+
+            </android.support.design.widget.AppBarLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:id="@+id/body_linear_layout"
+                android:layout_height="match_parent"
+                app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:paddingLeft="16dp"
+                    android:textColor="@color/colorLightBlack"
+                    android:text="Menu List"
+                    android:textSize="18sp"
+                    android:layout_height="wrap_content"/>
+
+                <android.support.v4.widget.SwipeRefreshLayout
+                    android:id="@+id/foodSwipeLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <com.habeshastudio.fooddelivery.helper.EmptyRecyclerView
+                        android:id="@+id/recycler_food"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_below="@id/searchBar"
+                        android:layout_above="@id/btn_checkout_cart"
+                        android:scrollbars="vertical" />
+
+                </android.support.v4.widget.SwipeRefreshLayout>
+
+            </LinearLayout>
+
+        </android.support.design.widget.CoordinatorLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:id="@+id/btn_checkout_cart"
+            android:orientation="horizontal"
+            android:weightSum="3"
+            android:visibility="visible"
+            android:layout_above="@id/bottom_navigation_view_linear"
+            android:clickable="true"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:background="@color/colorPrimary"
+            android:layout_height="48dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:id="@+id/checkout_layout_price"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="ETB 200"
+                android:textSize="16sp"
+                android:textColor="@color/white"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="@string/checkout"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:textColor="@color/white"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:layout_weight="1"
+                android:text="1"
+                android:id="@+id/items_count"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textSize="16sp"
+                android:textColor="@color/white"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <com.gauravk.bubblenavigation.BubbleNavigationLinearView
+            android:id="@+id/bottom_navigation_view_linear"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            app:mt_hint="Enter your food"
-            app:mt_speechMode="false"
+            android:layout_alignParentBottom="true"
+            android:background="@color/white"
+            android:elevation="8dp"
+            android:orientation="horizontal"
+            android:padding="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
-            />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_food"
-            android:layout_margin="8dp"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@id/searchBar"
-            android:scrollbars="vertical" />
 
-    </RelativeLayout>
+            <com.gauravk.bubblenavigation.BubbleToggleView
+                android:id="@+id/l_item_home"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:bt_colorActive="@color/colorPrimaryDark"
+                app:bt_colorInactive="@color/blue_active"
+                app:bt_icon="@drawable/ic_home_black_24dp"
+                app:bt_shape="@drawable/transition_background_drawable_home"
+                app:bt_title="@string/home" />
 
-</android.support.v4.widget.SwipeRefreshLayout>
+
+
+            <com.gauravk.bubblenavigation.BubbleToggleView
+                android:id="@+id/l_item_orders"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:bt_colorActive="@color/green_active"
+                app:bt_colorInactive="@color/green_inactive"
+                app:bt_icon="@drawable/ic_playlist"
+                app:bt_shape="@drawable/transition_background_drawable_list"
+                app:bt_title="Orders" />
+
+            <com.gauravk.bubblenavigation.BubbleToggleView
+                android:id="@+id/l_item_profile_list"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:bt_colorActive="@color/purple_active"
+                app:bt_colorInactive="@color/purple_inactive"
+                app:bt_icon="@drawable/ic_search"
+                app:bt_shape="@drawable/transition_background_drawable_like"
+                app:bt_title="@string/search" />
+
+
+            <com.gauravk.bubblenavigation.BubbleToggleView
+                android:id="@+id/l_item_search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:bt_colorActive="@color/orange_active"
+                android:visibility="gone"
+                app:bt_colorInactive="@color/orange_inactive"
+                app:bt_icon="@drawable/ic_search"
+                app:bt_shape="@drawable/transition_background_drawable_search"
+                app:bt_title="@string/search" />
+
+            <com.gauravk.bubblenavigation.BubbleToggleView
+                android:id="@+id/l_item_profile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:bt_colorActive="@color/red_active"
+                app:bt_colorInactive="@color/red_inactive"
+                app:bt_icon="@drawable/ic_person"
+                app:bt_shape="@drawable/transition_background_drawable_person"
+                app:bt_title="@string/profile" />
+
+
+        </com.gauravk.bubblenavigation.BubbleNavigationLinearView>
+</RelativeLayout>

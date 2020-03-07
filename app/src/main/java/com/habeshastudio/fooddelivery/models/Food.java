@@ -6,11 +6,12 @@ package com.habeshastudio.fooddelivery.models;
 
 public class Food {
     private String Name, Image, Description, Price, Discount, MenuId, FoodId, AvailabilityFlag;
+    boolean hasFlavour = false;
 
     public Food() {
     }
 
-    public Food(String name, String image, String description, String price, String discount, String menuId, String foodId, String availabilityFlag) {
+    public Food(String name, String image, String description, String price, String discount, String menuId, String foodId, String availabilityFlag, boolean hasF) {
         Name = name;
         Image = image;
         Description = description;
@@ -19,8 +20,16 @@ public class Food {
         MenuId = menuId;
         FoodId = foodId;
         AvailabilityFlag = availabilityFlag;
+        hasFlavour = hasF;
     }
 
+    public boolean isHasFlavour() {
+        return hasFlavour;
+    }
+
+    public void setHasFlavour(boolean hasFlavour) {
+        this.hasFlavour = hasFlavour;
+    }
 
     public String getName() {
         return Name;

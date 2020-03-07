@@ -1,31 +1,56 @@
 package com.habeshastudio.fooddelivery.activities;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.gauravk.bubblenavigation.BubbleNavigationLinearView;
 import com.gauravk.bubblenavigation.listener.BubbleNavigationChangeListener;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.habeshastudio.fooddelivery.R;
 import com.habeshastudio.fooddelivery.common.Common;
+import com.habeshastudio.fooddelivery.database.Database;
 import com.habeshastudio.fooddelivery.interfaces.ItemClickListener;
+import com.habeshastudio.fooddelivery.models.Order;
 import com.habeshastudio.fooddelivery.models.Request;
+import com.habeshastudio.fooddelivery.models.User;
 import com.habeshastudio.fooddelivery.viewHolder.OrderViewHolder;
+
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
@@ -40,6 +65,9 @@ public class OrderStatus extends AppCompatActivity {
     FirebaseDatabase database;
     DatabaseReference requests;
 
+    LinearLayout checkoutButton;
+    TextView itemsCount, priceTag;
+
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
@@ -53,15 +81,29 @@ public class OrderStatus extends AppCompatActivity {
                 .setFontAttrId(R.attr.fontPath)
                 .build());
         setContentView(R.layout.activity_order_status);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            getWindow().setStatusBarColor(Color.WHITE);
+        }
 
         //Init Firebase
         database = FirebaseDatabase.getInstance();
         requests = database.getReference("Requests");
-
+        final Animation animShake = AnimationUtils.loadAnimation(this, R.anim.shake);
         recyclerView = findViewById(R.id.listOrders);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
+
+        checkoutButton =findViewById(R.id.btn_checkout_cart);
+        checkoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent cartIntent = new Intent(OrderStatus.this, Cart.class);
+                startActivity(cartIntent);
+            }
+        });
+
 
         if (getIntent() == null)
             loadOrders(Common.currentUser.getPhone());
@@ -72,20 +114,21 @@ public class OrderStatus extends AppCompatActivity {
                 loadOrders(getIntent().getStringExtra("userPhone"));
         }
 
+        setCartStatus();
         final BubbleNavigationLinearView bubbleNavigationLinearView = findViewById(R.id.bottom_navigation_view_linear);
-        bubbleNavigationLinearView.setTypeface(Typeface.createFromAsset(getAssets(), "rf.ttf"));
+        bubbleNavigationLinearView.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/rf.ttf"));
         bubbleNavigationLinearView.setNavigationChangeListener(new BubbleNavigationChangeListener() {
             @Override
             public void onNavigationChanged(View view, int position) {
                 if (position == 0) {
-                    startActivity(new Intent(OrderStatus.this, Profile.class));
+                    startActivity(new Intent(OrderStatus.this, Home.class));
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                     finish();
                 } else if (position == 1) {
 
 
                 } else if (position == 2) {
-                    startActivity(new Intent(OrderStatus.this, FavoritesActivity.class));
+                    startActivity(new Intent(OrderStatus.this, SearchActivity.class));
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                     finish();
                 } else if (position == 3) {
@@ -93,7 +136,7 @@ public class OrderStatus extends AppCompatActivity {
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                     finish();
                 } else if (position == 4) {
-                    startActivity(new Intent(OrderStatus.this, Home.class));
+                    startActivity(new Intent(OrderStatus.this, Profile.class));
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                     finish();
                 } else {
@@ -103,73 +146,171 @@ public class OrderStatus extends AppCompatActivity {
         });
     }
 
+
     private void loadOrders(String phone) {
+        try {
+            Query getOrderByUser = requests.orderByChild("phone").equalTo(phone);
+            FirebaseRecyclerOptions<Request> orderOptions = new FirebaseRecyclerOptions.Builder<Request>()
+                    .setQuery(getOrderByUser, Request.class)
+                    .build();
 
-        Query getOrderByUser = requests.orderByChild("phone").equalTo(phone);
-        FirebaseRecyclerOptions<Request> orderOptions = new FirebaseRecyclerOptions.Builder<Request>()
-                .setQuery(getOrderByUser, Request.class)
-                .build();
+            adapter = new FirebaseRecyclerAdapter<Request, OrderViewHolder>(orderOptions) {
 
-        adapter = new FirebaseRecyclerAdapter<Request, OrderViewHolder>(orderOptions) {
-            @Override
-            protected void onBindViewHolder(@NonNull OrderViewHolder viewHolder, final int position, @NonNull Request model) {
+                @Override
+                protected void onBindViewHolder(@NonNull OrderViewHolder viewHolder, final int position, @NonNull Request model) {
 
-                viewHolder.txtOrderId.setText(adapter.getRef(position).getKey());
-                viewHolder.txtOrderStatus.setText(Common.convertCodeToStatus(model.getStatus()));
-                viewHolder.txtOrderAddress.setText(model.getAddress());
-                viewHolder.txtOrderphone.setText(model.getPhone());
-                viewHolder.setItemClickListener(new ItemClickListener() {
-                    @Override
-                    public void onClick(View view, int position, boolean isLongClick) {
-                        Common.currentKey = adapter.getRef(position).getKey();
-                        startActivity(new Intent(OrderStatus.this, TrackingOrder.class));
-                    }
-                });
+                    viewHolder.txtOrderId.setText(adapter.getRef(position).getKey());
+                    viewHolder.txtOrderStatus.setText(Common.convertCodeToStatus(model.getStatus()));
+                    viewHolder.txtOrderAddress.setText(model.getAddress());
+                    viewHolder.txtOrderphone.setText(model.getPhone());
+                    viewHolder.setItemClickListener(new ItemClickListener() {
+                        @Override
+                        public void onClick(View view, int position, boolean isLongClick) {
+                            Common.currentKey = adapter.getRef(position).getKey();
+                            startActivity(new Intent(OrderStatus.this, TrackingOrder.class));
+                        }
+                    });
 
-                viewHolder.btn_delete.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (adapter.getItem(position).getStatus().equals("0"))
-                            deleteOrder(adapter.getRef(position).getKey());
-                        else
-                            Toast.makeText(OrderStatus.this, "Sorry, order can't be deleted", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                    viewHolder.btn_delete.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            final android.support.v7.app.AlertDialog.Builder alertDialog = new AlertDialog.Builder(OrderStatus.this);
+                            alertDialog.setTitle("Delete Order?");
+                            alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    if (adapter.getItem(position).getStatus().equals("0"))
+                                        deleteOrder(adapter.getRef(position).getKey());
+                                    else
+                                        Toast.makeText(OrderStatus.this, "Sorry, order can't be deleted", Toast.LENGTH_SHORT).show();
 
-            }
+                                }
+                            });
+                            alertDialog.show();
 
-            @NonNull
-            @Override
-            public OrderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
-                View itemView = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.order_layout, parent, false);
-                return new OrderViewHolder(itemView);
-            }
-        };
-        adapter.startListening();
-        recyclerView.setAdapter(adapter);
+                           }
+                    });
+
+                }
+
+                @NonNull
+                @Override
+                public OrderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
+                    View itemView = LayoutInflater.from(parent.getContext())
+                            .inflate(R.layout.order_layout, parent, false);
+                    return new OrderViewHolder(itemView);
+                }
+            };
+            adapter.startListening();
+            recyclerView.setAdapter(adapter);
+        } catch(Exception e) {
+            Log.e("error name", e.getMessage());
+        }
+
     }
 
     private void deleteOrder(final String key) {
+
+
         requests.child(key)
-                .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Toast.makeText(OrderStatus.this, new StringBuilder("Order ")
-                        .append(key)
-                        .append(" has been deleted!").toString(), Toast.LENGTH_SHORT).show();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(OrderStatus.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        double amount = 0.0;
+                        try{
+                            amount = Common.formatCurrency( dataSnapshot.child("total").getValue().toString(), Locale.US).doubleValue();
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                            return;
+                        }
+
+
+
+                        //refund
+                        double balance = Double.parseDouble(Common.currentUser.getBalance().toString()) + amount;
+                        Map<String, Object> update_balance = new HashMap<>();
+                        update_balance.put("balance", Double.parseDouble(Common.currentUser.getBalance().toString()));
+                        if (dataSnapshot.child("paymentMethod").getValue().toString().equals("App Balance"))
+                        update_balance.put("balance", balance);
+                        FirebaseDatabase.getInstance().getReference("User")
+                                .child(Common.currentUser.getPhone())
+                                .updateChildren(update_balance)
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            requests.child(key)
+                                                    .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Toast.makeText(OrderStatus.this, new StringBuilder("Order ")
+                                                            .append(key)
+                                                            .append(" has been deleted!").toString(), Toast.LENGTH_SHORT).show();
+                                                }
+                                            }).addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Toast.makeText(OrderStatus.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                            //Refresh user status
+                                            FirebaseDatabase.getInstance().getReference("User")
+                                                    .child(Common.currentUser.getPhone())
+                                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                                            Common.currentUser = dataSnapshot.getValue(User.class);
+                                                        }
+
+                                                        @Override
+                                                        public void onCancelled(DatabaseError databaseError) {
+
+                                                        }
+                                                    });
+                                        }
+                                    }
+                                });
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         adapter.stopListening();
+    }
+
+    public void setCartStatus() {
+
+        priceTag = findViewById(R.id.checkout_layout_price);
+        itemsCount = findViewById(R.id.items_count);
+        int totalCount = new Database(this).getCountCart(Common.currentUser.getPhone());
+        if (totalCount == 0)
+            checkoutButton.setVisibility(View.GONE);
+        else {
+            checkoutButton.setVisibility(View.VISIBLE);
+            itemsCount.setText(String.valueOf(totalCount));
+            int total = 0;
+            List<Order> orders = new Database(getBaseContext()).getCarts(Common.currentUser.getPhone());
+            for (Order item : orders)
+                total += (Integer.parseInt(item.getPrice())) * (Integer.parseInt(item.getQuantity()));
+            Locale locale = new Locale("en", "US");
+            NumberFormat fmt = NumberFormat.getCurrencyInstance(locale);
+            if (Common.isUsdSelected)
+                priceTag.setText(fmt.format(total/Common.ETB_RATE));
+            else priceTag.setText(String.format("ETB %s", total));
+            //priceTag.setText(fmt.format(total));
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        setCartStatus();
     }
 }

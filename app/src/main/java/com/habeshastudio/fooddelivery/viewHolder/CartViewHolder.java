@@ -20,7 +20,7 @@ public class CartViewHolder extends RecyclerView.ViewHolder implements View.OnCl
     public ImageView cart_image;
 
     public RelativeLayout view_background;
-    public LinearLayout view_foreground;
+    public RelativeLayout view_foreground;
 
     private ItemClickListener itemClickListener;
 

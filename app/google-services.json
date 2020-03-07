@@ -8,17 +8,62 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:642610300843:android:d07801a023326e8b",
+        "mobilesdk_app_id": "1:642610300843:android:0a201dde5704096a",
         "android_client_info": {
-          "package_name": "com.habeshastudio.fooddelivery"
+          "package_name": "com.habeshastudio.derashrestaurant"
         }
       },
       "oauth_client": [
         {
-          "client_id": "642610300843-n1l8m77gbld5s8or3isidg4nfbmie82j.apps.googleusercontent.com",
+          "client_id": "642610300843-87inncn9a6s53tgs54u10q7d42mjg2qj.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.habeshastudio.fooddelivery",
+            "package_name": "com.habeshastudio.derashrestaurant",
+            "certificate_hash": "3ae281a1cbb1f66b23966c91823930d42a63e13c"
+          }
+        },
+        {
+          "client_id": "642610300843-pio1u42rkpiau86cnf7mbenq0o2247ok.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.habeshastudio.derashrestaurant",
+            "certificate_hash": "64e2d786b087ee6da33e75f59c1e4c6412531662"
+          }
+        },
+        {
+          "client_id": "642610300843-dj90j0j32dk77pf8vtosufhs58ldak0o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5xU2smUElSLjybOtfhMEDWn-uvQf6L4M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "642610300843-dj90j0j32dk77pf8vtosufhs58ldak0o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:642610300843:android:0f9f41093bd29ae6",
+        "android_client_info": {
+          "package_name": "com.habeshastudio.derashshipper"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "642610300843-f9r6e80flbbpm25pb8rsck9lv8g66lvq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.habeshastudio.derashshipper",
             "certificate_hash": "4e42cae2a05a8a3a5661673b16d0e75f663f6bc7"
           }
         },
@@ -29,7 +74,44 @@
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyA5NzTQqX0XNAWd5pzwi4r48bOH9xyPPIg"
+          "current_key": "AIzaSyD5xU2smUElSLjybOtfhMEDWn-uvQf6L4M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "642610300843-dj90j0j32dk77pf8vtosufhs58ldak0o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:642610300843:android:d07801a023326e8b",
+        "android_client_info": {
+          "package_name": "com.habeshastudio.fooddelivery"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "642610300843-l0sctsn3j1me98dj93j4cjcojp66eofc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.habeshastudio.fooddelivery",
+            "certificate_hash": "3ae281a1cbb1f66b23966c91823930d42a63e13c"
+          }
+        },
+        {
+          "client_id": "642610300843-dj90j0j32dk77pf8vtosufhs58ldak0o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5xU2smUElSLjybOtfhMEDWn-uvQf6L4M"
         }
       ],
       "services": {

@@ -1,9 +1,12 @@
 package com.habeshastudio.fooddelivery.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +18,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.CallbackManager;
@@ -43,8 +48,13 @@ import com.mancj.materialsearchbar.MaterialSearchBar;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+
+import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class SearchActivity extends AppCompatActivity {
 
@@ -56,6 +66,8 @@ public class SearchActivity extends AppCompatActivity {
     CallbackManager callbackManager;
     Database localDb;
     ShareDialog shareDialog;
+    LinearLayout checkoutButton;
+    TextView itemsCount, priceTag;
     //Search all
     FirebaseRecyclerAdapter<Food, FoodViewHolder> searchAdapter;
     List<String> suggestList = new ArrayList<>();
@@ -88,9 +100,22 @@ public class SearchActivity extends AppCompatActivity {
     };
 
     @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
+                .setDefaultFontPath("fonts/rf.ttf")
+                .setFontAttrId(R.attr.fontPath)
+                .build());
         setContentView(R.layout.activity_search);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            getWindow().setStatusBarColor(Color.WHITE);
+        }
 
         //init Facebook
         callbackManager = CallbackManager.Factory.create();
@@ -107,28 +132,36 @@ public class SearchActivity extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
+        checkoutButton =findViewById(R.id.btn_checkout_cart);
+        checkoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent cartIntent = new Intent(SearchActivity.this, Cart.class);
+                startActivity(cartIntent);
+            }
+        });
+
         final BubbleNavigationLinearView bubbleNavigationLinearView = findViewById(R.id.bottom_navigation_view_linear);
-        bubbleNavigationLinearView.setTypeface(Typeface.createFromAsset(getAssets(), "rf.ttf"));
+        bubbleNavigationLinearView.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/rf.ttf"));
         bubbleNavigationLinearView.setNavigationChangeListener(new BubbleNavigationChangeListener() {
             @Override
             public void onNavigationChanged(View view, int position) {
                 if (position == 0) {
-                    startActivity(new Intent(SearchActivity.this, Profile.class));
+
+                    startActivity(new Intent(SearchActivity.this, Home.class));
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                     finish();
+
                 } else if (position == 1) {
                     startActivity(new Intent(SearchActivity.this, OrderStatus.class));
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                     finish();
                 } else if (position == 2) {
-                    startActivity(new Intent(SearchActivity.this, FavoritesActivity.class));
-                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                    finish();
+
                 } else if (position == 3) {
 
-
                 } else if (position == 4) {
-                    startActivity(new Intent(SearchActivity.this, Home.class));
+                    startActivity(new Intent(SearchActivity.this, Profile.class));
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                     finish();
                 } else {
@@ -183,6 +216,7 @@ public class SearchActivity extends AppCompatActivity {
 
         //load all food
         loadAllFoods();
+        setCartStatus();
 
     }
 
@@ -296,6 +330,29 @@ public class SearchActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
     }
 
+    public void setCartStatus(){
+        priceTag = findViewById(R.id.checkout_layout_price);
+        itemsCount = findViewById(R.id.items_count);
+        int totalCount = new Database(this).getCountCart(Common.currentUser.getPhone());
+        if (totalCount == 0)
+            checkoutButton.setVisibility(View.GONE);
+        else{
+            checkoutButton.setVisibility(View.VISIBLE);
+            itemsCount.setText(String.valueOf(totalCount));
+            int total = 0;
+            List<Order> orders = new Database(getBaseContext()).getCarts(Common.currentUser.getPhone());
+            for (Order item : orders)
+                total += (Integer.parseInt(item.getPrice())) * (Integer.parseInt(item.getQuantity()));
+            Locale locale = new Locale("en", "US");
+            NumberFormat fmt = NumberFormat.getCurrencyInstance(locale);
+            if (Common.isUsdSelected)
+                priceTag.setText(fmt.format(total/Common.ETB_RATE));
+            else priceTag.setText(String.format("ETB %s", total));
+            //priceTag.setText(fmt.format(total));
+        }
+
+    }
+
     private void startSearch(CharSequence text) {
         //create query by name
         Query searchByName = foodList.orderByChild("name").equalTo(text.toString());
@@ -363,5 +420,17 @@ public class SearchActivity extends AppCompatActivity {
         if (adapter != null) adapter.stopListening();
         if (searchAdapter != null) searchAdapter.stopListening();
         super.onStop();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setCartStatus();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        setCartStatus();
     }
 }

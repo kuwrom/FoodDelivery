@@ -1,9 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.profile.PromoCodes">
 
-</android.support.constraint.ConstraintLayout>
+    <TextView
+        android:id="@+id/Promo_lable"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="32dp"
+        android:text="@string/promo_codes"
+        android:textStyle="bold"
+        android:textColor="@color/colorPrimary"
+        android:textSize="32sp" />
+
+
+    <LinearLayout
+        android:id="@+id/layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/Promo_lable"
+        android:orientation="vertical">
+
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/text_promo_code"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            android:hint="@string/enter_your_promo_code_here"
+            android:inputType="phone"
+            android:visibility="visible"
+            android:maxLength="10"
+            android:textColor="@color/blue_grey_active"
+            android:textColorHint="@color/blue_grey_active"
+            android:textSize="18sp"
+            app:met_baseColor="@color/blue_grey_active"
+            app:met_floatingLabel="highlight"
+            app:met_maxCharacters="10"
+            app:met_primaryColor="@color/blue_grey_active"
+            app:met_singleLineEllipsis="true" />
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/text_referer_phone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            android:visibility="visible"
+            android:hint="@string/referer_phone_number"
+            android:inputType="phone"
+            android:textColor="@color/blue_grey_active"
+            android:textColorHint="@color/blue_grey_active"
+            android:textSize="18sp"
+            app:met_baseColor="@color/blue_grey_active"
+            app:met_floatingLabel="highlight"
+            app:met_primaryColor="@color/blue_grey_active"
+            app:met_singleLineEllipsis="true" />
+
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_confirm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/layout"
+        android:layout_margin="32dp"
+        android:background="@drawable/bg_ui_cart"
+        android:text="@string/confirm"
+        android:textColor="@android:color/white"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/btn_trouble"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="32dp"
+        android:clickable="true"
+        android:contextClickable="true"
+        android:padding="16dp"
+        android:text="@string/having_trouble"
+        android:textColor="@color/colorPrimary"
+        android:textStyle="bold" />
+
+
+</RelativeLayout>

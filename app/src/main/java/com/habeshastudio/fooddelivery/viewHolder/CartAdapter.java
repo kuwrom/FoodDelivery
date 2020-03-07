@@ -54,6 +54,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartViewHolder> {
         holder.btn_quantity.setOnValueChangeListener(new ElegantNumberButton.OnValueChangeListener() {
             @Override
             public void onValueChange(ElegantNumberButton view, int oldValue, int newValue) {
+
                 Order order = listData.get(position);
                 order.setQuantity(String.valueOf(newValue));
                 new Database(cart).updateCart(order);
@@ -65,7 +66,32 @@ public class CartAdapter extends RecyclerView.Adapter<CartViewHolder> {
                     total += (Integer.parseInt(order.getPrice())) * (Integer.parseInt(item.getQuantity()));
                 Locale locale = new Locale("en", "US");
                 NumberFormat fmt = NumberFormat.getCurrencyInstance(locale);
-                cart.txtTotalPrice.setText(fmt.format(total));
+                double amount;
+                String formatAmount = cart.txtTotalPrice.getText().toString()
+                        .replace("$", "")
+                        .replace(",", "");
+                String formatAmountETB = cart.txtTotalPrice.getText().toString()
+                        .replace("ETB", "")
+                        .replace(" ", "");
+                double subTotal;
+                if (Common.isUsdSelected) {
+                    cart.txtTotalPrice.setText(fmt.format((total + cart.currentDeliveryPrice) / Common.ETB_RATE));
+                    amount = Float.parseFloat(formatAmount);
+                    subTotal = (amount-(cart.currentDeliveryPrice/Common.ETB_RATE))/1.15;
+                    //update other texts
+                    double tax = subTotal*0.15;
+                    cart.subTotalView.setText(fmt.format(subTotal));
+                    cart.taxView.setText(fmt.format(tax));
+                }else {
+                    cart.txtTotalPrice.setText(String.format("ETB %s", total + cart.currentDeliveryPrice));
+                    amount = Float.parseFloat(formatAmountETB);
+                    subTotal = (amount-cart.currentDeliveryPrice)/1.15;
+                    //update other texts
+                    double tax = subTotal*0.15;
+                    cart.subTotalView.setText(String.format("ETB %s",subTotal));
+                    cart.taxView.setText(String.format("ETB %s",tax));
+                }
+                cart.calculateTotalPrice();
 
             }
         });
@@ -73,8 +99,11 @@ public class CartAdapter extends RecyclerView.Adapter<CartViewHolder> {
         Locale locale = new Locale("en", "US");
         NumberFormat fmt = NumberFormat.getCurrencyInstance(locale);
         int price = (Integer.parseInt(listData.get(position).getPrice())) * (Integer.parseInt(listData.get(position).getQuantity()));
-        holder.txt_price.setText(fmt.format(price));
-        holder.txt_cart_name.setText(listData.get(position).getProductName());
+        //holder.txt_price.setText(fmt.format(price));
+        if (Common.isUsdSelected)
+            holder.txt_price.setText(fmt.format(price/Common.ETB_RATE));
+        else holder.txt_price.setText(String.format("ETB %s", price));
+            holder.txt_cart_name.setText(listData.get(position).getProductName());
     }
 
     @Override
