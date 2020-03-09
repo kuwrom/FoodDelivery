@@ -21,35 +21,27 @@ import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.gauravk.bubblenavigation.BubbleNavigationLinearView;
 import com.gauravk.bubblenavigation.listener.BubbleNavigationChangeListener;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 import com.habeshastudio.fooddelivery.R;
 import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.database.Database;
 import com.habeshastudio.fooddelivery.interfaces.ItemClickListener;
 import com.habeshastudio.fooddelivery.models.Order;
 import com.habeshastudio.fooddelivery.models.Request;
-import com.habeshastudio.fooddelivery.models.User;
 import com.habeshastudio.fooddelivery.viewHolder.OrderViewHolder;
 
 import java.text.NumberFormat;
-import java.text.ParseException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
@@ -211,72 +203,20 @@ public class OrderStatus extends AppCompatActivity {
 
     private void deleteOrder(final String key) {
 
-
         requests.child(key)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        double amount = 0.0;
-                        try{
-                            amount = Common.formatCurrency( dataSnapshot.child("total").getValue().toString(), Locale.US).doubleValue();
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                            return;
-                        }
-
-
-
-                        //refund
-                        double balance = Double.parseDouble(Common.currentUser.getBalance().toString()) + amount;
-                        Map<String, Object> update_balance = new HashMap<>();
-                        update_balance.put("balance", Double.parseDouble(Common.currentUser.getBalance().toString()));
-                        if (dataSnapshot.child("paymentMethod").getValue().toString().equals("App Balance"))
-                        update_balance.put("balance", balance);
-                        FirebaseDatabase.getInstance().getReference("User")
-                                .child(Common.currentUser.getPhone())
-                                .updateChildren(update_balance)
-                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        if (task.isSuccessful()) {
-                                            requests.child(key)
-                                                    .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    Toast.makeText(OrderStatus.this, new StringBuilder("Order ")
-                                                            .append(key)
-                                                            .append(" has been deleted!").toString(), Toast.LENGTH_SHORT).show();
-                                                }
-                                            }).addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    Toast.makeText(OrderStatus.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                                }
-                                            });
-                                            //Refresh user status
-                                            FirebaseDatabase.getInstance().getReference("User")
-                                                    .child(Common.currentUser.getPhone())
-                                                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                                                        @Override
-                                                        public void onDataChange(DataSnapshot dataSnapshot) {
-                                                            Common.currentUser = dataSnapshot.getValue(User.class);
-                                                        }
-
-                                                        @Override
-                                                        public void onCancelled(DatabaseError databaseError) {
-
-                                                        }
-                                                    });
-                                        }
-                                    }
-                                });
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
+                .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Toast.makeText(OrderStatus.this, new StringBuilder("Order ")
+                        .append(key)
+                        .append(" has been deleted!").toString(), Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(OrderStatus.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override

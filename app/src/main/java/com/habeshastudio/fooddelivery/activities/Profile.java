@@ -21,19 +21,21 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.gauravk.bubblenavigation.BubbleNavigationLinearView;
 import com.gauravk.bubblenavigation.listener.BubbleNavigationChangeListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
@@ -47,15 +49,16 @@ import com.habeshastudio.fooddelivery.activities.profile.PromoCodes;
 import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.database.Database;
 import com.habeshastudio.fooddelivery.models.Order;
+import com.habeshastudio.fooddelivery.models.User;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.rengwuxian.materialedittext.MaterialEditText;
+import com.squareup.picasso.Picasso;
 
 import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.UUID;
 
 import dmax.dialog.SpotsDialog;
 import io.paperdb.Paper;
@@ -105,12 +108,8 @@ public class Profile extends AppCompatActivity {
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
         Paper.init(Profile.this);
-        name_display.setText(Common.currentUser.getName());
-        balance_display.setText(Common.currentUser.getBalance().toString());
-        if (!TextUtils.isEmpty(Common.currentUser.getHomeAddress()) ||
-                Common.currentUser.getHomeAddress() != null) {
-           address_display.setText( Common.currentUser.getHomeAddress());
-        }
+        //Refresh user status
+        loadUser();
 
         promo = findViewById(R.id.promo_button);
         loved = findViewById(R.id.loved_button);
@@ -436,6 +435,35 @@ public class Profile extends AppCompatActivity {
         alertDialog.show();
     }
 
+    void loadUser() {
+        FirebaseDatabase.getInstance().getReference("User")
+                .child(Common.currentUser.getPhone())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Common.currentUser = dataSnapshot.getValue(User.class);
+                        name_display.setText(Common.currentUser.getName());
+                        balance_display.setText(Common.currentUser.getBalance().toString());
+                        if (!TextUtils.isEmpty(Common.currentUser.getHomeAddress()) ||
+                                Common.currentUser.getHomeAddress() != null) {
+                            address_display.setText(Common.currentUser.getHomeAddress());
+                        }
+                        try {
+                            Picasso.with(getBaseContext()).load(Common.currentUser.getImage())
+                                    .into(profile);
+                        } catch (Exception e) {
+
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+    }
+
     private void showChangePasswordDialog() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(Profile.this);
         alertDialog.setTitle("Change Password");
@@ -514,7 +542,8 @@ public class Profile extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(Uri uri) {
                                     //uri.toString()
-                                    Common.currentUser.setPassword(uri.toString());
+                                    users.child(Common.currentUser.getPhone()).child("Image").setValue(uri.toString());
+                                    loadUser();
                                 }
                             });
                         }

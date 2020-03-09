@@ -5,8 +5,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.habeshastudio.fooddelivery.interfaces.ItemClickListener;
 import com.habeshastudio.fooddelivery.R;
+import com.habeshastudio.fooddelivery.interfaces.ItemClickListener;
 
 
 /**
@@ -39,6 +39,6 @@ public class OrderViewHolder extends RecyclerView.ViewHolder implements View.OnC
 
     @Override
     public void onClick(View v) {
-        itemClickListener.onClick(v, getAdapterPosition(), false);
+        //itemClickListener.onClick(v, getAdapterPosition(), false);
     }
 }

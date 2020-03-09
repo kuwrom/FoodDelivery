@@ -4,10 +4,10 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.habeshastudio.fooddelivery"
-        minSdkVersion 21
+        minSdkVersion 23
         targetSdkVersion 28
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "2.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
@@ -20,8 +20,6 @@ android {
 }
 
 dependencies {
-
-
     implementation 'com.android.support:design:28.0.0'
     implementation 'com.android.support:customtabs:28.0.0'
     implementation 'com.stepstone.apprating:app-rating:2.0.0'
@@ -29,29 +27,22 @@ dependencies {
     implementation 'com.android.support:mediarouter-v7:28.0.0'
     implementation 'com.android.support:animated-vector-drawable:28.0.0'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-
     implementation 'uk.co.chrisjenx:calligraphy:2.3.0'
-
     //facebook
     implementation('com.facebook.android:facebook-share:[4,5)')
     //paypal
     implementation 'com.paypal.sdk:paypal-android-sdk:2.15.3'
-
     implementation 'com.gauravk.bubblenavigation:bubblenavigation:1.0.7'
-
     //slider Banner
     implementation 'com.nineoldandroids:library:2.4.0'
     implementation 'com.daimajia.slider:library:1.1.5@aar'
-
     //location
     //implementation 'com.google.android.gms:play-services-auth:11.8.0'
     implementation 'com.google.android.gms:play-services-places:11.8.0'
     implementation 'com.google.android.gms:play-services-maps:11.8.0'
     implementation 'com.google.android.gms:play-services:11.8.0'
-
     implementation 'io.paperdb:paperdb:2.1'
     implementation 'com.github.d-max:spots-dialog:0.7@aar'
-
     //implementation 'com.shuhart.stepview:stepview:1.2.8'
     implementation 'com.chaos.view:pinview:1.3.2'
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.+'

@@ -1,7 +1,7 @@
 package com.habeshastudio.fooddelivery.activities.authentication;
 
-import android.app.ProgressDialog;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -20,13 +20,14 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.R;
+import com.habeshastudio.fooddelivery.common.Common;
 
 import java.util.Objects;
 
@@ -110,12 +111,8 @@ public class Register extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (Common.isConnectedToInternet(getBaseContext())) {
-
-
                     if (!Objects.requireNonNull(edtPhone.getText()).toString().isEmpty() && Integer.parseInt(edtPhone.getText().toString().substring(1))>900000000 ) {
-
                         dialog_verifying.show();
-
                         phone = edtPhone.getText().toString().trim();
                         if (phone.startsWith("0"))
                             phone = "+251"  + phone.substring(1);
