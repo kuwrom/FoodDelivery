@@ -405,10 +405,10 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
 
     private void updateQuery(GeoLocation myLocation) {
         if (geoQuery == null) {
-            geoQuery = geoFire.queryAtLocation(myLocation, 3);
+            geoQuery = geoFire.queryAtLocation(myLocation, 1);
             geoQuery.addGeoQueryEventListener(geoQueryEventListener);
         } else {
-            geoQuery.setLocation(myLocation, 3);
+            geoQuery.setLocation(myLocation, 1);
         }
     }
 
@@ -686,4 +686,5 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
+
 }

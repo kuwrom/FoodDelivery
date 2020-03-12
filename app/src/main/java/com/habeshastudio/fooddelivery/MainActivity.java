@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         geoRef = database.getReference("CurrentUserLocation");
         geoRestRef = database.getReference("RerstaurantLocation");
         geoFire = new GeoFire(geoRestRef);
-        //geoFire.setLocation("-M1CnKDL_3RScAylOC8f", new GeoLocation(8.993180,38.739605));
+        //geoFire.setLocation("-M1Jj4t2NpGlk3fMkiar", new GeoLocation(8.990178, 38.725349));
         //Toast.makeText(this, "hi", Toast.LENGTH_SHORT).show();
 
         //notification
