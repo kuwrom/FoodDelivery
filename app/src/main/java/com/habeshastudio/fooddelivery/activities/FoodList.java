@@ -161,11 +161,11 @@ public class FoodList extends AppCompatActivity {
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                     finish();
                 } else if (position == 2) {
-                    startActivity(new Intent(FoodList.this, SearchActivity.class));
+                    startActivity(new Intent(FoodList.this, FavoritesActivity.class));
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                     finish();
                 } else if (position == 3) {
-                    startActivity(new Intent(FoodList.this, SearchActivity.class));
+                    startActivity(new Intent(FoodList.this, FavoritesActivity.class));
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                     finish();
                 } else if (position == 4) {

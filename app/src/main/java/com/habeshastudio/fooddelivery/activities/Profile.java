@@ -192,7 +192,7 @@ public class Profile extends AppCompatActivity {
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                     finish();
                 } else if (position == 3) {
-                    startActivity(new Intent(Profile.this, SearchActivity.class));
+                    startActivity(new Intent(Profile.this, FavoritesActivity.class));
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                     finish();
                 } else if (position == 4) {

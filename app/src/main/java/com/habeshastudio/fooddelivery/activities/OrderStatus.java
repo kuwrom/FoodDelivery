@@ -129,7 +129,7 @@ public class OrderStatus extends AppCompatActivity {
 
 
                 } else if (position == 2) {
-                    startActivity(new Intent(OrderStatus.this, SearchActivity.class));
+                    startActivity(new Intent(OrderStatus.this, FavoritesActivity.class));
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                     finish();
                 } else if (position == 3) {
