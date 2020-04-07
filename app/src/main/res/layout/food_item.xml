@@ -1,82 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingStart="22dp"
-    android:paddingEnd="22dp"
-    android:paddingTop="20dp"
-    android:background="@color/white"
-    android:orientation="vertical">
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="0dp"
-                android:layout_height="220dp">
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+    android:orientation="horizontal"
+    android:paddingStart="16dp"
+    android:paddingTop="16dp"
+    android:paddingEnd="16dp">
                 <ImageView
                     android:id="@+id/food_image"
-                    android:layout_width="match_parent"
-                    android:layout_height="220dp"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
                     android:transitionName="@string/transition_image"
-                    android:tint="#50000000"
                     android:scaleType="centerCrop"
                     android:src="@drawable/chickenburger" />
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_gravity="bottom"
-                    android:paddingLeft="16dp"
-                    android:paddingBottom="16dp"
-                    android:orientation="vertical"
-                    android:layout_height="wrap_content">
-                    <TextView
-                        android:id="@+id/food_name"
-                        android:layout_weight="4.5"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:transitionName="@string/transition_description"
-                        android:layout_marginEnd="16dp"
-                        android:text="Food name"
-                        android:textColor="@color/white"
-                        android:textSize="22sp" />
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_height="wrap_content">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_marginLeft="4dp"
-                            android:textColor="@color/white"
-                            android:textSize="14dp"
-                            android:layout_height="wrap_content"
-                            android:text="Starting from"
-                            />
-                        <TextView
-                            android:id="@+id/food_price"
-                            android:textColor="@color/white"
-                            android:layout_width="wrap_content"
-                            android:layout_marginLeft="4dp"
-                            android:textSize="14dp"
-                            android:layout_height="wrap_content"
-                            android:text="$200"
-                            />
-                    </LinearLayout>
 
-                </LinearLayout>
-                <ImageView
-                    android:id="@+id/fav"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="12dp"
-                    android:layout_gravity="bottom|end"
-                    android:src="@drawable/ic_favorite_border_black_24dp"
-                    android:tint="@color/grey_bg_light" />
-                </FrameLayout>
-            </android.support.v7.widget.CardView>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="16dp"
+        android:paddingBottom="8dp">
 
+        <TextView
+            android:id="@+id/food_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:text="Food name"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:transitionName="@string/transition_description" />
+
+        <TextView
+            android:id="@+id/menu_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/food_name"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="48dp"
+            android:text="..."
+            android:textSize="12sp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/menu_description"
+            android:layout_alignParentBottom="true"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Starting from"
+                android:textColor="@android:color/black"
+                android:textSize="14dp" />
+
+            <TextView
+                android:id="@+id/food_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:text="$200"
+                android:textColor="@android:color/black"
+                android:textSize="14dp" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/fav"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:padding="12dp"
+            android:src="@drawable/ic_favorite_border_black_24dp" />
+    </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"

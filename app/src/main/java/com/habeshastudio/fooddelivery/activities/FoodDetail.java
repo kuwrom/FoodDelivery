@@ -8,7 +8,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,7 +24,6 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.cepheuen.elegantnumberbutton.view.ElegantNumberButton;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -36,19 +34,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.habeshastudio.fooddelivery.MainActivity;
 import com.habeshastudio.fooddelivery.R;
 import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.database.Database;
 import com.habeshastudio.fooddelivery.interfaces.ItemClickListener;
-import com.habeshastudio.fooddelivery.models.Category;
 import com.habeshastudio.fooddelivery.models.Food;
 import com.habeshastudio.fooddelivery.models.FoodMenu;
 import com.habeshastudio.fooddelivery.models.Order;
 import com.habeshastudio.fooddelivery.models.Rating;
 import com.habeshastudio.fooddelivery.viewHolder.FlavoursViewHolder;
-import com.habeshastudio.fooddelivery.viewHolder.FoodViewHolder;
-import com.habeshastudio.fooddelivery.viewHolder.MenuViewHolder;
 import com.squareup.picasso.Picasso;
 import com.stepstone.apprating.AppRatingDialog;
 import com.stepstone.apprating.listener.RatingDialogListener;
@@ -146,6 +140,7 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
             @Override
             protected void onBindViewHolder(@NonNull FlavoursViewHolder holder, int position, @NonNull final FoodMenu model) {
                 holder.textFlavourName.setText(model.getName());
+                holder.textFlavourDescription.setText(model.getDescription());
                 Locale locale = new Locale("en", "US");
                 NumberFormat fmt = NumberFormat.getCurrencyInstance(locale);
                 int price = (Integer.parseInt(model.getPrice()));
@@ -155,6 +150,8 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
                 else holder.textFlavourPrice.setText(String.format("ETB %s", price));
 
                 if (!model.isVegetarian()) holder.vegetarianHolder.setVisibility(View.GONE);
+                if (model.getDescription().equals("") || model.getDescription() == null)
+                    holder.textFlavourDescription.setVisibility(View.GONE);
 
                 if (Common.isConnectedToInternet(getBaseContext())) {
 

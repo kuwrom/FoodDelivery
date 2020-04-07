@@ -19,10 +19,8 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,9 +29,6 @@ import com.facebook.CallbackManager;
 import com.facebook.share.model.SharePhoto;
 import com.facebook.share.model.SharePhotoContent;
 import com.facebook.share.widget.ShareDialog;
-import com.firebase.geofire.GeoFire;
-import com.firebase.geofire.GeoLocation;
-import com.firebase.geofire.LocationCallback;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.gauravk.bubblenavigation.BubbleNavigationLinearView;
@@ -59,7 +54,6 @@ import com.squareup.picasso.Target;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -355,6 +349,7 @@ public class FoodList extends AppCompatActivity {
             protected void onBindViewHolder(@NonNull final FoodViewHolder viewHolder, final int position, @NonNull final Food model) {
 
                 viewHolder.food_name.setText(model.getName());
+                viewHolder.food_description.setText(model.getDescription());
                 if (Common.isUsdSelected)
                 viewHolder.food_price.setText(String.format("$ %s", Integer.parseInt(model.getPrice())/Common.ETB_RATE));
                 else viewHolder.food_price.setText(String.format("ETB %s", model.getPrice()));

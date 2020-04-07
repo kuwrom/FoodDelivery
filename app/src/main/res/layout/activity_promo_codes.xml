@@ -87,7 +87,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="32dp"
-        android:clickable="true"
+        android:clickable="false"
         android:contextClickable="true"
         android:padding="16dp"
         android:text="@string/having_trouble"

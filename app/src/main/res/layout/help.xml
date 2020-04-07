@@ -92,7 +92,7 @@
                 android:layout_height="wrap_content"
                 android:padding="8dp"
                 android:textColor="@color/colorLightBlack"
-                android:text="◎ You only see restaurants from 3 KM away\n◎ Orders can only be deleted if they are not shipped\n◎ You can recommend us to add a new restaurant\n◎ Send us a feedback if you face any inconvenience\n"
+                android:text="◎ You only see restaurants with in 3 KM\n◎ Orders can only be deleted if they are not shipped\n◎ You can recommend us to add a new restaurant\n◎ Send us a feedback if you encounter any inconvenience\n"
                 android:textSize="12sp"/>
 
         </LinearLayout>

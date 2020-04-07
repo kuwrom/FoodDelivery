@@ -3,7 +3,6 @@ package com.habeshastudio.fooddelivery;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -12,10 +11,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.firebase.geofire.GeoFire;
-import com.firebase.geofire.GeoLocation;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -30,7 +27,6 @@ import com.habeshastudio.fooddelivery.activities.Home;
 import com.habeshastudio.fooddelivery.activities.authentication.Register;
 import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.models.User;
-import com.habeshastudio.fooddelivery.remote.GpsServices;
 
 import io.paperdb.Paper;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
@@ -80,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
         geoRef = database.getReference("CurrentUserLocation");
         geoRestRef = database.getReference("RerstaurantLocation");
         geoFire = new GeoFire(geoRestRef);
-        //geoFire.setLocation("-M1Jj4t2NpGlk3fMkiar", new GeoLocation(8.990178, 38.725349));
+        //geoFire.setLocation("-M4KVLusEQ7-9IGSxdOK", new GeoLocation(13.487260, 39.471460));
         //Toast.makeText(this, "hi", Toast.LENGTH_SHORT).show();
 
         //notification
@@ -127,7 +123,6 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-
                     }
                 });
 

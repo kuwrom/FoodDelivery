@@ -5,8 +5,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.habeshastudio.fooddelivery.interfaces.ItemClickListener;
 import com.habeshastudio.fooddelivery.R;
+import com.habeshastudio.fooddelivery.interfaces.ItemClickListener;
 
 /**
  * Created by Kibrom on 2017/11/17.
@@ -14,7 +14,7 @@ import com.habeshastudio.fooddelivery.R;
 
 public class FoodViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-    public TextView food_name, food_price;
+    public TextView food_name, food_price, food_description;
     public ImageView food_image, fav_image, share_image, quick_cart;
 
     private ItemClickListener itemClickListener;
@@ -23,6 +23,7 @@ public class FoodViewHolder extends RecyclerView.ViewHolder implements View.OnCl
         super(itemView);
 
         food_name = itemView.findViewById(R.id.food_name);
+        food_description = itemView.findViewById(R.id.menu_description);
         food_price = itemView.findViewById(R.id.food_price);
         food_image = itemView.findViewById(R.id.food_image);
         fav_image = itemView.findViewById(R.id.fav);

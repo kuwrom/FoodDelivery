@@ -105,9 +105,7 @@ public class FavoritesActivity extends AppCompatActivity implements RecyclerItem
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                     finish();
                 } else if (position == 2) {
-                    startActivity(new Intent(FavoritesActivity.this, SearchActivity.class));
-                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                    finish();
+
                 } else if (position == 3) {
 
 

@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
@@ -24,9 +23,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.widget.LinearLayout;
@@ -38,25 +35,18 @@ import com.daimajia.slider.library.Animations.DescriptionAnimation;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
-import com.daimajia.slider.library.SliderTypes.TextSliderView;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
 import com.firebase.geofire.GeoQueryEventListener;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.gauravk.bubblenavigation.BubbleNavigationLinearView;
 import com.gauravk.bubblenavigation.listener.BubbleNavigationChangeListener;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -67,19 +57,15 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.habeshastudio.fooddelivery.R;
 import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.database.Database;
-import com.habeshastudio.fooddelivery.interfaces.ItemClickListener;
 import com.habeshastudio.fooddelivery.models.Banner;
 import com.habeshastudio.fooddelivery.models.Category;
 import com.habeshastudio.fooddelivery.models.Order;
 import com.habeshastudio.fooddelivery.models.Token;
 import com.habeshastudio.fooddelivery.remote.APIService;
 import com.habeshastudio.fooddelivery.remote.IGoogleService;
-import com.habeshastudio.fooddelivery.viewHolder.MenuViewHolder;
 import com.habeshastudio.fooddelivery.viewHolder.RestaurantAdapter;
-import com.squareup.picasso.Picasso;
 
 import java.text.NumberFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -156,7 +142,7 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
         geoRef = database.getReference("CurrentUserLocation");
         geoRestRef = database.getReference("RerstaurantLocation");
         geoFire = new GeoFire(geoRestRef);
-//        geoFire.setLocation("-Lkh48CfaBbN00QuVFZY", new GeoLocation(13.496113,39.476868));
+        geoFire.setLocation("-M4J0o7NnEEmL97i1vAt", new GeoLocation(13.488764, 39.471513));
         rootLayout = findViewById(R.id.container_home);
         users = FirebaseDatabase.getInstance().getReference("User");
         category = database.getReference("Category");
@@ -185,7 +171,7 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                     finish();
                 } else if (position == 2) {
-                    startActivity(new Intent(Home.this, SearchActivity.class));
+                    startActivity(new Intent(Home.this, FavoritesActivity.class));
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                     finish();
                 } else if (position == 3) {
@@ -405,10 +391,10 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
 
     private void updateQuery(GeoLocation myLocation) {
         if (geoQuery == null) {
-            geoQuery = geoFire.queryAtLocation(myLocation, 1);
+            geoQuery = geoFire.queryAtLocation(myLocation, 6);
             geoQuery.addGeoQueryEventListener(geoQueryEventListener);
         } else {
-            geoQuery.setLocation(myLocation, 1);
+            geoQuery.setLocation(myLocation, 6);
         }
     }
 

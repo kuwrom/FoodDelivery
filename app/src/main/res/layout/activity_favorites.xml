@@ -102,9 +102,9 @@
             android:layout_height="wrap_content"
             app:bt_colorActive="@color/purple_active"
             app:bt_colorInactive="@color/purple_inactive"
-            app:bt_icon="@drawable/ic_search"
+            app:bt_icon="@drawable/ic_like"
             app:bt_shape="@drawable/transition_background_drawable_like"
-            app:bt_title="@string/search" />
+            app:bt_title="@string/likes" />
 
 
         <com.gauravk.bubblenavigation.BubbleToggleView
