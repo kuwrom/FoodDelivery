@@ -87,6 +87,7 @@
                         android:textSize="14sp" />
                     <TextView
                         android:layout_width="match_parent"
+                        android:visibility="gone"
                         android:layout_height="wrap_content"
                         android:layout_margin="8dp"
                         android:textSize="16sp"
@@ -147,14 +148,17 @@
                 android:background="@drawable/bg_ui_white"
                 android:clickable="true"
                 android:padding="8dp"
+                android:layout_height="wrap_content"
                 android:textColor="@color/colorPrimary"
                 android:layout_gravity="center_horizontal"
-                android:layout_height="wrap_content" />
+                android:layout_marginStart="4dp"
+                android:focusable="true" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
+                android:paddingStart="4dp"
                 android:textColor="@color/colorLightBlack"
                 android:lineSpacingMultiplier="1.5"
                 android:text="@string/menu"
@@ -164,6 +168,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
+                android:paddingStart="4dp"
                 android:lineSpacingMultiplier="1.5"
                 android:text="@string/select_menu_to_add_to_cart"
                 android:textColor="@color/colorLightBlack"
@@ -197,7 +202,8 @@
         app:layout_anchorGravity="bottom"
         android:paddingBottom="12dp"
         android:background="@color/colorPrimary"
-        android:layout_height="48dp">
+        android:layout_height="48dp"
+        android:focusable="true">
 
         <TextView
             android:layout_width="0dp"

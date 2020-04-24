@@ -175,7 +175,7 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                     finish();
                 } else if (position == 3) {
-                    startActivity(new Intent(Home.this, FavoritesActivity.class));
+                    startActivity(new Intent(Home.this, Profile.class));
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                     finish();
                 } else if (position == 4) {

@@ -1,69 +1,65 @@
 package com.habeshastudio.fooddelivery.helper;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
 
 public class EmptyRecyclerView extends RecyclerView {
-
-    private View emptyView;
-
-    final private AdapterDataObserver observer = new AdapterDataObserver() {
+    private View mEmptyView;
+    final AdapterDataObserver observer = new AdapterDataObserver() {
         @Override
         public void onChanged() {
-            checkIfEmpty();
+            super.onChanged();
+            initEmptyView();
         }
-
         @Override
         public void onItemRangeInserted(int positionStart, int itemCount) {
-            checkIfEmpty();
+            super.onItemRangeInserted(positionStart, itemCount);
+            initEmptyView();
         }
-
         @Override
         public void onItemRangeRemoved(int positionStart, int itemCount) {
-            checkIfEmpty();
+            super.onItemRangeRemoved(positionStart, itemCount);
+            initEmptyView();
         }
     };
-
     public EmptyRecyclerView(Context context) {
         super(context);
     }
 
-    public EmptyRecyclerView(Context context, AttributeSet attrs) {
+    public EmptyRecyclerView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public EmptyRecyclerView(Context context, AttributeSet attrs,
-                             int defStyle) {
+    public EmptyRecyclerView(Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 
-    void checkIfEmpty() {
-        if (emptyView != null && getAdapter() != null) {
-            final boolean emptyViewVisible =
-                    getAdapter().getItemCount() == 0;
-            emptyView.setVisibility(emptyViewVisible ? VISIBLE : GONE);
-            setVisibility(emptyViewVisible ? GONE : VISIBLE);
+    private void initEmptyView() {
+        if (mEmptyView != null) {
+            mEmptyView.setVisibility(
+                    getAdapter() == null || getAdapter().getItemCount() == 0 ? VISIBLE : GONE);
+            EmptyRecyclerView.this.setVisibility(
+                    getAdapter() == null || getAdapter().getItemCount() == 0 ? GONE : VISIBLE);
         }
     }
 
     @Override
     public void setAdapter(Adapter adapter) {
-        final Adapter oldAdapter = getAdapter();
+        Adapter oldAdapter = getAdapter();
+        super.setAdapter(adapter);
         if (oldAdapter != null) {
             oldAdapter.unregisterAdapterDataObserver(observer);
         }
-        super.setAdapter(adapter);
         if (adapter != null) {
             adapter.registerAdapterDataObserver(observer);
         }
-
-        checkIfEmpty();
     }
 
-    public void setEmptyView(View emptyView) {
-        this.emptyView = emptyView;
-        checkIfEmpty();
+    public void setEmptyView(View view) {
+        this.mEmptyView = view;
+        initEmptyView();
     }
 }

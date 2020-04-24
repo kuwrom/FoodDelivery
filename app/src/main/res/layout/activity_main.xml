@@ -20,7 +20,8 @@
                 android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true"
                 android:src="@drawable/logo"
-                android:tint="@color/orange_active"/>
+                android:contentDescription="TODO"
+                android:tint="@color/orange_active" />
 
 
 </RelativeLayout>

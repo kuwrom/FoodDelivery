@@ -12,6 +12,7 @@
                     android:layout_height="120dp"
                     android:transitionName="@string/transition_image"
                     android:scaleType="centerCrop"
+                    android:contentDescription="TODO"
                     android:src="@drawable/chickenburger" />
 
     <RelativeLayout
@@ -75,6 +76,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:padding="12dp"
+            android:contentDescription="TODO"
             android:src="@drawable/ic_favorite_border_black_24dp" />
     </RelativeLayout>
 
@@ -103,6 +105,7 @@
                 android:layout_margin="4dp"
                 android:layout_weight="1"
                 android:src="@drawable/ic_share_black_24dp"
+                android:contentDescription="TODO"
                 android:tint="@color/colorAccent" />
 
 
@@ -114,6 +117,7 @@
                 android:layout_margin="6dp"
                 android:layout_weight="1"
                 android:src="@drawable/ic_shopping_cart_black_24dp"
+                android:contentDescription="TODO"
                 android:tint="@color/colorAccent" />
         </LinearLayout>
 </LinearLayout>

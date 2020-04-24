@@ -140,8 +140,9 @@ public class Profile extends AppCompatActivity {
         loved.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(Profile.this, FavoritesActivity.class));
-                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+//                startActivity(new Intent(Profile.this, FavoritesActivity.class));
+//                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                Toast.makeText(Profile.this, "Sorry but we are providing printed receipts instead", Toast.LENGTH_SHORT).show();
             }
         });
         promo.setOnClickListener(new View.OnClickListener() {

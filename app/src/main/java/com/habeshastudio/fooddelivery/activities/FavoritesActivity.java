@@ -97,7 +97,7 @@ public class FavoritesActivity extends AppCompatActivity implements RecyclerItem
             @Override
             public void onNavigationChanged(View view, int position) {
                 if (position == 0) {
-                    //startActivity(new Intent(FavoritesActivity.this, Home.class));
+                    startActivity(new Intent(FavoritesActivity.this, Home.class));
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                     finish();
                 } else if (position == 1) {

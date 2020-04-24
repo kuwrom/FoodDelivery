@@ -227,7 +227,7 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
 
 
             } else {
-                Toast.makeText(FoodDetail.this, "Please Check your Interneet Connection!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(FoodDetail.this, "Please Check your Internet Connection!", Toast.LENGTH_SHORT).show();
             }
         }
         recyclerView = findViewById(R.id.details_list);

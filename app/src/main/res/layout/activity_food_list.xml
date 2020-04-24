@@ -73,6 +73,15 @@
                         android:layout_above="@id/btn_checkout_cart"
                         android:scrollbars="vertical" />
 
+                    <TextView
+                        android:id="@+id/empty_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:text="dula gimi more"
+                        android:textSize="36sp" />
+
                 </android.support.v4.widget.SwipeRefreshLayout>
 
             </LinearLayout>
@@ -90,7 +99,8 @@
             android:paddingTop="12dp"
             android:paddingBottom="12dp"
             android:background="@color/colorPrimary"
-            android:layout_height="48dp">
+            android:layout_height="48dp"
+            android:focusable="true">
 
             <TextView
                 android:layout_width="0dp"

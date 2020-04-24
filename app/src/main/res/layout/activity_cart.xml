@@ -56,6 +56,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/ic_local_offer_black_24dp"
+                    android:contentDescription="TODO"
                     android:tint="@color/blue_grey_active" />
 
                 <TextView
@@ -263,7 +264,7 @@
         android:layout_width="match_parent"
         android:id="@+id/checkout_layout"
         android:layout_height="56dp"
-        android:background="@drawable/bg_ui_cart"
+        android:background="@drawable/bg_ui"
         android:layout_margin="16dp"
         android:text="@string/place_order"
         app:backgroundTint="@color/colorPrimary"

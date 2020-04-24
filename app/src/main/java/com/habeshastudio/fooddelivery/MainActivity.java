@@ -13,6 +13,7 @@ import android.view.WindowManager;
 import android.widget.RelativeLayout;
 
 import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -76,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
         geoRef = database.getReference("CurrentUserLocation");
         geoRestRef = database.getReference("RerstaurantLocation");
         geoFire = new GeoFire(geoRestRef);
-        //geoFire.setLocation("-M4KVLusEQ7-9IGSxdOK", new GeoLocation(13.487260, 39.471460));
+        geoFire.setLocation("-M571kTpC52QWcBpcE2Y", new GeoLocation(13.492628, 39.472877));
         //Toast.makeText(this, "hi", Toast.LENGTH_SHORT).show();
 
         //notification

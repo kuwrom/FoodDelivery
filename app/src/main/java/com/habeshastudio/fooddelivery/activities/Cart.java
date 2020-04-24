@@ -840,12 +840,10 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
                             Paper.book().delete("beenToCart");
                             finish();
                         }
-
                     }
                 }
             });
             snackbar.show();
-
         }
     }
 

@@ -75,6 +75,7 @@
             android:layout_gravity="center_vertical"
             android:padding="16dp"
             android:tint="@color/red_active"
+            android:contentDescription="TODO"
             android:src="@drawable/ic_delete_black_24dp" />
 
 

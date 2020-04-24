@@ -25,7 +25,8 @@
         android:paddingTop="12dp"
         android:paddingBottom="12dp"
         android:background="@color/colorPrimary"
-        android:layout_height="48dp">
+        android:layout_height="48dp"
+        android:focusable="true">
 
         <TextView
             android:layout_width="0dp"
@@ -101,6 +102,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:bt_colorActive="@color/purple_active"
+            app:bt_active="true"
             app:bt_colorInactive="@color/purple_inactive"
             app:bt_icon="@drawable/ic_like"
             app:bt_shape="@drawable/transition_background_drawable_like"

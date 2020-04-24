@@ -40,12 +40,12 @@
     <string name="enter_your_promo_code_here">Enter your Promo Code Here</string>
     <string name="referer_phone_number">Referer Phone Number</string>
     <string name="confirm">Confirm</string>
-    <string name="name_loading">Name Loading...</string>
-    <string name="description_loading">Description Loading...</string>
+    <string name="name_loading">Name Loading …</string>
+    <string name="description_loading">Description Loading …</string>
     <string name="see_food_comments">See Food Comments</string>
     <string name="menu">Menu</string>
     <string name="select_menu_to_add_to_cart">Select menu to add to cart</string>
-    <string name="one_more_step">One more step ...</string>
+    <string name="one_more_step">One more step …</string>
     <string name="we_will_send_you_a_verification_code_to_verify_your_phone_number">We will send you a verification code to verify your phone number.</string>
     <string name="by_pressing_continue_you_accept_our_data_policy_cookie_use_privacy_policy_and_terms_of_service">By pressing Continue you accept our Data Policy, cookie use, Privacy Policy and Terms of Service</string>
     <string name="balance">balance: </string>
@@ -77,5 +77,5 @@
     <string name="pay_wiz_paypal">Pay With Paypal</string>
     <string name="pay_with_app_balence">Pay with app balance</string>
     <string name="food_name">Food Name</string>
-    <string name="loading">...</string>
+    <string name="loading">…</string>
 </resources>

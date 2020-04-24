@@ -27,7 +27,8 @@
         android:paddingTop="12dp"
         android:paddingBottom="12dp"
         android:background="@color/colorPrimary"
-        android:layout_height="48dp">
+        android:layout_height="48dp"
+        android:focusable="true">
 
         <TextView
             android:layout_width="0dp"

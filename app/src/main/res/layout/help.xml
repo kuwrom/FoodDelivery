@@ -27,7 +27,8 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:src="@drawable/menu_help"
-                android:layout_height="64dp"/>
+                android:layout_height="64dp"
+                android:contentDescription="TODO" />
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -68,7 +69,8 @@
                     android:src="@drawable/deleting"
                     android:layout_weight="2"
                     android:layout_marginLeft="8dp"
-                    android:layout_height="100dp"/>
+                    android:layout_height="100dp"
+                    android:contentDescription="TODO" />
                 <TextView
                     android:layout_width="0dp"
                     android:layout_weight="1"
@@ -92,7 +94,7 @@
                 android:layout_height="wrap_content"
                 android:padding="8dp"
                 android:textColor="@color/colorLightBlack"
-                android:text="◎ You only see restaurants with in 3 KM\n◎ Orders can only be deleted if they are not shipped\n◎ You can recommend us to add a new restaurant\n◎ Send us a feedback if you encounter any inconvenience\n"
+                android:text="◎ You only see restaurants with in 6 KM\n◎ Orders can only be deleted if they are not shipped\n◎ You can recommend us to add a new restaurant\n◎ Send us a feedback if you encounter any inconvenience\n"
                 android:textSize="12sp"/>
 
         </LinearLayout>

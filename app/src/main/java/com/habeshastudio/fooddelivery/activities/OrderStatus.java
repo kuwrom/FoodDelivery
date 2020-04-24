@@ -26,10 +26,8 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.gauravk.bubblenavigation.BubbleNavigationLinearView;
 import com.gauravk.bubblenavigation.listener.BubbleNavigationChangeListener;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -46,11 +44,8 @@ import com.habeshastudio.fooddelivery.models.User;
 import com.habeshastudio.fooddelivery.viewHolder.OrderViewHolder;
 
 import java.text.NumberFormat;
-import java.text.ParseException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
@@ -216,25 +211,25 @@ public class OrderStatus extends AppCompatActivity {
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        double amount = 0.0;
-                        try{
-                            amount = Common.formatCurrency( dataSnapshot.child("total").getValue().toString(), Locale.US).doubleValue();
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                            return;
-                        }
+//                        double amount = 0.0;
+//                        try{
+//                            amount = Common.formatCurrency( dataSnapshot.child("total").getValue().toString(), Locale.US).doubleValue();
+//                        } catch (ParseException e) {
+//                            e.printStackTrace();
+//                            return;
+//                        }
 
                         //refund
-                        double balance = Double.parseDouble(Common.currentUser.getBalance().toString()) + amount;
-                        Map<String, Object> update_balance = new HashMap<>();
-                        update_balance.put("balance", balance);
-                        FirebaseDatabase.getInstance().getReference("User")
-                                .child(Common.currentUser.getPhone())
-                                .updateChildren(update_balance)
-                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        if (task.isSuccessful()) {
+                        //double balance = Double.parseDouble(Common.currentUser.getBalance().toString()) + amount;
+                        //Map<String, Object> update_balance = new HashMap<>();
+                        //update_balance.put("balance", balance);
+//                        FirebaseDatabase.getInstance().getReference("User")
+//                                .child(Common.currentUser.getPhone())
+//                                .updateChildren(update_balance)
+//                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                    @Override
+//                                    public void onComplete(@NonNull Task<Void> task) {
+//                                        if (task.isSuccessful()) {
                                             requests.child(key)
                                                     .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
@@ -264,9 +259,9 @@ public class OrderStatus extends AppCompatActivity {
                                                         }
                                                     });
                                         }
-                                    }
-                                });
-                    }
+//                                    }
+//                                });
+//                    }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {

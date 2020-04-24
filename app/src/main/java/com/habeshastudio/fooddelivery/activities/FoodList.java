@@ -263,7 +263,7 @@ public class FoodList extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        View emptyView = findViewById(R.id.emptyView);
+        View emptyView = findViewById(R.id.empty_view);
         recyclerView.setEmptyView(emptyView);
 
         setCartStatus();
