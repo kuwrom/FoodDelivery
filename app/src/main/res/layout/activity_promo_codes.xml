@@ -75,7 +75,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/layout"
         android:layout_margin="32dp"
-        android:background="@drawable/bg_ui_cart"
+        android:background="@drawable/bg_ui"
         android:text="@string/confirm"
         android:textColor="@android:color/white"
         android:textStyle="bold" />

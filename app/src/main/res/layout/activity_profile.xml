@@ -174,8 +174,8 @@
                                     android:layout_marginRight="10dp"
                                     android:layout_weight="1"
                                     android:background="@drawable/bg_ui"
-                                    android:backgroundTint="@color/media"
-                                    android:text="Receipts"
+                                    android:backgroundTint="@color/colorMoreGreen"
+                                    android:text="Call Us"
                                     android:textColor="@color/colorWhite" />
 
                                 <Button

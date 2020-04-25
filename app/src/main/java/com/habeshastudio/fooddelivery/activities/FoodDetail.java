@@ -60,7 +60,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class FoodDetail extends AppCompatActivity implements RatingDialogListener {
 
-    TextView food_name, food_description,itemsCount, priceTag;
+    TextView food_name, food_description, itemsCount, priceTag;
     ImageView food_image;
     CollapsingToolbarLayout collapsingToolbarLayout;
 

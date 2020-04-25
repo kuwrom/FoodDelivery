@@ -780,6 +780,12 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
     }
 
     @Override
+    protected void onPostResume() {
+        super.onPostResume();
+
+    }
+
+    @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
         if (viewHolder instanceof CartViewHolder) {
             final Order deleteItem = ((CartAdapter) recyclerView.getAdapter()).getItem(viewHolder.getAdapterPosition());
