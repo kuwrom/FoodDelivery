@@ -40,6 +40,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="8dp"
+                android:gravity="center_horizontal"
                 android:text="Whatever you want, we get it. \nDine is whatever-you-can-think-of delivery\nNeed another charger? Kitchen staples? Or Alcohol? We’ve got everything you need available for delivery within an hour."
                 android:textColor="@color/gold"
                 android:textSize="12sp" />
@@ -48,6 +49,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingStart="8dp"
+                android:gravity="center_horizontal"
                 android:paddingTop="8dp"
                 android:text="Our Mission"
                 android:textColor="@color/gold"
@@ -58,7 +60,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="8dp"
-                android:text="Dine is transforming the way goods move in Our city by enabling anyone to have anything delivered on-demand. Our revolutionary Urban Logistics platform connects customers with local couriers who can deliver anything from any store or restaurant in minutes. We empower communities to shop local with no waiting, and empower businesses through our Platform to offer delivery."
+                android:gravity="center_horizontal"
+                android:text="Dine is transforming the way goods move in Our city by enabling anyone to have anything delivered on-demand. Our revolutionary Urban Logistics platform connects customers with local couriers who can deliver anything from any store or restaurant in minutes. We empower our community to shop local with no waiting, and empower businesses through our Platform to offer delivery."
                 android:textColor="@color/gold"
                 android:textSize="12sp" />
 
@@ -67,6 +70,7 @@
                 android:layout_height="wrap_content"
                 android:paddingStart="8dp"
                 android:paddingTop="8dp"
+                android:gravity="center_horizontal"
                 android:text="Our Team"
                 android:textColor="@color/gold"
                 android:textSize="16sp"
@@ -75,6 +79,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
                 android:padding="8dp"
                 android:text="Dine is built by a passionate team of engineers, designers, business specialists, and is headquartered in Addis Ababa. The company was co-founded by Hayleab Aradom, Awet Desta and Kibrom Kidane in 2019."
                 android:textColor="@color/gold"
