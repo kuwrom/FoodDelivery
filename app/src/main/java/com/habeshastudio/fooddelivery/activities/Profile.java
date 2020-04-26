@@ -44,7 +44,6 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.habeshastudio.fooddelivery.BuildConfig;
 import com.habeshastudio.fooddelivery.R;
-import com.habeshastudio.fooddelivery.activities.profile.About;
 import com.habeshastudio.fooddelivery.activities.profile.HistoryAndReceipt;
 import com.habeshastudio.fooddelivery.activities.profile.PromoCodes;
 import com.habeshastudio.fooddelivery.common.Common;
@@ -278,7 +277,7 @@ public class Profile extends AppCompatActivity {
         about.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(Profile.this, About.class));
+                showAboutDialog();
             }
         });
         feedBack.setOnClickListener(new View.OnClickListener() {
@@ -407,6 +406,14 @@ public class Profile extends AppCompatActivity {
 
         LayoutInflater inflater = LayoutInflater.from(this);
         View layout_home_address = inflater.inflate(R.layout.help, null);
+        alertDialog.setView(layout_home_address);
+        alertDialog.show();
+    }
+
+    private void showAboutDialog() {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(Profile.this);
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View layout_home_address = inflater.inflate(R.layout.about_layout, null);
         alertDialog.setView(layout_home_address);
         alertDialog.show();
     }

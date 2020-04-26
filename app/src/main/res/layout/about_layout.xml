@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/transparentBlack"
+    app:cardElevation="10dp"
+    tools:ignore="MissingDefaultResource">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:padding="8dp"
+                android:text="Dine Delivery"
+                android:textColor="@color/gold"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:layout_margin="16dp"
+                android:contentDescription="TODO"
+                android:src="@drawable/logo"
+                android:tint="@color/gold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="Whatever you want, we get it. \nDine is whatever-you-can-think-of delivery\nNeed another charger? Kitchen staples? Or Alcohol? We’ve got everything you need available for delivery within an hour."
+                android:textColor="@color/gold"
+                android:textSize="12sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="8dp"
+                android:paddingTop="8dp"
+                android:text="Our Mission"
+                android:textColor="@color/gold"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="Dine is transforming the way goods move in Our city by enabling anyone to have anything delivered on-demand. Our revolutionary Urban Logistics platform connects customers with local couriers who can deliver anything from any store or restaurant in minutes. We empower communities to shop local with no waiting, and empower businesses through our Platform to offer delivery."
+                android:textColor="@color/gold"
+                android:textSize="12sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="8dp"
+                android:paddingTop="8dp"
+                android:text="Our Team"
+                android:textColor="@color/gold"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="Dine is built by a passionate team of engineers, designers, business specialists, and is headquartered in Addis Ababa. The company was co-founded by Hayleab Aradom, Awet Desta and Kibrom Kidane in 2019."
+                android:textColor="@color/gold"
+                android:textSize="12sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="32dp"
+                android:gravity="center_horizontal"
+                android:paddingStart="8dp"
+                android:paddingTop="8dp"
+                android:text="App Designed and written by Kuwrom"
+                android:textColor="@color/gold"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+
+</android.support.v7.widget.CardView>

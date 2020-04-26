@@ -56,5 +56,6 @@
     <color name="colorLightBlue">#5f5881</color>
     <color name="colorYellow">#FFC107</color>
     <color name="colorUserImgOverlay">#FFFFFFFF</color>
+    <color name="gold">#D4AF37</color>
 
 </resources>
