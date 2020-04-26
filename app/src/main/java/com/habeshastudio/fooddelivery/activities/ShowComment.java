@@ -127,7 +127,7 @@ public class ShowComment extends AppCompatActivity {
                         protected void onBindViewHolder(@NonNull ShowCommentViewHolder holder, int position, @NonNull Rating model) {
                             holder.ratingBar.setRating(Float.parseFloat(model.getRateValue()));
                             holder.txtComment.setText(model.getComment());
-                            holder.txtUserPhone.setText(model.getUserPhone());
+                            holder.txtUserPhone.setText("+251XXXXX" + model.getUserPhone().substring(9));
 
                         }
 

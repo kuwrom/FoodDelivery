@@ -34,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:padding="8dp"
                 android:textColor="@color/colorLightBlack"
-                android:text="❶ List of Restaurants\n❷ List of orders You make\n❸ Search any food\n❹ Profile and Settings\ni.e: Type in your delivery or home address before you order"
+                android:text="❶ List of Restaurants\n❷ List of orders You make\n❸ Search any food\n❹ Profile and Settings"
                 android:textSize="12sp"/>
             <TextView
                 android:layout_width="match_parent"
