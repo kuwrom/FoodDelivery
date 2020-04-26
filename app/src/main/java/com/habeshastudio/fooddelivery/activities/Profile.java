@@ -1,6 +1,7 @@
 package com.habeshastudio.fooddelivery.activities;
 
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -140,9 +141,17 @@ public class Profile extends AppCompatActivity {
         loved.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                Uri uri = Uri.parse("tel:" + "0976000070");
+                Intent callIntent = new Intent(Intent.ACTION_DIAL, uri);
+                try {
+                    startActivity(callIntent);
+                } catch (ActivityNotFoundException activityNotFoundException) {
+                    // TODO: place code to handle users that have no call application installed, otherwise the app crashes
+                }
 //                startActivity(new Intent(Profile.this, FavoritesActivity.class));
 //                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                Toast.makeText(Profile.this, "Sorry but we are providing printed receipts instead", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(Profile.this, "Sorry but we are providing printed receipts instead", Toast.LENGTH_SHORT).show();
             }
         });
         promo.setOnClickListener(new View.OnClickListener() {

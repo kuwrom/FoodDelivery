@@ -373,7 +373,10 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
             if (Paper.book().read("userPhone") != null)
                 Common.currentUser.setPhone(Paper.book().read("userPhone").toString());
             else finish();
-        if (adapter != null)
+            if (adapter == null){
+                adapter.startListening();
+                loadMenu();}
+            else
             loadMenu();
         setCartStatus();
     }
@@ -388,8 +391,8 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
     @Override
     protected void onStop() {
         super.onStop();
-        if (adapter != null)
-        adapter.stopListening();
+//        if (adapter != null)
+//        adapter.stopListening();
     }
 
     @Override

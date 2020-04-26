@@ -16,7 +16,7 @@
         android:layout_marginTop="32dp"
         android:text="@string/promo_codes"
         android:textStyle="bold"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@color/media"
         android:textSize="32sp" />
 
 
@@ -76,6 +76,7 @@
         android:layout_below="@id/layout"
         android:layout_margin="32dp"
         android:background="@drawable/bg_ui"
+        android:backgroundTint="@color/media"
         android:text="@string/confirm"
         android:textColor="@android:color/white"
         android:textStyle="bold" />
@@ -91,7 +92,7 @@
         android:contextClickable="true"
         android:padding="16dp"
         android:text="@string/having_trouble"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@color/grey_active"
         android:textStyle="bold" />
 
 

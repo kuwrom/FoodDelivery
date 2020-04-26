@@ -108,7 +108,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
     static PayPalConfiguration config = new PayPalConfiguration()
             .environment(PayPalConfiguration.ENVIRONMENT_SANDBOX)
             .clientId(Config.PAYPAL_CLIENT_ID);
-    public TextView txtTotalPrice, subTotalView, taxView, deliveryFeeView, paymentMethodDisplay, addPromoText;
+    public TextView txtTotalPrice, subTotalView, taxView, deliveryFeeView, paymentMethodDisplay, addPromoText, guide;
     public Double currentDeliveryPrice;
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
@@ -183,6 +183,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
         recyclerView.setLayoutManager(layoutManager);
         mService = Common.getFCMService();
         rootLayout = findViewById(R.id.root_cart_layout);
+        Paper.init(Cart.this);
 
         //swipe to delete
         ItemTouchHelper.SimpleCallback itemTouchHelperCallBack = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, this);
@@ -199,6 +200,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
         btnPromoCode = findViewById(R.id.btnPromoCode);
         btnCashChange = findViewById(R.id.btnCashChange);
         checkout_button = findViewById(R.id.checkout_layout);
+        guide = findViewById(R.id.cart_guide_text);
 
         Paper.init(Cart.this);
         btnPromoCode.setOnClickListener(new View.OnClickListener() {
@@ -253,6 +255,9 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
         mDialog.setCancelable(false);
         mDialog.setCanceledOnTouchOutside(false);
         mDialog.show();
+
+        if (Paper.book().read("cartGuide")==null)
+            guide.setVisibility(View.VISIBLE);
     }
 
     private void createLocationRequest() {
@@ -793,7 +798,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
             final int deleteIndex = viewHolder.getAdapterPosition();
             adapter.removeItem(deleteIndex);
             new Database(getBaseContext()).removeFromCart(deleteItem.getProductId(), Common.currentUser.getPhone());
-
+            Paper.book().write("cartGuide", true);
             //update total
             int total = 0;
             List<Order> orders = new Database(getBaseContext()).getCarts(Common.currentUser.getPhone());
