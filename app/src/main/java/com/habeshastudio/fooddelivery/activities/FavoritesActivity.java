@@ -10,6 +10,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -23,6 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.habeshastudio.fooddelivery.R;
 import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.database.Database;
+import com.habeshastudio.fooddelivery.helper.EmptyRecyclerView;
 import com.habeshastudio.fooddelivery.helper.RecyclerItemTouchHelper;
 import com.habeshastudio.fooddelivery.interfaces.RecyclerItemTouchHelperListener;
 import com.habeshastudio.fooddelivery.models.Favorites;
@@ -39,7 +41,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class FavoritesActivity extends AppCompatActivity implements RecyclerItemTouchHelperListener {
 
-    RecyclerView recyclerView;
+    EmptyRecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
 
     FirebaseDatabase database;
@@ -65,6 +67,9 @@ public class FavoritesActivity extends AppCompatActivity implements RecyclerItem
                 .setFontAttrId(R.attr.fontPath)
                 .build());
         setContentView(R.layout.activity_favorites);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("Favorites");
+        setSupportActionBar(toolbar);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             getWindow().setStatusBarColor(Color.WHITE);
@@ -76,6 +81,9 @@ public class FavoritesActivity extends AppCompatActivity implements RecyclerItem
         priceTag = findViewById(R.id.checkout_layout_price);
         itemsCount = findViewById(R.id.items_count);
         recyclerView.setLayoutManager(layoutManager);
+        TextView view = new TextView(FavoritesActivity.this);
+        view.setText("No items available");
+
 
         checkoutButton =findViewById(R.id.btn_checkout_cart);
         checkoutButton.setOnClickListener(new View.OnClickListener() {
@@ -123,6 +131,7 @@ public class FavoritesActivity extends AppCompatActivity implements RecyclerItem
     private void loadFavorites() {
         adapter = new FavoritesAdapter(this, new Database(this).getAllFavorites(Common.currentUser.getPhone()));
         recyclerView.setAdapter(adapter);
+        recyclerView.setEmptyView(findViewById(R.id.empty_view_fav));
         setCartStatus();
     }
 

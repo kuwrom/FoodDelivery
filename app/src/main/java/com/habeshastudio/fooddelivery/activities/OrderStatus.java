@@ -12,6 +12,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +38,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.habeshastudio.fooddelivery.R;
 import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.database.Database;
+import com.habeshastudio.fooddelivery.helper.EmptyRecyclerView;
 import com.habeshastudio.fooddelivery.interfaces.ItemClickListener;
 import com.habeshastudio.fooddelivery.models.Order;
 import com.habeshastudio.fooddelivery.models.Request;
@@ -52,7 +54,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class OrderStatus extends AppCompatActivity {
 
-    public RecyclerView recyclerView;
+    public EmptyRecyclerView recyclerView;
     public RecyclerView.LayoutManager layoutManager;
 
     FirebaseRecyclerAdapter<Request, OrderViewHolder> adapter;
@@ -77,6 +79,9 @@ public class OrderStatus extends AppCompatActivity {
                 .setFontAttrId(R.attr.fontPath)
                 .build());
         setContentView(R.layout.activity_order_status);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("Orders");
+        setSupportActionBar(toolbar);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             getWindow().setStatusBarColor(Color.WHITE);
@@ -199,6 +204,7 @@ public class OrderStatus extends AppCompatActivity {
             };
             adapter.startListening();
             recyclerView.setAdapter(adapter);
+            recyclerView.setEmptyView(findViewById(R.id.empty_view_orders));
         } catch(Exception e) {
             Log.e("error name", e.getMessage());
         }

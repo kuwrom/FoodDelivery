@@ -216,7 +216,7 @@ public class FoodList extends AppCompatActivity {
                 materialSearchBar = findViewById(R.id.searchBar);
                 materialSearchBar.setHint("Search any Food...");
                 loadSuggest();//function to load suggestion from firebase
-                materialSearchBar.setCardViewElevation(0);
+                materialSearchBar.setCardViewElevation(10);
                 materialSearchBar.addTextChangeListener(new TextWatcher() {
                     @Override
                     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -263,8 +263,11 @@ public class FoodList extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        View emptyView = findViewById(R.id.empty_view);
-        recyclerView.setEmptyView(emptyView);
+//        View emptyView = findViewById(R.id.empty_view);
+//        recyclerView.setEmptyView(emptyView);
+        TextView view = new TextView(FoodList.this);
+        view.setText("No items available");
+        recyclerView.setEmptyView(view);
 
         setCartStatus();
     }

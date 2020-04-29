@@ -7,13 +7,56 @@
     android:layout_height="match_parent"
     tools:context=".activities.FavoritesActivity">
 
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar_fav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
 
-    <android.support.v7.widget.RecyclerView
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/white"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            app:titleTextColor="@color/colorLightBlack" />
+
+    </android.support.design.widget.AppBarLayout>
+
+
+    <com.habeshastudio.fooddelivery.helper.EmptyRecyclerView
         android:id="@+id/recycler_fav"
+        android:layout_below="@id/app_bar_fav"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/btn_checkout_cart"
         android:scrollbars="vertical" />
+
+    <LinearLayout
+        android:id="@+id/empty_view_fav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/logo"
+            android:tint="@color/grey_active" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="64dp"
+            android:gravity="center"
+            android:text="No favourite items yet"
+            android:textColor="@color/grey_active"
+            android:textSize="14sp" />
+    </LinearLayout>
+
 
     <LinearLayout
         android:layout_width="match_parent"

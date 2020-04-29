@@ -99,7 +99,8 @@
                         android:background="@color/white"
                         android:clickable="true"
                         android:focusable="true"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
+                        android:layout_gravity="center_horizontal"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
@@ -108,12 +109,14 @@
                             android:layout_height="wrap_content"
                             android:paddingStart="8dp"
                             android:paddingEnd="8dp"
+                            android:visibility="gone"
                             android:layout_gravity="center_vertical"
                             android:text="⏱"
                             android:textSize="24sp" />
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:visibility="gone"
                             android:layout_gravity="center_vertical"
                             android:text="25-30 MINS"
                             android:textStyle="bold"
@@ -122,7 +125,7 @@
                         <RatingBar
                             android:id="@+id/ratingBar"
                             style="?android:ratingBarStyleSmall"
-                            android:layout_gravity="end|center_vertical"
+                            android:layout_gravity="center_horizontal"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:clickable="true"
