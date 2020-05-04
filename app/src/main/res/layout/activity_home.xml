@@ -68,8 +68,7 @@
                 android:layout_height="match_parent">
 
 
-
-                <android.support.v7.widget.RecyclerView
+                <com.habeshastudio.fooddelivery.helper.EmptyRecyclerView
                     android:id="@+id/recycler_menu"
                     android:padding="8dp"
                     android:layout_width="match_parent"
@@ -82,6 +81,31 @@
         </LinearLayout>
 
     </android.support.design.widget.CoordinatorLayout>
+
+    <LinearLayout
+        android:id="@+id/empty_view_restaurant"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/logo"
+            android:tint="@color/grey_active" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="64dp"
+            android:gravity="center"
+            android:text="No restaurant around"
+            android:textColor="@color/grey_active"
+            android:textSize="14sp" />
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/btn_checkout_cart"

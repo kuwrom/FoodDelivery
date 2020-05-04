@@ -4,20 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context=".activities.FoodDetail">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="280dp"
         android:fitsSystemWindows="true"
         android:background="@color/white"
+        app:expanded="true"
         android:theme="@style/ThemeOverlay.AppCompat.Light">
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/collapsing"
             android:layout_width="match_parent"
-            android:layout_height="250dp"
+            android:layout_height="match_parent"
             android:fitsSystemWindows="true"
             app:expandedTitleTextAppearance="@color/grey_active"
             app:collapsedTitleTextAppearance="@color/grey_active"
@@ -40,8 +42,10 @@
 
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/nestedScrollView"
+        android:layout_height="wrap_content"
+        app:layout_anchor="@id/app_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        app:layout_anchorGravity="bottom"
         android:clipToPadding="false"
         app:behavior_overlapTop="56dp"
         app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior">

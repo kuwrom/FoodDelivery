@@ -10,7 +10,6 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
@@ -22,22 +21,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.authentication.AdditionalSetup"
-            android:configChanges="orientation"
-            android:screenOrientation="portrait" />
-        <activity android:name=".activities.profile.HistoryAndReceipt"
-            android:configChanges="orientation"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".activities.profile.About"
-            android:configChanges="orientation"
-            android:screenOrientation="portrait"/>
         <activity android:name=".activities.profile.PromoCodes"
-            android:configChanges="orientation"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".activities.profile.PaymentMethod"
-            android:configChanges="orientation"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".activities.profile.AddressManagement"
             android:configChanges="orientation"
             android:screenOrientation="portrait"/>
         <!--

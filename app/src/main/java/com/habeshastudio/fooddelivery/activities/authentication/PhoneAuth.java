@@ -1,10 +1,12 @@
 package com.habeshastudio.fooddelivery.activities.authentication;
 
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -17,6 +19,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.chaos.view.PinView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -32,10 +35,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.habeshastudio.fooddelivery.MainActivity;
-import com.habeshastudio.fooddelivery.common.Common;
-import com.habeshastudio.fooddelivery.activities.Home;
-import com.habeshastudio.fooddelivery.models.User;
 import com.habeshastudio.fooddelivery.R;
+import com.habeshastudio.fooddelivery.activities.Home;
+import com.habeshastudio.fooddelivery.common.Common;
+import com.habeshastudio.fooddelivery.models.User;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -111,6 +114,23 @@ public class PhoneAuth extends AppCompatActivity {
             public void onClick(View v) {
                 startActivity(new Intent(PhoneAuth.this, TroubleAuth.class));
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            }
+        });
+
+        secondText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String urlString = "https://dine.flycricket.io/privacy.html";
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(urlString));
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setPackage("com.android.chrome");
+                try {
+                    PhoneAuth.this.startActivity(intent);
+                } catch (ActivityNotFoundException ex) {
+                    // Chrome browser presumably not installed so allow user to choose instead
+                    intent.setPackage(null);
+                    PhoneAuth.this.startActivity(intent);
+                }
             }
         });
 

@@ -54,9 +54,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.habeshastudio.fooddelivery.MainActivity;
 import com.habeshastudio.fooddelivery.R;
 import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.database.Database;
+import com.habeshastudio.fooddelivery.helper.EmptyRecyclerView;
+import com.habeshastudio.fooddelivery.helper.MyExceptionHandler;
 import com.habeshastudio.fooddelivery.models.Banner;
 import com.habeshastudio.fooddelivery.models.Category;
 import com.habeshastudio.fooddelivery.models.Order;
@@ -104,7 +107,7 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
     GeoQuery geoQuery;
     private GeoFire geoFire;
     LinearLayout checkoutButton;
-    RecyclerView recycler_menu;
+    EmptyRecyclerView recycler_menu;
     RelativeLayout rootLayout;
     RecyclerView.LayoutManager layoutManager;
     ProgressDialog mDialog;
@@ -136,6 +139,8 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             getWindow().setStatusBarColor(Color.WHITE);
         }
+        Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
+
         isInternet();
         //Init Firebase
         Paper.init(Home.this);        database = FirebaseDatabase.getInstance();
@@ -278,16 +283,18 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
         recycler_menu.setLayoutAnimation(controller);
 
 
-        updateToken(FirebaseInstanceId.getInstance().getToken());
+        try {
+            updateToken(FirebaseInstanceId.getInstance().getToken());
+        } catch (Exception e) {
+
+        }
 
         //setup Slider
         setupSlider();
 
         //Runtime permission
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{
-                    Manifest.permission.ACCESS_COARSE_LOCATION,
                     Manifest.permission.ACCESS_FINE_LOCATION
             }, LOCATION_REQUEST_CODE);
         } else {
@@ -391,10 +398,10 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
 
     private void updateQuery(GeoLocation myLocation) {
         if (geoQuery == null) {
-            geoQuery = geoFire.queryAtLocation(myLocation, 6);
+            geoQuery = geoFire.queryAtLocation(myLocation, 15);
             geoQuery.addGeoQueryEventListener(geoQueryEventListener);
         } else {
-            geoQuery.setLocation(myLocation, 6);
+            geoQuery.setLocation(myLocation, 15);
         }
     }
 
@@ -486,6 +493,7 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
         if (!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             showGpsDisabledDialog();
         }
+        setCartStatus();
     }
 
     private void updateToken(String token) {
@@ -512,6 +520,7 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
             adapter = new RestaurantAdapter(availableRestaurants, this);
             //adapter.startListening();
             recycler_menu.setAdapter(adapter);
+            recycler_menu.setEmptyView(findViewById(R.id.empty_view_restaurant));
             swipeRefreshLayout.setRefreshing(false);
 
             //Animation
@@ -538,7 +547,17 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
     public void setCartStatus(){
         priceTag = findViewById(R.id.checkout_layout_price);
         itemsCount = findViewById(R.id.items_count);
-        int totalCount = new Database(this).getCountCart(Common.currentUser.getPhone());
+        int totalCount = 0;
+        if (Common.currentUser != null)
+            totalCount = new Database(this).getCountCart(Common.currentUser.getPhone());
+//        else if (Paper.book().read("userPhone") != null)
+//            totalCount =new Database(this).getCountCart(Paper.book().read("userPhone").toString());
+//
+        else {
+            startActivity(new Intent(Home.this, MainActivity.class));
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            finish();
+        }
         if (totalCount == 0)
             checkoutButton.setVisibility(View.GONE);
         else{
@@ -612,10 +631,8 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
 
     private void checkPermission() {
         //Runtime permission
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{
-                    Manifest.permission.ACCESS_COARSE_LOCATION,
                     Manifest.permission.ACCESS_FINE_LOCATION
             }, LOCATION_REQUEST_CODE);
         } else {
@@ -650,8 +667,7 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
     }
 
     private void startLocationUpdates() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);

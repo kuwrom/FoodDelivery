@@ -35,10 +35,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.habeshastudio.fooddelivery.MainActivity;
 import com.habeshastudio.fooddelivery.R;
 import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.database.Database;
 import com.habeshastudio.fooddelivery.helper.EmptyRecyclerView;
+import com.habeshastudio.fooddelivery.helper.MyExceptionHandler;
 import com.habeshastudio.fooddelivery.interfaces.ItemClickListener;
 import com.habeshastudio.fooddelivery.models.Order;
 import com.habeshastudio.fooddelivery.models.Request;
@@ -86,6 +88,7 @@ public class OrderStatus extends AppCompatActivity {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             getWindow().setStatusBarColor(Color.WHITE);
         }
+        Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
 
         //Init Firebase
         database = FirebaseDatabase.getInstance();
@@ -106,14 +109,21 @@ public class OrderStatus extends AppCompatActivity {
         });
 
 
-        if (getIntent() == null)
-            loadOrders(Common.currentUser.getPhone());
-        else {
-            if (getIntent().getStringExtra("userPhone") == null)
+        try {
+            if (getIntent() == null)
                 loadOrders(Common.currentUser.getPhone());
-            else
-                loadOrders(getIntent().getStringExtra("userPhone"));
+            else {
+                if (getIntent().getStringExtra("userPhone") == null)
+                    loadOrders(Common.currentUser.getPhone());
+                else
+                    loadOrders(getIntent().getStringExtra("userPhone"));
+            }
+        } catch (Exception E) {
+            startActivity(new Intent(OrderStatus.this, MainActivity.class));
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            finish();
         }
+
 
         setCartStatus();
         final BubbleNavigationLinearView bubbleNavigationLinearView = findViewById(R.id.bottom_navigation_view_linear);
@@ -286,7 +296,17 @@ public class OrderStatus extends AppCompatActivity {
 
         priceTag = findViewById(R.id.checkout_layout_price);
         itemsCount = findViewById(R.id.items_count);
-        int totalCount = new Database(this).getCountCart(Common.currentUser.getPhone());
+        int totalCount = 0;
+        if (Common.currentUser != null)
+            totalCount = new Database(this).getCountCart(Common.currentUser.getPhone());
+//        else if (Paper.book().read("userPhone") != null)
+//            totalCount =new Database(this).getCountCart(Paper.book().read("userPhone").toString());
+//
+        else {
+            startActivity(new Intent(OrderStatus.this, MainActivity.class));
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            finish();
+        }
         if (totalCount == 0)
             checkoutButton.setVisibility(View.GONE);
         else {

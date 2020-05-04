@@ -6,27 +6,18 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.cepheuen.elegantnumberbutton.view.ElegantNumberButton;
-import com.google.android.gms.maps.model.LatLng;
 import com.habeshastudio.fooddelivery.R;
-import com.habeshastudio.fooddelivery.activities.Cart;
 import com.habeshastudio.fooddelivery.activities.FoodList;
 import com.habeshastudio.fooddelivery.activities.Home;
 import com.habeshastudio.fooddelivery.common.Common;
-import com.habeshastudio.fooddelivery.database.Database;
 import com.habeshastudio.fooddelivery.interfaces.ItemClickListener;
 import com.habeshastudio.fooddelivery.models.Category;
-import com.habeshastudio.fooddelivery.models.Order;
 import com.squareup.picasso.Picasso;
-import com.stepstone.apprating.C;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -71,7 +62,7 @@ public class RestaurantAdapter extends RecyclerView.Adapter<MenuViewHolder> {
         //Toast.makeText(home, String.valueOf(categoryKeyList.get(position)), Toast.LENGTH_SHORT).show();
         viewHolder.restaurantTime.setText(String.format("%.0f",20+(distance/165))+" minutes away");
 
-        Picasso.with(home.getBaseContext()).load(restaurantList.get(categoryKeyList.get(position)).getImage())
+        Picasso.with(home.getBaseContext()).load(restaurantList.get(categoryKeyList.get(position)).getImage()).placeholder(R.drawable.restaurantbg)
                 .into(viewHolder.imageView);
 
         viewHolder.setItemClickListener(new ItemClickListener() {

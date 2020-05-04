@@ -11,6 +11,7 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.transition.TransitionInflater;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -34,9 +35,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.habeshastudio.fooddelivery.MainActivity;
 import com.habeshastudio.fooddelivery.R;
 import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.database.Database;
+import com.habeshastudio.fooddelivery.helper.MyExceptionHandler;
 import com.habeshastudio.fooddelivery.interfaces.ItemClickListener;
 import com.habeshastudio.fooddelivery.models.Food;
 import com.habeshastudio.fooddelivery.models.FoodMenu;
@@ -93,10 +96,14 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
                 .setFontAttrId(R.attr.fontPath)
                 .build());
         setContentView(R.layout.activity_food_detail);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        //toolbar.setTitle("Orders");
+        setSupportActionBar(toolbar);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             getWindow().setStatusBarColor(Color.WHITE);
         }
+        Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
 
 
         food_image = findViewById(R.id.img_food);
@@ -248,7 +255,18 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
     public void setCartStatus(){
         priceTag = findViewById(R.id.checkout_layout_price);
         itemsCount = findViewById(R.id.items_count);
-        int totalCount = new Database(this).getCountCart(Common.currentUser.getPhone());
+        int totalCount = 0;
+        if (Common.currentUser != null)
+            totalCount = new Database(this).getCountCart(Common.currentUser.getPhone());
+//        else if (Paper.book().read("userPhone") != null)
+//            totalCount =new Database(this).getCountCart(Paper.book().read("userPhone").toString());
+//
+        else {
+            startActivity(new Intent(FoodDetail.this, MainActivity.class));
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            finish();
+        }
+
         if (totalCount == 0) {
             checkoutButton.setVisibility(View.GONE);
             Common.currentrestaurantID = null;

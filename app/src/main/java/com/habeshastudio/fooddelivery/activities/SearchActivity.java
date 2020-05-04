@@ -39,6 +39,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.habeshastudio.fooddelivery.R;
 import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.database.Database;
+import com.habeshastudio.fooddelivery.helper.MyExceptionHandler;
 import com.habeshastudio.fooddelivery.interfaces.ItemClickListener;
 import com.habeshastudio.fooddelivery.models.Favorites;
 import com.habeshastudio.fooddelivery.models.Food;
@@ -116,6 +117,7 @@ public class SearchActivity extends AppCompatActivity {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             getWindow().setStatusBarColor(Color.WHITE);
         }
+        Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
 
         //init Facebook
         callbackManager = CallbackManager.Factory.create();

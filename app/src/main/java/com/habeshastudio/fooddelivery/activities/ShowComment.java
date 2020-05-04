@@ -19,6 +19,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.habeshastudio.fooddelivery.R;
 import com.habeshastudio.fooddelivery.common.Common;
+import com.habeshastudio.fooddelivery.helper.MyExceptionHandler;
 import com.habeshastudio.fooddelivery.models.Rating;
 import com.habeshastudio.fooddelivery.viewHolder.ShowCommentViewHolder;
 
@@ -60,6 +61,7 @@ public class ShowComment extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Food Comments");
         setSupportActionBar(toolbar);
+        Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
 
         //Firebase
         database = FirebaseDatabase.getInstance();

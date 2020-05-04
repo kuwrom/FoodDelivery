@@ -1,16 +1,27 @@
 package com.habeshastudio.fooddelivery;
 
 import android.app.Application;
-import android.content.Intent;
+import android.content.Context;
 
 import com.google.firebase.database.FirebaseDatabase;
-import com.habeshastudio.fooddelivery.remote.GpsServices;
 
 public class Derash extends Application {
+    public static Derash instance;
+
+    public static Derash getInstance() {
+        return instance;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
+        instance = this;
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+    }
+
+    @Override
+    public Context getApplicationContext() {
+        return super.getApplicationContext();
     }
 
     @Override

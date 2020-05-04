@@ -21,10 +21,12 @@ import com.gauravk.bubblenavigation.BubbleNavigationLinearView;
 import com.gauravk.bubblenavigation.listener.BubbleNavigationChangeListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.habeshastudio.fooddelivery.MainActivity;
 import com.habeshastudio.fooddelivery.R;
 import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.database.Database;
 import com.habeshastudio.fooddelivery.helper.EmptyRecyclerView;
+import com.habeshastudio.fooddelivery.helper.MyExceptionHandler;
 import com.habeshastudio.fooddelivery.helper.RecyclerItemTouchHelper;
 import com.habeshastudio.fooddelivery.interfaces.RecyclerItemTouchHelperListener;
 import com.habeshastudio.fooddelivery.models.Favorites;
@@ -70,6 +72,8 @@ public class FavoritesActivity extends AppCompatActivity implements RecyclerItem
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Favorites");
         setSupportActionBar(toolbar);
+        Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             getWindow().setStatusBarColor(Color.WHITE);
@@ -129,7 +133,13 @@ public class FavoritesActivity extends AppCompatActivity implements RecyclerItem
     }
 
     private void loadFavorites() {
-        adapter = new FavoritesAdapter(this, new Database(this).getAllFavorites(Common.currentUser.getPhone()));
+        if (Common.currentUser != null)
+            adapter = new FavoritesAdapter(this, new Database(this).getAllFavorites(Common.currentUser.getPhone()));
+        else {
+            startActivity(new Intent(FavoritesActivity.this, MainActivity.class));
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            finish();
+        }
         recyclerView.setAdapter(adapter);
         recyclerView.setEmptyView(findViewById(R.id.empty_view_fav));
         setCartStatus();
@@ -161,7 +171,17 @@ public class FavoritesActivity extends AppCompatActivity implements RecyclerItem
 
     public void setCartStatus() {
 
-        int totalCount = new Database(this).getCountCart(Common.currentUser.getPhone());
+        int totalCount = 0;
+        if (Common.currentUser != null)
+            totalCount = new Database(this).getCountCart(Common.currentUser.getPhone());
+//        else if (Paper.book().read("userPhone") != null)
+//            totalCount =new Database(this).getCountCart(Paper.book().read("userPhone").toString());
+//
+        else {
+            startActivity(new Intent(FavoritesActivity.this, MainActivity.class));
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            finish();
+        }
         if (totalCount == 0)
             checkoutButton.setVisibility(View.GONE);
         else {

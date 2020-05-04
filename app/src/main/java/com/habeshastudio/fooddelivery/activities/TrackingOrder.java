@@ -25,6 +25,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.habeshastudio.fooddelivery.R;
 import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.helper.DirectionJSONParser;
+import com.habeshastudio.fooddelivery.helper.MyExceptionHandler;
 import com.habeshastudio.fooddelivery.models.Request;
 import com.habeshastudio.fooddelivery.models.ShippingInformation;
 import com.habeshastudio.fooddelivery.remote.IGoogleService;
@@ -60,6 +61,7 @@ public class TrackingOrder extends FragmentActivity implements OnMapReadyCallbac
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
 
         database = FirebaseDatabase.getInstance();
         requests = database.getReference("Requests");

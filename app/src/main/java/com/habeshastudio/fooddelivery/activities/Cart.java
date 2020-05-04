@@ -57,6 +57,7 @@ import com.habeshastudio.fooddelivery.R;
 import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.common.Config;
 import com.habeshastudio.fooddelivery.database.Database;
+import com.habeshastudio.fooddelivery.helper.MyExceptionHandler;
 import com.habeshastudio.fooddelivery.helper.RecyclerItemTouchHelper;
 import com.habeshastudio.fooddelivery.interfaces.RecyclerItemTouchHelperListener;
 import com.habeshastudio.fooddelivery.models.DataMessage;
@@ -152,12 +153,11 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
 
         mGoogleMapService = Common.getGoogleMapApi();
         mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
 
         //Runtime permission
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{
-                    Manifest.permission.ACCESS_COARSE_LOCATION,
                     Manifest.permission.ACCESS_FINE_LOCATION
             }, LOCATION_REQUEST_CODE);
         } else {
@@ -294,7 +294,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
     private void showAlertDialog() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(Cart.this);
         alertDialog.setTitle("One more Step...");
-        alertDialog.setMessage("Delivering to your current address.");
+        alertDialog.setMessage("Confirm your Order");
 
         final LayoutInflater inflater = this.getLayoutInflater();
         View order_address_comment = inflater.inflate(R.layout.order_address_comment, null);
@@ -303,8 +303,9 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
         //hide search icon before places fragment
         editAddress.getView().findViewById(R.id.place_autocomplete_search_button).setVisibility(View.GONE);
         //set hint for Auto Complete
-        ((EditText) editAddress.getView().findViewById(R.id.place_autocomplete_search_input))
-                .setHint("Tap to select Different Address");
+        editAddress.getView().findViewById(R.id.place_autocomplete_search_input)
+                .setVisibility(View.GONE);
+        //.setHint("Tap to select Different Address");
         //set text Size
         ((EditText) editAddress.getView().findViewById(R.id.place_autocomplete_search_input))
                 .setTextSize(14);
@@ -381,7 +382,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
         alertDialog.setView(order_address_comment);
         alertDialog.setIcon(R.drawable.ic_shopping_cart_black_24dp);
         alertDialog.setCancelable(false);
-        alertDialog.setPositiveButton("Proceed", new DialogInterface.OnClickListener() {
+        alertDialog.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
@@ -391,6 +392,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
                         Common.currentUser.getHomeAddress() != null) {
                     address = Common.currentUser.getHomeAddress();
                     ((EditText) editAddress.getView().findViewById(R.id.place_autocomplete_search_input)).setText(address);
+
                 }
                 ////////////////////////////////////////////////////////////////
 
@@ -408,10 +410,8 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
                     }
                 }
                 if (TextUtils.isEmpty(address)) {
-                    getFragmentManager().beginTransaction()
-                            .remove(getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment))
-                            .commit();
-                    return;
+                    address = "Not set yet";
+//                    return;
                 }
 
                 comment = addComment.getText().toString();
@@ -744,16 +744,14 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
     }
 
     private void startLocationUpdates() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
     }
 
     private void displayLocation() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
@@ -765,6 +763,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
         } else {
             Log.d("LOCATION", "Couldn't get your Location");
             Toast.makeText(this, "Couldn't get your Location", Toast.LENGTH_SHORT).show();
+            mDialog.dismiss();
         }
     }
 
@@ -859,10 +858,20 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
     }
 
     public void calculateTotalPrice() {
-        currentDeliveryPrice = Common.getDeliveryPrice();
-        loadListFood();
-        updatePriceTexts();
-        mDialog.dismiss();
+        try {
+            currentDeliveryPrice = Common.getDeliveryPrice();
+            loadListFood();
+            updatePriceTexts();
+            mDialog.dismiss();
+        } catch (Exception e) {
+            new Database(getBaseContext()).cleanCart(Common.currentUser.getPhone());
+            Common.currentrestaurantID = null;
+            Paper.book().delete("restId");
+            Common.alreadyBeenToCart = false;
+            Paper.book().delete("beenToCart");
+            finish();
+            //Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void updatePriceTexts() {

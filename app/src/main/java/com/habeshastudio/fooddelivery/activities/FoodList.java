@@ -39,10 +39,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.habeshastudio.fooddelivery.MainActivity;
 import com.habeshastudio.fooddelivery.R;
 import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.database.Database;
 import com.habeshastudio.fooddelivery.helper.EmptyRecyclerView;
+import com.habeshastudio.fooddelivery.helper.MyExceptionHandler;
 import com.habeshastudio.fooddelivery.interfaces.ItemClickListener;
 import com.habeshastudio.fooddelivery.models.Favorites;
 import com.habeshastudio.fooddelivery.models.Food;
@@ -130,6 +132,7 @@ public class FoodList extends AppCompatActivity {
             getWindow().setStatusBarColor(Color.WHITE);
         }
 
+        Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
 
         //init Facebook
         callbackManager = CallbackManager.Factory.create();
@@ -287,7 +290,7 @@ public class FoodList extends AppCompatActivity {
 
                 viewHolder.food_name.setText(model.getName());
                 Log.d("TAG", "" + adapter.getItemCount());
-                Picasso.with(getBaseContext()).load(model.getImage())
+                Picasso.with(getBaseContext()).load(model.getImage()).placeholder(R.drawable.foodbg)
                         .into(viewHolder.food_image);
 
                 final Food local = model;
@@ -358,6 +361,7 @@ public class FoodList extends AppCompatActivity {
                 else viewHolder.food_price.setText(String.format("ETB %s", model.getPrice()));
                 Log.d("TAG", "" + adapter.getItemCount());
                 Picasso.with(getBaseContext()).load(model.getImage())
+                        .placeholder(R.drawable.foodbg)
                         .into(viewHolder.food_image);
 
                 //quick cart
@@ -479,7 +483,17 @@ public class FoodList extends AppCompatActivity {
     public void setCartStatus(){
         priceTag = findViewById(R.id.checkout_layout_price);
         itemsCount = findViewById(R.id.items_count);
-        int totalCount = new Database(this).getCountCart(Common.currentUser.getPhone());
+        int totalCount = 0;
+        if (Common.currentUser != null)
+            totalCount = new Database(this).getCountCart(Common.currentUser.getPhone());
+//        else if (Paper.book().read("userPhone") != null)
+//            totalCount =new Database(this).getCountCart(Paper.book().read("userPhone").toString());
+//
+        else {
+            startActivity(new Intent(FoodList.this, MainActivity.class));
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            finish();
+        }
         if (totalCount == 0)
             checkoutButton.setVisibility(View.GONE);
         else{
