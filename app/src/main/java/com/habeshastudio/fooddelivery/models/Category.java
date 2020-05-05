@@ -1,9 +1,7 @@
 package com.habeshastudio.fooddelivery.models;
 
-import java.util.HashMap;
-
 /**
- * Created by kibrom on 2017/11/17.
+ * Created by kibrom on 2019/11/17.
  */
 
 public class Category {

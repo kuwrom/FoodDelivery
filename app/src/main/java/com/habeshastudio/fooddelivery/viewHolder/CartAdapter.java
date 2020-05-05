@@ -6,11 +6,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.cepheuen.elegantnumberbutton.view.ElegantNumberButton;
+import com.habeshastudio.fooddelivery.R;
 import com.habeshastudio.fooddelivery.activities.Cart;
 import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.database.Database;
 import com.habeshastudio.fooddelivery.models.Order;
-import com.habeshastudio.fooddelivery.R;
 import com.squareup.picasso.Picasso;
 
 import java.text.NumberFormat;
@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Created by Kibrom on 14/04/2018.
+ * Created by Kibrom on 14/04/2019.
  */
 
 

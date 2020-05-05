@@ -5,12 +5,12 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.habeshastudio.fooddelivery.interfaces.ItemClickListener;
 import com.habeshastudio.fooddelivery.R;
+import com.habeshastudio.fooddelivery.interfaces.ItemClickListener;
 
 
 /**
- * Created by Kibrom on 2017/11/17.
+ * Created by Kibrom on 2019/11/17.
  */
 
 public class MenuViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

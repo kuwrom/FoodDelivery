@@ -1,7 +1,7 @@
 package com.habeshastudio.fooddelivery.models;
 
 /**
- * Created by kibrom on 2017/11/16.
+ * Created by kibrom on 2019/11/16.
  */
 
 public class User {

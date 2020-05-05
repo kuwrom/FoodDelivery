@@ -6,16 +6,16 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 
+import com.habeshastudio.fooddelivery.common.Config;
 import com.habeshastudio.fooddelivery.models.Favorites;
 import com.habeshastudio.fooddelivery.models.Order;
-import com.habeshastudio.fooddelivery.common.Config;
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Kibrom on 2017/11/19.
+ * Created by Kibrom on 2019/11/19.
  */
 
 public class Database extends SQLiteAssetHelper {
