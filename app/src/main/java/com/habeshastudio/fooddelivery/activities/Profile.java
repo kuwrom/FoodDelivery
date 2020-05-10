@@ -77,7 +77,7 @@ public class Profile extends AppCompatActivity {
     String isSubscribed;
     LinearLayout  paymentMethod, promoCode, transactions, share, help;
     Button about, loved, promo, feedBack;
-    TextView name_display, address_display, balance_display;
+    TextView name_display, address_display, balance_display, moreOptions, textPaymentMethod, textDeliveryAddress, textTransactions, textShare, textHelp;
     CircularImageView  profile;
     boolean isUsd, isLanguage, isNightMode;
     FloatingActionButton notificationSwitch, languageSwitch, nightModeSwitch, currencySwitch;
@@ -105,6 +105,14 @@ public class Profile extends AppCompatActivity {
         profile = findViewById(R.id.profile_pic);
         address_display = findViewById(R.id.address_display);
         balance_display = findViewById(R.id.balance_display);
+
+        textPaymentMethod = findViewById(R.id.txt_payment);
+        textDeliveryAddress = findViewById(R.id.txt_delivery);
+        textTransactions = findViewById(R.id.txt_transactions);
+        textShare = findViewById(R.id.txt_share);
+        textHelp = findViewById(R.id.txt_help);
+
+        moreOptions = findViewById(R.id.more_options);
         users = FirebaseDatabase.getInstance().getReference("User");
         feedback = FirebaseDatabase.getInstance().getReference("Feedback");
         storage = FirebaseStorage.getInstance();
@@ -317,7 +325,18 @@ public class Profile extends AppCompatActivity {
     private void updateView(String language) {
         Context context = LocaleHelper.setLocale(this, language);
         Resources resources = context.getResources();
+        loved.setText(resources.getString(R.string.call_us));
+        promo.setText(resources.getString(R.string.promo));
+        moreOptions.setText(resources.getString(R.string.more_options));
 
+        textPaymentMethod.setText(resources.getString(R.string.setup_payment_method));
+        textDeliveryAddress.setText(resources.getString(R.string.home_address));
+        textTransactions.setText(resources.getString(R.string.history_and_transactions));
+        textShare.setText(resources.getString(R.string.share_dine));
+        textHelp.setText(resources.getString(R.string.help));
+
+        about.setText(resources.getString(R.string.about));
+        feedBack.setText(resources.getString(R.string.send_feedback));
     }
 
     private void refreshStatus() {

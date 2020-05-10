@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Dine</string>
+    <string name="app_name" translatable="false">Dine</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="home">Home</string>
@@ -81,4 +81,8 @@
     <string name="cod">Pay when delivered to you</string>
     <string name="food_name">Food Name</string>
     <string name="loading">…</string>
+    <string name="call_us">Call Us</string>
+    <string name="share_dine">Share Dine</string>
+    <string name="restaurants_near_you">Restaurants near you</string>
+    <string name="no_restaurant_around">No restaurant around</string>
 </resources>

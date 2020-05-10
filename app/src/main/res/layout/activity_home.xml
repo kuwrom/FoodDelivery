@@ -58,7 +58,7 @@
                 android:textColor="@color/colorLightBlack"
                 android:layout_marginTop="12dp"
                 android:paddingLeft="16dp"
-                android:text="Restaurants near you"
+                android:text="@string/restaurants_near_you"
                 android:textSize="18sp"
                 android:layout_height="wrap_content"/>
 
@@ -102,7 +102,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="64dp"
             android:gravity="center"
-            android:text="No restaurant around"
+            android:text="@string/no_restaurant_around"
             android:textColor="@color/grey_active"
             android:textSize="14sp" />
     </LinearLayout>

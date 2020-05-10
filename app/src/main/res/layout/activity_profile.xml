@@ -174,7 +174,7 @@
                                     android:layout_weight="1"
                                     android:background="@drawable/bg_ui"
                                     android:backgroundTint="@color/colorMoreGreen"
-                                    android:text="Call Us"
+                                    android:text="@string/call_us"
                                     android:textColor="@color/colorWhite" />
 
                                 <Button
@@ -293,6 +293,7 @@
                     </LinearLayout>
 
                     <TextView
+                        android:id="@+id/more_options"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="15dp"
@@ -321,6 +322,7 @@
                         android:tint="@color/blue_grey_active" />
 
                     <TextView
+                        android:id="@+id/txt_payment"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="24dp"
@@ -353,6 +355,7 @@
                         android:tint="@color/blue_grey_active" />
 
                     <TextView
+                        android:id="@+id/txt_delivery"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="24dp"
@@ -385,6 +388,7 @@
                         android:tint="@color/blue_grey_active" />
 
                     <TextView
+                        android:id="@+id/txt_transactions"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="24dp"
@@ -417,10 +421,11 @@
                         android:tint="@color/blue_grey_active" />
 
                     <TextView
+                        android:id="@+id/txt_share"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="24dp"
-                        android:text="Share Dine"
+                        android:text="@string/share_dine"
                         android:textColor="@color/colorLightBlack"
                         android:textSize="18sp" />
                 </LinearLayout>
@@ -449,6 +454,7 @@
                         android:tint="@color/blue_grey_active" />
 
                     <TextView
+                        android:id="@+id/txt_help"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="24dp"
