@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 
 import com.google.firebase.database.FirebaseDatabase;
+import com.habeshastudio.fooddelivery.helper.LocaleHelper;
 
 public class Derash extends Application {
     public static Derash instance;
@@ -28,5 +29,10 @@ public class Derash extends Application {
     public void onTerminate() {
         super.onTerminate();
         //stopService(new Intent(getBaseContext(), GpsServices.class));
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(LocaleHelper.onAtach(base, "en"));
     }
 }

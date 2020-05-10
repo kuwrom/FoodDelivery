@@ -514,7 +514,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
                             Common.currentUser.getPhone(),
                             Common.currentUser.getName(),
                             address,
-                            txtTotalPrice.getText().toString(),
+                            txtTotalPrice.getText().toString() + ", Delivery price: " + deliveryFeeView.getText().toString(),
                             "0",
                             comment,
                             "Unpaid",
@@ -529,10 +529,11 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
                     String orderNumber = String.valueOf(System.currentTimeMillis());
                     requests.child(orderNumber)
                             .setValue(request);
+                    sendNotificationOrder(orderNumber);
                     //Delete cart
                     new Database(getBaseContext()).cleanCart(Common.currentUser.getPhone());
 
-                    sendNotificationOrder(orderNumber);
+
                     //Toast.makeText(Cart.this, "Thank you, Order placed!", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(Cart.this, OrderStatus.class));
                     Common.currentrestaurantID = null;
@@ -641,7 +642,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
 
     private void sendNotificationOrder(final String orderNumber) {
         DatabaseReference tokens = FirebaseDatabase.getInstance().getReference("Tokens");
-        Query data = tokens.orderByChild("isServerToken").equalTo(true);
+        Query data = tokens.orderByChild("serverToken").equalTo(true);
         data.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -673,7 +674,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
                                             Paper.book().delete("beenToCart");
                                             finish();
                                         } else {
-                                            Toast.makeText(Cart.this, "Failed!", Toast.LENGTH_SHORT).show();
+                                            //Toast.makeText(Cart.this, "...", Toast.LENGTH_SHORT).show();
                                         }
                                     }
                                 }

@@ -59,13 +59,13 @@ public class Common {
     public static String convertCodeToStatus(String code) {
         switch (code) {
             case "0":
-                return "Placed";
+                return "Your Order is Pending";
             case "1":
-                return "On My Way";
+                return "Your Food is Ordered";
             case "2":
-                return "Shipping";
+                return "Food Shipping";
             default:
-                return "Shipped";
+                return "Food delivered to you";
         }
     }
 

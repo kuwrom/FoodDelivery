@@ -26,11 +26,10 @@ import com.google.firebase.database.ValueEventListener;
 import com.habeshastudio.fooddelivery.activities.Home;
 import com.habeshastudio.fooddelivery.activities.authentication.Register;
 import com.habeshastudio.fooddelivery.common.Common;
+import com.habeshastudio.fooddelivery.helper.LocaleHelper;
 import com.habeshastudio.fooddelivery.models.User;
 
 import io.paperdb.Paper;
-import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
-import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -43,18 +42,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+        super.attachBaseContext(LocaleHelper.onAtach(newBase, "en"));
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
-                .setDefaultFontPath("fonts/fr.ttf")
-                .setFontAttrId(R.attr.fontPath)
-                .build());
         setContentView(R.layout.activity_main);
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -76,11 +69,14 @@ public class MainActivity extends AppCompatActivity {
         geoRef = database.getReference("CurrentUserLocation");
         geoRestRef = database.getReference("RerstaurantLocation");
         geoFire = new GeoFire(geoRestRef);
-        //geoFire.setLocation("-M6ThgfdUNXVrCY3Mq1A", new GeoLocation(13.488591,39.471193));
+        //geoFire.setLocation("-M6iO4I5aDsX5g6LE8U5", new GeoLocation(13.489735,39.477404));
         //Toast.makeText(this, "hi", Toast.LENGTH_SHORT).show();
 
         //notification
         Paper.init(MainActivity.this);
+        String language = Paper.book().read("language");
+        if (language == null)
+            Paper.book().write("language", "en");
         if (Paper.book().read("usd") != null)
         Common.isUsdSelected  = Paper.book().read("usd");
         if (Paper.book().read("restId") != null)

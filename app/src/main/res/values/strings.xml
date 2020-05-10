@@ -21,8 +21,8 @@
     <string name="action_settings">Settings</string>
     <string name="action_refresh">Refresh</string>
 
-    <string name="facebook_app_id">440220469885998</string>
-    <string name="facebook_login_protocol_name">fb440220469885998</string>
+    <string name="facebook_app_id" translatable="false">440220469885998</string>
+    <string name="facebook_login_protocol_name" translatable="false">fb440220469885998</string>
     <string name="title_activity_tracking_order">Map</string>
     <string name="title_activity_maps">Map</string>
     <string name="dear">Dear</string>
@@ -75,10 +75,10 @@
     <string name="welcome_to_dine">Welcome to Dine</string>
     <string name="phone_number_please">Phone Number Please?</string>
     <string name="and_your_name">And your Name</string>
-    <string name="apply" translatable="false">Apply</string>
+    <string name="apply">Apply</string>
     <string name="pay_wiz_paypal">Pay With Paypal</string>
     <string name="pay_with_app_balence">Pay with app balance</string>
-    <string name="cod" translatable="false">Pay when delivered to you</string>
+    <string name="cod">Pay when delivered to you</string>
     <string name="food_name">Food Name</string>
     <string name="loading">…</string>
 </resources>

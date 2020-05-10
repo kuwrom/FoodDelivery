@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -47,6 +48,7 @@ import com.habeshastudio.fooddelivery.R;
 import com.habeshastudio.fooddelivery.activities.profile.PromoCodes;
 import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.database.Database;
+import com.habeshastudio.fooddelivery.helper.LocaleHelper;
 import com.habeshastudio.fooddelivery.helper.MyExceptionHandler;
 import com.habeshastudio.fooddelivery.models.Order;
 import com.habeshastudio.fooddelivery.models.User;
@@ -107,7 +109,13 @@ public class Profile extends AppCompatActivity {
         feedback = FirebaseDatabase.getInstance().getReference("Feedback");
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
+
         Paper.init(Profile.this);
+        String language = Paper.book().read("language");
+        if (language == null)
+            Paper.book().write("language", "en");
+        updateView((String) Paper.book().read("language"));
+
         //Refresh user status
         loadUser();
 
@@ -303,6 +311,12 @@ public class Profile extends AppCompatActivity {
         });
 
         setCartStatus();
+
+    }
+
+    private void updateView(String language) {
+        Context context = LocaleHelper.setLocale(this, language);
+        Resources resources = context.getResources();
 
     }
 

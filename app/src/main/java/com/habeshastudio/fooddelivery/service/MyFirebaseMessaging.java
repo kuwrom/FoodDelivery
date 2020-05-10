@@ -11,11 +11,10 @@ import android.support.v4.app.NotificationCompat;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.habeshastudio.fooddelivery.R;
+import com.habeshastudio.fooddelivery.activities.OrderStatus;
 import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.helper.NotificationHelper;
-import com.habeshastudio.fooddelivery.MainActivity;
-import com.habeshastudio.fooddelivery.activities.OrderStatus;
-import com.habeshastudio.fooddelivery.R;
 
 import java.util.Map;
 import java.util.Random;
@@ -72,7 +71,7 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
         String message = data.get("message");
         if (Common.currentUser != null) {
 
-            Intent intent = new Intent(this, MainActivity.class);
+            Intent intent = new Intent(this, OrderStatus.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
 
