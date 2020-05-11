@@ -65,6 +65,7 @@ import com.habeshastudio.fooddelivery.models.Banner;
 import com.habeshastudio.fooddelivery.models.Category;
 import com.habeshastudio.fooddelivery.models.Order;
 import com.habeshastudio.fooddelivery.models.Token;
+import com.habeshastudio.fooddelivery.models.User;
 import com.habeshastudio.fooddelivery.remote.APIService;
 import com.habeshastudio.fooddelivery.remote.IGoogleService;
 import com.habeshastudio.fooddelivery.viewHolder.RestaurantAdapter;
@@ -482,10 +483,20 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
     protected void onResume() {
         isInternet();
         super.onResume();
-        if (Common.currentUser.getPhone() == null)
-            if (Paper.book().read("userPhone") != null)
-                Common.currentUser.setPhone(Paper.book().read("userPhone").toString());
-            else finish();
+        users.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User currentUser = dataSnapshot.child(Paper.book().read("userPhone").toString()).getValue(User.class);
+                Common.currentUser = currentUser;
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
+
+
         checkPermission();
 
         if (!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {

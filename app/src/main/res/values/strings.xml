@@ -150,5 +150,7 @@
     <string name="our_mission">Our Mission</string>
     <string name="mission_statement">Dine is transforming the way goods move in Our city by enabling anyone to have anything delivered on-demand. Our revolutionary Urban Logistics platform connects customers with local couriers who can deliver anything from any store or restaurant in minutes. We empower our community to shop local with no waiting, and empower businesses through our Platform to offer delivery.</string>
     <string name="our_team">Our Team</string>
+    <string name="not_yet_verification">didn\'t get the verification code yet? press resend to request a new one</string>
+    <string name="cance_verification">Cancel verification process?</string>
 
 </resources>

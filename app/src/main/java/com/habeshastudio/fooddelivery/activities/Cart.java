@@ -115,6 +115,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
     RecyclerView.LayoutManager layoutManager;
     FirebaseDatabase database;
     DatabaseReference requests;
+    DatabaseReference users;
     Button checkout_button;
     LinearLayout btnPromoCode;
     RelativeLayout btnCashChange;
@@ -175,6 +176,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
 
         //Firebase
         database = FirebaseDatabase.getInstance();
+        users = FirebaseDatabase.getInstance().getReference("User");
         requests = database.getReference("Requests");
 
         //init
@@ -903,6 +905,22 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
             subTotalView.setText(String.format("ETB %s", (int) subTotal));
             taxView.setText(String.format("ETB %s", (int) tax));
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        users.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User currentUser = dataSnapshot.child(Paper.book().read("userPhone").toString()).getValue(User.class);
+                Common.currentUser = currentUser;
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
     }
 
     public void showGpsDisabledDialog() {

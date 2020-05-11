@@ -19,8 +19,11 @@ import android.widget.TextView;
 
 import com.gauravk.bubblenavigation.BubbleNavigationLinearView;
 import com.gauravk.bubblenavigation.listener.BubbleNavigationChangeListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.habeshastudio.fooddelivery.MainActivity;
 import com.habeshastudio.fooddelivery.R;
 import com.habeshastudio.fooddelivery.common.Common;
@@ -32,6 +35,7 @@ import com.habeshastudio.fooddelivery.helper.RecyclerItemTouchHelper;
 import com.habeshastudio.fooddelivery.interfaces.RecyclerItemTouchHelperListener;
 import com.habeshastudio.fooddelivery.models.Favorites;
 import com.habeshastudio.fooddelivery.models.Order;
+import com.habeshastudio.fooddelivery.models.User;
 import com.habeshastudio.fooddelivery.viewHolder.FavoritesAdapter;
 import com.habeshastudio.fooddelivery.viewHolder.FavoritesViewHolder;
 
@@ -39,6 +43,7 @@ import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 
+import io.paperdb.Paper;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 public class FavoritesActivity extends AppCompatActivity implements RecyclerItemTouchHelperListener {
@@ -48,6 +53,7 @@ public class FavoritesActivity extends AppCompatActivity implements RecyclerItem
 
     FirebaseDatabase database;
     DatabaseReference foodList;
+    DatabaseReference users;
 
     LinearLayout checkoutButton;
 
@@ -79,6 +85,10 @@ public class FavoritesActivity extends AppCompatActivity implements RecyclerItem
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             getWindow().setStatusBarColor(Color.WHITE);
         }
+        Paper.init(FavoritesActivity.this);
+
+        users = FirebaseDatabase.getInstance().getReference("User");
+
         rootLayout = findViewById(R.id.root_fav_layout);
         recyclerView = findViewById(R.id.recycler_fav);
         recyclerView.setHasFixedSize(true);
@@ -196,6 +206,22 @@ public class FavoritesActivity extends AppCompatActivity implements RecyclerItem
                 priceTag.setText(fmt.format(total/Common.ETB_RATE));
             else priceTag.setText(String.format("ETB %s", total));
         }
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        users.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User currentUser = dataSnapshot.child(Paper.book().read("userPhone").toString()).getValue(User.class);
+                Common.currentUser = currentUser;
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
     }
 
     @Override

@@ -145,8 +145,8 @@ public class MainActivity extends AppCompatActivity {
     }
     void isInternet() {
         if (!Common.isConnectedToInternet(getBaseContext())) {
-            final Snackbar snackbar = Snackbar.make(rootLayout, "Connection lost", Snackbar.LENGTH_INDEFINITE);
-            snackbar.setAction("RETRY", new View.OnClickListener() {
+            final Snackbar snackbar = Snackbar.make(rootLayout, getResources().getString(R.string.no_connection), Snackbar.LENGTH_INDEFINITE);
+            snackbar.setAction(getResources().getString(R.string.retry), new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (!Common.isConnectedToInternet(getBaseContext())) {

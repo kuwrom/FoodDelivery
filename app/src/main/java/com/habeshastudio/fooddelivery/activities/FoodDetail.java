@@ -46,6 +46,7 @@ import com.habeshastudio.fooddelivery.models.Food;
 import com.habeshastudio.fooddelivery.models.FoodMenu;
 import com.habeshastudio.fooddelivery.models.Order;
 import com.habeshastudio.fooddelivery.models.Rating;
+import com.habeshastudio.fooddelivery.models.User;
 import com.habeshastudio.fooddelivery.viewHolder.FlavoursViewHolder;
 import com.squareup.picasso.Picasso;
 import com.stepstone.apprating.AppRatingDialog;
@@ -71,7 +72,7 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
     RatingBar ratingBar;
     LinearLayout checkoutButton;
     String foodId = "";
-
+    DatabaseReference users;
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
     FirebaseRecyclerAdapter<FoodMenu, FlavoursViewHolder> adapter;
@@ -107,7 +108,7 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
         }
         Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
 
-
+        Paper.init(FoodDetail.this);
         food_image = findViewById(R.id.img_food);
 
         getWindow().setSharedElementEnterTransition(TransitionInflater.from(this).inflateTransition(R.transition.shared_element_transation));
@@ -126,6 +127,7 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
 
         //Firbase
         database = FirebaseDatabase.getInstance();
+        users = database.getReference("User");
         foods = database.getReference("Foods");
         foodList = foods.child(getIntent().getStringExtra("FoodId")).child("flavours");
         ratingTbl = database.getReference("Rating");
@@ -389,10 +391,19 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
     @Override
     protected void onResume() {
         super.onResume();
-        if (Common.currentUser.getPhone() == null)
-            if (Paper.book().read("userPhone") != null)
-                Common.currentUser.setPhone(Paper.book().read("userPhone").toString());
-            else finish();
+
+        users.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User currentUser = dataSnapshot.child(Paper.book().read("userPhone").toString()).getValue(User.class);
+                Common.currentUser = currentUser;
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
             if (adapter == null){
                 adapter.startListening();
                 loadMenu();}

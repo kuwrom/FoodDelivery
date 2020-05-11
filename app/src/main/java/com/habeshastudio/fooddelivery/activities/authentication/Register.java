@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -32,13 +33,14 @@ import com.habeshastudio.fooddelivery.helper.LocaleHelper;
 
 import java.util.Objects;
 
+import io.paperdb.Paper;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 public class Register extends AppCompatActivity {
 
     public static String name, phone;
     EditText edtPhone, edtName;
-    TextView btnTrouble;
+    TextView btnTrouble, registerLable;
     FloatingActionButton btnSignMeUp;
     RelativeLayout rootLayout;
     DatabaseReference users;
@@ -77,8 +79,7 @@ public class Register extends AppCompatActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
 
-
-
+        registerLable = findViewById(R.id.register_label);
         edtPhone = findViewById(R.id.edtPhone);
         edtName = findViewById(R.id.edtName);
         btnTrouble = findViewById(R.id.btn_trouble);
@@ -89,12 +90,18 @@ public class Register extends AppCompatActivity {
         final Animation animShake = AnimationUtils.loadAnimation(this, R.anim.shake);
 
         isInternet();
-
+        Paper.init(Register.this);
         btnTrouble.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(Register.this, TroubleAuth.class));
-                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                String language = Paper.book().read("language");
+                if (language.equals("en")) {
+                    Paper.book().write("language", "am");
+                    updateView((String) Paper.book().read("language"));
+                } else {
+                    Paper.book().write("language", "en");
+                    updateView((String) Paper.book().read("language"));
+                }
             }
         });
 
@@ -107,7 +114,10 @@ public class Register extends AppCompatActivity {
         dialog_verifying = show.create();
         dialog_verifying.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 
-
+        String language = Paper.book().read("language");
+        if (language == null)
+            Paper.book().write("language", "en");
+        updateView((String) Paper.book().read("language"));
         btnSignMeUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -177,10 +187,19 @@ public class Register extends AppCompatActivity {
         });
     }
 
+    private void updateView(String language) {
+        Context context = LocaleHelper.setLocale(this, language);
+        Resources resources = context.getResources();
+        registerLable.setText(resources.getString(R.string.welcome_to_dine));
+        edtPhone.setHint(resources.getString(R.string.phone_number_please));
+        edtName.setHint(resources.getString(R.string.and_your_name));
+        btnTrouble.setText(resources.getString(R.string.change_language));
+    }
+
     void isInternet() {
         if (!Common.isConnectedToInternet(getBaseContext())) {
-            final Snackbar snackbar = Snackbar.make(rootLayout, "Connection lost", Snackbar.LENGTH_INDEFINITE);
-            snackbar.setAction("RETRY", new View.OnClickListener() {
+            final Snackbar snackbar = Snackbar.make(rootLayout, getResources().getString(R.string.no_connection), Snackbar.LENGTH_INDEFINITE);
+            snackbar.setAction(getResources().getString(R.string.retry), new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (!Common.isConnectedToInternet(getBaseContext())) {

@@ -96,15 +96,17 @@ public class Common {
         if (currentUserLocation!=null){
             double distance = restaurantDistance.get(currentrestaurantID);
             if (distance < 1500) {
+                return 20.0;
+            } else if (distance < 2000) {
                 return 25.0;
             } else if (distance < 3000) {
                 return 30.0;
             } else if (distance < 4000) {
                 return 35.0;
-            } else if (distance < 6000) {
+            } else if (distance < 5000) {
                 return 45.0;
-            } else if (distance < 8100) {
-                return 60.0;
+            } else if (distance < 6000) {
+                return 55.0;
             }else{
                 return 100.0;
             }

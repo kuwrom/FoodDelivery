@@ -49,6 +49,7 @@ import com.habeshastudio.fooddelivery.activities.profile.PromoCodes;
 import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.database.Database;
 import com.habeshastudio.fooddelivery.helper.LocaleHelper;
+import com.habeshastudio.fooddelivery.helper.MyExceptionHandler;
 import com.habeshastudio.fooddelivery.models.Order;
 import com.habeshastudio.fooddelivery.models.User;
 import com.mikhaellopez.circularimageview.CircularImageView;
@@ -96,7 +97,7 @@ public class Profile extends AppCompatActivity {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             getWindow().setStatusBarColor(Color.WHITE);
         }
-        //Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
+        Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
         name_display = findViewById(R.id.name_display);
         profile = findViewById(R.id.profile_pic);
         address_display = findViewById(R.id.address_display);
@@ -397,6 +398,7 @@ public class Profile extends AppCompatActivity {
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
+                                loadUser();
                                 Toast.makeText(Profile.this, getResources().getString(R.string.home_success), Toast.LENGTH_SHORT).show();
                             }
                         })
@@ -584,10 +586,18 @@ public class Profile extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (Common.currentUser.getPhone() == null)
-            if (Paper.book().read("userPhone") != null)
-                Common.currentUser.setPhone(Paper.book().read("userPhone").toString());
-            else finish();
+        users.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User currentUser = dataSnapshot.child(Paper.book().read("userPhone").toString()).getValue(User.class);
+                Common.currentUser = currentUser;
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+        loadUser();
     }
 
     @Override

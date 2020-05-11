@@ -51,6 +51,7 @@ import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 
+import io.paperdb.Paper;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 public class OrderStatus extends AppCompatActivity {
@@ -63,7 +64,7 @@ public class OrderStatus extends AppCompatActivity {
     //Firebase
     FirebaseDatabase database;
     DatabaseReference requests;
-
+    DatabaseReference users;
     LinearLayout checkoutButton;
     TextView itemsCount, priceTag;
 
@@ -89,9 +90,10 @@ public class OrderStatus extends AppCompatActivity {
             getWindow().setStatusBarColor(Color.WHITE);
         }
         Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
-
+        Paper.init(OrderStatus.this);
         //Init Firebase
         database = FirebaseDatabase.getInstance();
+        users = database.getReference("User");
         requests = database.getReference("Requests");
         //final Animation animShake = AnimationUtils.loadAnimation(this, R.anim.shake);
         recyclerView = findViewById(R.id.listOrders);
@@ -283,6 +285,22 @@ public class OrderStatus extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         adapter.stopListening();
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        users.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User currentUser = dataSnapshot.child(Paper.book().read("userPhone").toString()).getValue(User.class);
+                Common.currentUser = currentUser;
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
     }
 
     public void setCartStatus() {

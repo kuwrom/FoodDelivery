@@ -50,6 +50,7 @@ import com.habeshastudio.fooddelivery.interfaces.ItemClickListener;
 import com.habeshastudio.fooddelivery.models.Favorites;
 import com.habeshastudio.fooddelivery.models.Food;
 import com.habeshastudio.fooddelivery.models.Order;
+import com.habeshastudio.fooddelivery.models.User;
 import com.habeshastudio.fooddelivery.viewHolder.FoodViewHolder;
 import com.mancj.materialsearchbar.MaterialSearchBar;
 import com.squareup.picasso.Picasso;
@@ -60,6 +61,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import io.paperdb.Paper;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 public class FoodList extends AppCompatActivity {
@@ -69,7 +71,7 @@ public class FoodList extends AppCompatActivity {
 
     FirebaseDatabase database;
     DatabaseReference foodList;
-
+    DatabaseReference users;
     TextView itemsCount, priceTag;
     LinearLayout checkoutButton;
 
@@ -121,6 +123,24 @@ public class FoodList extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        users.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User currentUser = dataSnapshot.child(Paper.book().read("userPhone").toString()).getValue(User.class);
+                Common.currentUser = currentUser;
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+        if (adapter != null)
+            adapter.startListening();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
@@ -138,9 +158,11 @@ public class FoodList extends AppCompatActivity {
         //init Facebook
         callbackManager = CallbackManager.Factory.create();
         shareDialog = new ShareDialog(this);
+        Paper.init(FoodList.this);
 
         //Firebase Init
         database = FirebaseDatabase.getInstance();
+        users = database.getReference("User");
         foodList = database.getReference("Foods");
         checkoutButton =findViewById(R.id.btn_checkout_cart);
         checkoutButton.setOnClickListener(new View.OnClickListener() {
@@ -464,13 +486,6 @@ public class FoodList extends AppCompatActivity {
         // Set Adapter
         recyclerView.setAdapter(adapter);
         swipeRefreshLayout.setRefreshing(false);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (adapter != null)
-            adapter.startListening();
     }
 
     @Override

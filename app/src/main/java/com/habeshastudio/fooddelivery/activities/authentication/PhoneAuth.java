@@ -108,7 +108,7 @@ public class PhoneAuth extends AppCompatActivity {
         mDialog = new ProgressDialog(PhoneAuth.this);
 
         phoneText.setText(new StringBuilder(phone));
-        textTitle.setText(new StringBuilder("Dear " + username));
+        textTitle.setText(new StringBuilder(getResources().getString(R.string.dear) + " " + username));
 
         btnTrouble.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -159,7 +159,7 @@ public class PhoneAuth extends AppCompatActivity {
 
                             @Override
                             public void onFinish() {
-                                firstText.setText(new StringBuilder("didn't get the verification code yet? press resend to request a new one"));
+                                firstText.setText(new StringBuilder(getString(R.string.not_yet_verification)));
                                 progressBar.setVisibility(View.GONE);
                                 canResend = true;
                                 btnContinue.setText(getString(R.string.resend));
@@ -169,7 +169,7 @@ public class PhoneAuth extends AppCompatActivity {
                         }.start();
                         sendVerificationCode(phone);
                     } else
-                        Toast.makeText(PhoneAuth.this, "Sorry, We can't make it to the internet!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(PhoneAuth.this, getResources().getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
                 } else if (canResend) {
                     if (Common.isConnectedToInternet(getBaseContext())) {
                         canResend = false;
@@ -192,13 +192,13 @@ public class PhoneAuth extends AppCompatActivity {
                             }
                         }.start();
                     } else
-                        Toast.makeText(PhoneAuth.this, "Please Check your Internet Connection", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(PhoneAuth.this, getResources().getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
 
                 } else if (canVerify) {
                     if (Common.isConnectedToInternet(getBaseContext())) {
                         String verificationCode = Objects.requireNonNull(pinView.getText()).toString();
                         if (verificationCode.isEmpty()) {
-                            Toast.makeText(PhoneAuth.this, "Enter verification code", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(PhoneAuth.this, "Enter verification code", Toast.LENGTH_SHORT).show();
                         } else {
                             mDialog.setMessage("Please Wait...");
                             mDialog.show();
@@ -206,7 +206,7 @@ public class PhoneAuth extends AppCompatActivity {
                             signInWithPhoneAuthCredential(credential);
                         }
                     } else
-                        Toast.makeText(PhoneAuth.this, "Please Check your Internet Connection", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(PhoneAuth.this, getResources().getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
                 } else
                     Toast.makeText(PhoneAuth.this, "Something went wrong", Toast.LENGTH_SHORT).show();
             }
@@ -239,15 +239,15 @@ public class PhoneAuth extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         final android.support.v7.app.AlertDialog.Builder alertDialog = new AlertDialog.Builder(PhoneAuth.this);
-        alertDialog.setTitle("Cancel verification process?");
-        alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+        alertDialog.setTitle(R.string.cance_verification);
+        alertDialog.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 startActivity(new Intent(PhoneAuth.this, MainActivity.class));
                 finish();
             }
         });
-        alertDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+        alertDialog.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
@@ -269,7 +269,7 @@ public class PhoneAuth extends AppCompatActivity {
 
 
     private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
-        mDialog.setMessage("Verifying phone...");
+        mDialog.setMessage(getResources().getString(R.string.processing));
         mDialog.show();
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -297,7 +297,7 @@ public class PhoneAuth extends AppCompatActivity {
                                     else
                                     {
                                         user.setBalance(users.child(phone).child("balance"));
-                                        user.setHomeAddress(users.child(phone).child("j").toString());
+                                        //user.setHomeAddress(users.child(phone).child("j").toString());
                                     }
                                     //users.child(phone).setValue(user);
                                     Common.currentUser = user;

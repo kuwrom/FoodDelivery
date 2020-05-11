@@ -14,16 +14,21 @@ import android.view.ViewGroup;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.habeshastudio.fooddelivery.R;
 import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.helper.LocaleHelper;
 import com.habeshastudio.fooddelivery.helper.MyExceptionHandler;
 import com.habeshastudio.fooddelivery.models.Rating;
+import com.habeshastudio.fooddelivery.models.User;
 import com.habeshastudio.fooddelivery.viewHolder.ShowCommentViewHolder;
 
+import io.paperdb.Paper;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 public class ShowComment extends AppCompatActivity {
@@ -31,6 +36,7 @@ public class ShowComment extends AppCompatActivity {
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
     FirebaseDatabase database;
+    DatabaseReference users;
     DatabaseReference ratingTbl;
     SwipeRefreshLayout mSwipeRefeshLayout;
     FirebaseRecyclerAdapter<Rating, ShowCommentViewHolder> adapter;
@@ -66,10 +72,12 @@ public class ShowComment extends AppCompatActivity {
 
         //Firebase
         database = FirebaseDatabase.getInstance();
+        users = database.getReference("User");
         ratingTbl = database.getReference("Rating");
         recyclerView = findViewById(R.id.recyclerComment);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
+        Paper.init(ShowComment.this);
 
         //swipe refresh layout
         mSwipeRefeshLayout = findViewById(R.id.commentSwipeLayout);
@@ -150,6 +158,22 @@ public class ShowComment extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        users.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User currentUser = dataSnapshot.child(Paper.book().read("userPhone").toString()).getValue(User.class);
+                Common.currentUser = currentUser;
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
     }
 
     private void loadComment(String foodId) {

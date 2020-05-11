@@ -52,7 +52,7 @@
     <string name="set_home_address">የቤትዎ አድራሻ</string>
     <string name="history_and_transactions">የግዢ ማህደር</string>
     <string name="send_feedback">አስተያየትዎን ይላኩልን</string>
-    <string name="about">ስኛ</string>
+    <string name="about">ስለኛ</string>
     <string name="promo_codes">የፕሮሞሽን ይለፍ ቃሎች</string>
     <string name="having_trouble">ችግራለ?</string>
     <string name="sign_in_to_hodam">Sign in to Hodam</string>
@@ -117,7 +117,7 @@
     <string name="removed_from_fav">ከውድድ ወቷል</string>
     <string name="no_favourite_items_yet">እስካሁን የወደዱት ነገር የለም</string>
     <string name="no_ordered_items_yet">እስካሁን ያዘዙት ነገር የለም</string>
-    <string name="status">ትዛዙ </string>
+    <string name="status">Status: </string>
     <string name="order_pending">አልተሰራም</string>
     <string name="food_ordered">እየተሰራ ነው</string>
     <string name="order_shipped">ተጭኗል</string>
@@ -146,4 +146,7 @@
     <string name="our_mission">Our Mission</string>
     <string name="mission_statement">Dine is transforming the way goods move in Our city by enabling anyone to have anything delivered on-demand. Our revolutionary Urban Logistics platform connects customers with local couriers who can deliver anything from any store or restaurant in minutes. We empower our community to shop local with no waiting, and empower businesses through our Platform to offer delivery.</string>
     <string name="our_team">Our Team</string>
+    <string name="intro_about">Whatever you want, we get it. \nDine is whatever-you-can-think-of delivery\nNeed another charger? Kitchen staples? Or Alcohol? We’ve got everything you need available for delivery within an hour.</string>
+    <string name="not_yet_verification">didn\'t get the verification code yet? press resend to request a new one</string>
+    <string name="cance_verification">የማረጋገጫ ክንውኑ ይቋረጥ?</string>
 </resources>
