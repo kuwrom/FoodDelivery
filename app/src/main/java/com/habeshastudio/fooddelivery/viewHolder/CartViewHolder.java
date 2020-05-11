@@ -1,23 +1,24 @@
 package com.habeshastudio.fooddelivery.viewHolder;
 
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cepheuen.elegantnumberbutton.view.ElegantNumberButton;
+import com.habeshastudio.fooddelivery.R;
 import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.interfaces.ItemClickListener;
-import com.habeshastudio.fooddelivery.R;
 
 public class CartViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnCreateContextMenuListener {
 
     public TextView txt_cart_name, txt_price;
     public ElegantNumberButton btn_quantity;
-    public ImageView cart_image;
+    public ImageView cart_image, cartDelete;
+    CardView rootCartLayout;
 
     public RelativeLayout view_background;
     public RelativeLayout view_foreground;
@@ -32,6 +33,8 @@ public class CartViewHolder extends RecyclerView.ViewHolder implements View.OnCl
         cart_image = itemView.findViewById(R.id.cart_image);
         view_background = itemView.findViewById(R.id.view_background);
         view_foreground = itemView.findViewById(R.id.view_foreground);
+        cartDelete = itemView.findViewById(R.id.delete_cart_icon);
+        rootCartLayout = itemView.findViewById(R.id.root_cart_layout);
 
         itemView.setOnCreateContextMenuListener(this);
     }

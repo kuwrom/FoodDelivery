@@ -4,6 +4,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import com.cepheuen.elegantnumberbutton.view.ElegantNumberButton;
 import com.habeshastudio.fooddelivery.R;
@@ -42,7 +44,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(CartViewHolder holder, final int position) {
+    public void onBindViewHolder(final CartViewHolder holder, final int position) {
 
         Picasso.with(cart.getBaseContext())
                 .load(listData.get(position).getImage())
@@ -51,6 +53,14 @@ public class CartAdapter extends RecyclerView.Adapter<CartViewHolder> {
                 .into(holder.cart_image);
 
         holder.btn_quantity.setNumber(listData.get(position).getQuantity());
+        final Animation animShake = AnimationUtils.loadAnimation(cart, R.anim.swipe_left);
+        holder.cartDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                holder.view_foreground.startAnimation(animShake);
+                //Toast.makeText(cart, "Swipe from left to delete this", Toast.LENGTH_SHORT).show();
+            }
+        });
         holder.btn_quantity.setOnValueChangeListener(new ElegantNumberButton.OnValueChangeListener() {
             @Override
             public void onValueChange(ElegantNumberButton view, int oldValue, int newValue) {

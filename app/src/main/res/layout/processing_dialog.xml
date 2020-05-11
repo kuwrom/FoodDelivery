@@ -17,7 +17,7 @@
         android:layout_width="0dp"
         android:layout_weight="1"
         android:backgroundTint="@color/colorPrimary"
-        android:layout_height="140dp"
+        android:layout_height="130dp"
         android:background="@drawable/verifing"/>
     <View
         android:layout_width="0dp"
