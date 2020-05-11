@@ -60,7 +60,7 @@ public class RestaurantAdapter extends RecyclerView.Adapter<MenuViewHolder> {
         double distance = Common.currentUserLocation.distanceTo(temp);
         Common.restaurantDistance.put(categoryKeyList.get(position), distance);
         //Toast.makeText(home, String.valueOf(categoryKeyList.get(position)), Toast.LENGTH_SHORT).show();
-        viewHolder.restaurantTime.setText(String.format("%.0f",20+(distance/165))+" minutes away");
+        viewHolder.restaurantTime.setText(home.getString(R.string.blank) + String.format("%.0f", 20 + (distance / 165)) + " " + home.getString(R.string.minutes_away));
 
         Picasso.with(home.getBaseContext()).load(restaurantList.get(categoryKeyList.get(position)).getImage()).placeholder(R.drawable.restaurantbg)
                 .into(viewHolder.imageView);

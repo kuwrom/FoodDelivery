@@ -114,7 +114,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:id="@+id/address_display"
-                                    android:text="Address not set yet"
+                                    android:text="@string/address_not_set_yet"
                                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                                     android:textColor="@color/colorLightBlack" />
                             </LinearLayout>

@@ -496,7 +496,7 @@ public class Profile extends AppCompatActivity {
     private void uploadImage() {
         if (saveUri != null) {
             final ProgressDialog mDialog = new ProgressDialog(this);
-            mDialog.setMessage("Uploading...");
+            mDialog.setMessage(getResources().getString(R.string.processing));
             mDialog.show();
 
             final StorageReference imageFolder = storageReference.child("images/profile/"+Common.currentUser.getPhone());
@@ -505,7 +505,7 @@ public class Profile extends AppCompatActivity {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             mDialog.dismiss();
-                            Toast.makeText(Profile.this, "Uploaded!!!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Profile.this, getResources().getString(R.string.success), Toast.LENGTH_SHORT).show();
                             imageFolder.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
@@ -528,7 +528,7 @@ public class Profile extends AppCompatActivity {
                         @Override
                         public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
                             double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
-                            mDialog.setMessage("Uploading "+String.format("%.0f", (progress))+" %");
+                            mDialog.setMessage(getResources().getString(R.string.processing) + " " + String.format("%.0f", (progress)) + " %");
                         }
                     });
         }

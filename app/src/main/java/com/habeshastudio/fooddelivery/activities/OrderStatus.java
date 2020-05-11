@@ -1,5 +1,6 @@
 package com.habeshastudio.fooddelivery.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -17,8 +18,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -82,7 +81,7 @@ public class OrderStatus extends AppCompatActivity {
                 .build());
         setContentView(R.layout.activity_order_status);
         Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle("Orders");
+        toolbar.setTitle(getResources().getString(R.string.orders));
         setSupportActionBar(toolbar);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
@@ -93,7 +92,7 @@ public class OrderStatus extends AppCompatActivity {
         //Init Firebase
         database = FirebaseDatabase.getInstance();
         requests = database.getReference("Requests");
-        final Animation animShake = AnimationUtils.loadAnimation(this, R.anim.shake);
+        //final Animation animShake = AnimationUtils.loadAnimation(this, R.anim.shake);
         recyclerView = findViewById(R.id.listOrders);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
@@ -135,9 +134,6 @@ public class OrderStatus extends AppCompatActivity {
                     startActivity(new Intent(OrderStatus.this, Home.class));
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                     finish();
-                } else if (position == 1) {
-
-
                 } else if (position == 2) {
                     startActivity(new Intent(OrderStatus.this, FavoritesActivity.class));
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
@@ -150,8 +146,6 @@ public class OrderStatus extends AppCompatActivity {
                     startActivity(new Intent(OrderStatus.this, Profile.class));
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                     finish();
-                } else {
-
                 }
             }
         });
@@ -168,7 +162,7 @@ public class OrderStatus extends AppCompatActivity {
             adapter = new FirebaseRecyclerAdapter<Request, OrderViewHolder>(orderOptions) {
 
                 @Override
-                protected void onBindViewHolder(@NonNull OrderViewHolder viewHolder, final int position, @NonNull Request model) {
+                protected void onBindViewHolder(@NonNull OrderViewHolder viewHolder, @SuppressLint("RecyclerView") final int position, @NonNull Request model) {
 
                     viewHolder.txtOrderId.setText(adapter.getRef(position).getKey());
                     viewHolder.txtOrderStatus.setText(Common.convertCodeToStatus(model.getStatus()));
@@ -186,14 +180,14 @@ public class OrderStatus extends AppCompatActivity {
                         @Override
                         public void onClick(View v) {
                             final android.support.v7.app.AlertDialog.Builder alertDialog = new AlertDialog.Builder(OrderStatus.this);
-                            alertDialog.setTitle("Delete Order?");
-                            alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            alertDialog.setTitle(getResources().getString(R.string.delete_order));
+                            alertDialog.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     if (adapter.getItem(position).getStatus().equals("0"))
                                         deleteOrder(adapter.getRef(position).getKey());
                                     else
-                                        Toast.makeText(OrderStatus.this, "Sorry, order can't be deleted", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(OrderStatus.this, getResources().getString(R.string.cant_delete_order), Toast.LENGTH_SHORT).show();
 
                                 }
                             });
@@ -250,9 +244,7 @@ public class OrderStatus extends AppCompatActivity {
                                                     .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
-                                                    Toast.makeText(OrderStatus.this, new StringBuilder("Order ")
-                                                            .append(key)
-                                                            .append(" has been deleted!").toString(), Toast.LENGTH_SHORT).show();
+                                                    //Toast.makeText(OrderStatus.this, new StringBuilder("Order ").append(key).append(" has been deleted!").toString(), Toast.LENGTH_SHORT).show();
                                                 }
                                             }).addOnFailureListener(new OnFailureListener() {
                                                 @Override

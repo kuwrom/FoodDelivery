@@ -59,7 +59,7 @@ public class ShowComment extends AppCompatActivity {
         setContentView(R.layout.activity_show_comment);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle("Food Comments");
+        toolbar.setTitle(getResources().getString(R.string.comments));
         setSupportActionBar(toolbar);
         Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
 

@@ -21,7 +21,7 @@
                 android:layout_height="wrap_content"
                 android:padding="8dp"
                 android:textColor="@color/colorLightBlack"
-                android:text="Navigation"
+                android:text="@string/navigation"
                 android:textStyle="bold"
                 android:textSize="16sp"/>
             <ImageView
@@ -34,14 +34,14 @@
                 android:layout_height="wrap_content"
                 android:padding="8dp"
                 android:textColor="@color/colorLightBlack"
-                android:text="❶ List of Restaurants\n❷ List of orders You make\n❸ Search any food\n❹ Profile and Settings"
+                android:text="@string/list_of_restaurants_n_list_of_orders_you_make_n_search_any_food_n_profile_and_settings"
                 android:textSize="12sp"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="8dp"
                 android:textColor="@color/colorLightBlack"
-                android:text="Ordering a Food"
+                android:text="@string/ordering_a_food"
                 android:textStyle="bold"
                 android:textSize="16sp"/>
             <TextView
@@ -49,14 +49,14 @@
                 android:layout_height="wrap_content"
                 android:padding="8dp"
                 android:textColor="@color/colorLightBlack"
-                android:text="❶ Choose a restaurant\n❷ Select Food Category\n❸ Select a specific food\n❹ Go to Checkout\ni.e: you can add a note before you place order\n❺ Place order and Proceed"
+                android:text="@string/choose_a_restaurant_n_select_food_category_n_select_a_specific_food_n_go_to_checkout_ni_e_you_can_add_a_note_before_you_place_order_n_place_order_and_proceed"
                 android:textSize="12sp"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="8dp"
                 android:textColor="@color/colorLightBlack"
-                android:text="Cleaning a cart"
+                android:text="@string/cleaning_a_cart"
                 android:textStyle="bold"
                 android:textSize="16sp"/>
             <LinearLayout
@@ -77,7 +77,7 @@
                     android:layout_height="wrap_content"
                     android:padding="8dp"
                     android:textColor="@color/colorLightBlack"
-                    android:text="Swipe left to delete"
+                    android:text="@string/swipe_left_to_delete"
                     android:textSize="12sp"/>
             </LinearLayout>
 
@@ -86,7 +86,7 @@
                 android:layout_height="wrap_content"
                 android:padding="8dp"
                 android:textColor="@color/colorLightBlack"
-                android:text="Some important Notes"
+                android:text="@string/some_important_notes"
                 android:textStyle="bold"
                 android:textSize="16sp"/>
             <TextView
@@ -94,7 +94,7 @@
                 android:layout_height="wrap_content"
                 android:padding="8dp"
                 android:textColor="@color/colorLightBlack"
-                android:text="◎ You only see restaurants with in 6 KM\n◎ Orders can only be deleted if they are not shipped\n◎ You can recommend us to add a new restaurant\n◎ Send us a feedback if you encounter any inconvenience\n"
+                android:text="@string/you_only_see_restaurants_with_in_6_km_n_orders_can_only_be_deleted_if_they_are_not_shipped_n_you_can_recommend_us_to_add_a_new_restaurant_n_send_us_a_feedback_if_you_encounter_any_inconvenience_n"
                 android:textSize="12sp"/>
 
         </LinearLayout>

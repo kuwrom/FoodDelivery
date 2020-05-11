@@ -53,7 +53,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="64dp"
             android:gravity="center"
-            android:text="No ordered items yet"
+            android:text="@string/no_ordered_items_yet"
             android:textColor="@color/grey_active"
             android:textSize="14sp" />
     </LinearLayout>

@@ -70,7 +70,7 @@ public class FavoritesActivity extends AppCompatActivity implements RecyclerItem
                 .build());
         setContentView(R.layout.activity_favorites);
         Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle("Favorites");
+        toolbar.setTitle(getResources().getString(R.string.favorites));
         setSupportActionBar(toolbar);
         Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
 

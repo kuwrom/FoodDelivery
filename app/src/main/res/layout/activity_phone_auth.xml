@@ -103,7 +103,7 @@
             android:layout_margin="32dp"
             android:background="@drawable/bg_ui_cart"
             android:backgroundTint="@color/media"
-            android:text="Continue"
+            android:text="@string/cont"
             android:textColor="@android:color/white"
             android:textStyle="bold" />
 

@@ -119,5 +119,30 @@
     <string name="only_from_one">Sorry, but you can only order from one restaurant at a time</string>
     <string name="removed_from_fav">removed from favorites!</string>
     <string name="no_favourite_items_yet">No favourite items yet</string>
-
+    <string name="no_ordered_items_yet">No ordered items yet</string>
+    <string name="status">Status:</string>
+    <string name="order_pending">Your Order is Pending</string>
+    <string name="food_ordered">Your Food is Ordered</string>
+    <string name="order_shipped">Food Shipped</string>
+    <string name="order_delivered">Food delivered to you</string>
+    <string name="delete_order">Delete Order?</string>
+    <string name="cant_delete_order">Sorry, order can\'t be deleted</string>
+    <string name="orders">Orders</string>
+    <string name="favorites">Favorites</string>
+    <string name="comments">Comments</string>
+    <string name="processing">Processing</string>
+    <string name="success">Success</string>
+    <string name="blank">ከ</string>
+    <string name="minutes_away">ደቂቃ ቦሃላ ይደርሶታል</string>
+    <string name="navigation">Navigation</string>
+    <string name="list_of_restaurants_n_list_of_orders_you_make_n_search_any_food_n_profile_and_settings">❶ List of Restaurants\n❷ List of orders You make\n❸ Search any food\n❹ Profile and Settings</string>
+    <string name="ordering_a_food">Ordering a Food</string>
+    <string name="choose_a_restaurant_n_select_food_category_n_select_a_specific_food_n_go_to_checkout_ni_e_you_can_add_a_note_before_you_place_order_n_place_order_and_proceed">❶ Choose a restaurant\n❷ Select Food Category\n❸ Select a specific food\n❹ Go to Checkout\ni.e: you can add a note before you place order\n❺ Place order and Proceed</string>
+    <string name="cleaning_a_cart">Cleaning a cart</string>
+    <string name="swipe_left_to_delete">Swipe left to delete</string>
+    <string name="some_important_notes">Some important Notes</string>
+    <string name="you_only_see_restaurants_with_in_6_km_n_orders_can_only_be_deleted_if_they_are_not_shipped_n_you_can_recommend_us_to_add_a_new_restaurant_n_send_us_a_feedback_if_you_encounter_any_inconvenience_n">◎ You only see restaurants with in 6 KM\n◎ Orders can only be deleted if they are not shipped\n◎ You can recommend us to add a new restaurant\n◎ Send us a feedback if you encounter any inconvenience\n</string>
+    <string name="address_not_set_yet">Address not set yet</string>
+    <string name="cont">Continue</string>
+    <string name="change_language">Change Language to English</string>
 </resources>
