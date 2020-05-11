@@ -28,11 +28,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.habeshastudio.fooddelivery.R;
 import com.habeshastudio.fooddelivery.common.Common;
+import com.habeshastudio.fooddelivery.helper.LocaleHelper;
 
 import java.util.Objects;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
-import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class Register extends AppCompatActivity {
 
@@ -49,7 +49,8 @@ public class Register extends AppCompatActivity {
 
     @Override
     protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+        //super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+        super.attachBaseContext(LocaleHelper.onAtach(newBase, "en"));
     }
 
     @Override

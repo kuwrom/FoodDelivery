@@ -62,8 +62,8 @@
     <string name="next">next</string>
     <string name="vegetarian">Vegetarian</string>
     <string name="home_address">Delivery Address</string>
-    <string name="transition_image">image</string>
-    <string name="transition_description">description</string>
+    <string name="transition_image" translatable="false">image</string>
+    <string name="transition_description" translatable="false">description</string>
     <string name="help" >Help</string>
     <string name="place_order">Place Order</string>
     <string name="shipping_address">Shipping Address</string>
@@ -135,9 +135,9 @@
     <string name="blank"> </string>
     <string name="minutes_away">minutes away</string>
     <string name="navigation">Navigation</string>
-    <string name="list_of_restaurants_n_list_of_orders_you_make_n_search_any_food_n_profile_and_settings">❶ List of Restaurants\n❷ List of orders You make\n❸ Search any food\n❹ Profile and Settings</string>
+    <string name="list_of_restaurants_n_list_of_orders_you_make_n_search_any_food_n_profile_and_settings">❶ List of Restaurants\n❷ List of orders You make\n❸ List of the items you like\n❹ Profile and Settings</string>
     <string name="ordering_a_food">Ordering a Food</string>
-    <string name="choose_a_restaurant_n_select_food_category_n_select_a_specific_food_n_go_to_checkout_ni_e_you_can_add_a_note_before_you_place_order_n_place_order_and_proceed">❶ Choose a restaurant\n❷ Select Food Category\n❸ Select a specific food\n❹ Go to Checkout\ni.e: you can add a note before you place order\n❺ Place order and Proceed</string>
+    <string name="choose_a_restaurant_n_select_food_category_n_select_a_specific_food_n_go_to_checkout_ni_e_you_can_add_a_note_before_you_place_order_n_place_order_and_proceed">❶ Choose a restaurant\n❷ Select Food Category\n❸ Select a specific food\n❹ Go to Checkout\ni.e: you can add a note before you place order\n❺ Place an order and Proceed</string>
     <string name="cleaning_a_cart">Cleaning a cart</string>
     <string name="swipe_left_to_delete">Swipe left to delete</string>
     <string name="some_important_notes">Some important Notes</string>
@@ -145,5 +145,10 @@
     <string name="address_not_set_yet">Address not set yet</string>
     <string name="cont">Continue</string>
     <string name="change_language">ቋንቋ ወደ አማርኛ ይቀየር?</string>
+    <string name="dine_delivery">Dine Delivery</string>
+    <string name="intro_about">Whatever you want, we get it. \nDine is whatever-you-can-think-of delivery\nNeed another charger? Kitchen staples? Or Alcohol? We’ve got everything you need available for delivery within an hour.</string>
+    <string name="our_mission">Our Mission</string>
+    <string name="mission_statement">Dine is transforming the way goods move in Our city by enabling anyone to have anything delivered on-demand. Our revolutionary Urban Logistics platform connects customers with local couriers who can deliver anything from any store or restaurant in minutes. We empower our community to shop local with no waiting, and empower businesses through our Platform to offer delivery.</string>
+    <string name="our_team">Our Team</string>
 
 </resources>

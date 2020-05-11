@@ -97,7 +97,4 @@
         android:textColor="@color/grey_active"
         android:textStyle="bold"
         android:text="@string/change_language" />
-
-
-
 </RelativeLayout>

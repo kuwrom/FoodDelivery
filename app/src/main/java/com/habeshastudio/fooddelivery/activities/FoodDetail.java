@@ -39,6 +39,7 @@ import com.habeshastudio.fooddelivery.MainActivity;
 import com.habeshastudio.fooddelivery.R;
 import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.database.Database;
+import com.habeshastudio.fooddelivery.helper.LocaleHelper;
 import com.habeshastudio.fooddelivery.helper.MyExceptionHandler;
 import com.habeshastudio.fooddelivery.interfaces.ItemClickListener;
 import com.habeshastudio.fooddelivery.models.Food;
@@ -59,7 +60,7 @@ import java.util.Locale;
 
 import io.paperdb.Paper;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
-import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
+
 
 public class FoodDetail extends AppCompatActivity implements RatingDialogListener {
 
@@ -84,7 +85,8 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
 
     @Override
     protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+        //super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+        super.attachBaseContext(LocaleHelper.onAtach(newBase, "en"));
     }
 
     @SuppressLint("ClickableViewAccessibility")

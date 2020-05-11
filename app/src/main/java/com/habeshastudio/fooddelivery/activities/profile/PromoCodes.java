@@ -1,6 +1,7 @@
 package com.habeshastudio.fooddelivery.activities.profile;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -21,6 +22,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.habeshastudio.fooddelivery.R;
 import com.habeshastudio.fooddelivery.common.Common;
+import com.habeshastudio.fooddelivery.helper.LocaleHelper;
 import com.habeshastudio.fooddelivery.models.User;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
@@ -35,6 +37,11 @@ public class PromoCodes extends AppCompatActivity {
     MaterialEditText refererPhone, promocode;
     AlertDialog dialog_verifying;
     private String rPhone, rPromo;
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(LocaleHelper.onAtach(newBase, "en"));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
