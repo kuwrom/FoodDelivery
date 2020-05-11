@@ -153,6 +153,22 @@ public class Profile extends AppCompatActivity {
             }
         });
 
+        languageSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String language = Paper.book().read("language");
+                if (language.equals("en")) {
+                    Paper.book().write("language", "am");
+                    updateView((String) Paper.book().read("language"));
+                } else {
+                    Paper.book().write("language", "en");
+                    updateView((String) Paper.book().read("language"));
+                }
+
+
+            }
+        });
+
         loved.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -279,8 +295,8 @@ public class Profile extends AppCompatActivity {
             public void onClick(View v) {
                 profile.startAnimation(animShake);
                 final android.support.v7.app.AlertDialog.Builder alertDialog = new AlertDialog.Builder(Profile.this);
-                alertDialog.setTitle("Edit Profile Picture?");
-                alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                alertDialog.setTitle(getResources().getString(R.string.edit_profile));
+                alertDialog.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         chooseImage();
@@ -307,7 +323,7 @@ public class Profile extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //startActivity(new Intent(Profile.this, HistoryAndReceipt.class));
-                Toast.makeText(Profile.this, "Something went wrong . . .", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Profile.this, getResources().getString(R.string.something_went_wrong), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -363,7 +379,7 @@ public class Profile extends AppCompatActivity {
     }
 
     private void changePaymentMethod() {
-        Toast.makeText(this, "Hello Cash and Amole are temporarily disabled", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getResources().getString(R.string.payments_are_disabled), Toast.LENGTH_SHORT).show();
     }
 
     private void chaneLanguage() {
@@ -402,15 +418,14 @@ public class Profile extends AppCompatActivity {
 
     private void showHomeAddressDialog() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(Profile.this);
-        alertDialog.setTitle("Delivery Address");
-        alertDialog.setMessage("Please Enter your address");
+        alertDialog.setTitle(getResources().getString(R.string.payments_are_disabled));
 
         LayoutInflater inflater = LayoutInflater.from(this);
         View layout_home_address = inflater.inflate(R.layout.home_address_layout, null);
         final MaterialEditText editHomeAddress = layout_home_address.findViewById(R.id.editHomeAddress);
         alertDialog.setView(layout_home_address);
 
-        alertDialog.setPositiveButton("SET", new DialogInterface.OnClickListener() {
+        alertDialog.setPositiveButton(getResources().getString(R.string.confirm), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -421,7 +436,7 @@ public class Profile extends AppCompatActivity {
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
-                                Toast.makeText(Profile.this, "Home address Successfully Updated", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(Profile.this, getResources().getString(R.string.home_success), Toast.LENGTH_SHORT).show();
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
@@ -436,8 +451,8 @@ public class Profile extends AppCompatActivity {
     }
     private void showHelpDialog() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(Profile.this);
-        alertDialog.setTitle("Help");
-        alertDialog.setMessage("Dine app navigation and usage");
+        alertDialog.setTitle(getResources().getString(R.string.help));
+        alertDialog.setMessage(getResources().getString(R.string.nav_usage));
 
         LayoutInflater inflater = LayoutInflater.from(this);
         View layout_home_address = inflater.inflate(R.layout.help, null);
@@ -454,15 +469,15 @@ public class Profile extends AppCompatActivity {
     }
     private void showFeedbackDialog() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(Profile.this);
-        alertDialog.setTitle("Feedback");
-        alertDialog.setMessage("Type in your feedback below");
+        alertDialog.setTitle(getResources().getString(R.string.feedback));
+        alertDialog.setMessage(getResources().getString(R.string.feedback_below));
 
         LayoutInflater inflater = LayoutInflater.from(this);
         View layout_home_address = inflater.inflate(R.layout.feedback_layout, null);
         final MaterialEditText editHomeAddress = layout_home_address.findViewById(R.id.edit_feedback);
         alertDialog.setView(layout_home_address);
 
-        alertDialog.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
+        alertDialog.setPositiveButton(getResources().getString(R.string.confirm), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -473,7 +488,7 @@ public class Profile extends AppCompatActivity {
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
-                                Toast.makeText(Profile.this, "Feedback Successfully Submitted", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(Profile.this, getResources().getString(R.string.feedback_success), Toast.LENGTH_SHORT).show();
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {

@@ -77,8 +77,19 @@
     <string name="cod" translatable="false">Pay when delivered to you</string>
     <string name="food_name">Food Name</string>
     <string name="loading">…</string>
-    <string name="call_us">Call Us</string>
-    <string name="share_dine">Share Dine</string>
-    <string name="restaurants_near_you">Restaurants near you</string>
+    <string name="call_us">ደውልልን</string>
+    <string name="share_dine">ለሌሎች አካፍል</string>
+    <string name="restaurants_near_you">ቅርብ ሬስቶራንቶች</string>
     <string name="no_restaurant_around">No restaurant around</string>
+    <string name="edit_profile">Edit Profile Picture?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="cancel">Cancel</string>
+    <string name="something_went_wrong">Something went wrong…</string>
+    <string name="payments_are_disabled">Hello Cash and Amole are temporarily disabled</string>
+    <string name="home_success">Home address Successfully Updated</string>
+    <string name="nav_usage">Dine app navigation and usage</string>
+    <string name="feedback">Feed Back</string>
+    <string name="feedback_below">Type in your feedback below</string>
+    <string name="feedback_success">Feedback Successfully Submitted</string>
 </resources>
