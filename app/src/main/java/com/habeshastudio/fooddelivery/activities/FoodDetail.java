@@ -180,12 +180,12 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
                                 ));
                                 setCartStatus();
                                 }else{
-                                    Toast.makeText(FoodDetail.this, "Sorry, but you can only order from one restaurant at a time", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(FoodDetail.this, getResources().getString(R.string.only_from_one), Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
                 } else {
-                    Toast.makeText(getBaseContext(), "Please Check your connection", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(), getResources().getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -234,7 +234,7 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
 
 
             } else {
-                Toast.makeText(FoodDetail.this, "Please Check your Internet Connection!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(FoodDetail.this, getResources().getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
             }
         }
         recyclerView = findViewById(R.id.details_list);
@@ -335,14 +335,14 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
 
     private void showRatingDialogue() {
         new AppRatingDialog.Builder()
-                .setPositiveButtonText("Submit")
-                .setNegativeButtonText("Cancel")
+                .setPositiveButtonText(getResources().getString(R.string.submit))
+                .setNegativeButtonText(getResources().getString(R.string.cancel))
                 .setNoteDescriptions(Arrays.asList("Very Bad", "NOt Good", "Quite Ok", "Very Good", "Excellent"))
                 .setDefaultRating(1)
-                .setTitle("Rate this food")
+                .setTitle(getResources().getString(R.string.rate_this))
                 .setTitleTextColor(R.color.colorPrimary)
                 .setDescriptionTextColor(R.color.colorPrimary)
-                .setHint("Comment here")
+                .setHint(getResources().getString(R.string.comments_here))
                 .setHintTextColor(R.color.grey_active)
                 .setCommentTextColor(R.color.colorLightBlack)
                 .setCommentBackgroundColor(R.color.grey_bg_light)
@@ -421,7 +421,7 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        Toast.makeText(FoodDetail.this, "Thanks for the rating", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(FoodDetail.this, getResources().getString(R.string.thanks_for_rating), Toast.LENGTH_SHORT).show();
                     }
                 });
     }

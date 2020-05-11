@@ -85,8 +85,6 @@ public class FavoritesActivity extends AppCompatActivity implements RecyclerItem
         priceTag = findViewById(R.id.checkout_layout_price);
         itemsCount = findViewById(R.id.items_count);
         recyclerView.setLayoutManager(layoutManager);
-        TextView view = new TextView(FavoritesActivity.this);
-        view.setText("No items available");
 
 
         checkoutButton =findViewById(R.id.btn_checkout_cart);
@@ -155,8 +153,8 @@ public class FavoritesActivity extends AppCompatActivity implements RecyclerItem
             new Database(getBaseContext()).removeFromFavourites(deleteItem.getFoodId(), Common.currentUser.getPhone());
 
             //make snackbar
-            Snackbar snackbar = Snackbar.make(rootLayout, name + " removed from favorites!", Snackbar.LENGTH_LONG);
-            snackbar.setAction("UNDO", new View.OnClickListener() {
+            Snackbar snackbar = Snackbar.make(rootLayout, name + " " + getResources().getString(R.string.removed_from_fav), Snackbar.LENGTH_LONG);
+            snackbar.setAction(getResources().getString(R.string.undo), new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     adapter.restoreItem(deleteItem, deleteIndex);

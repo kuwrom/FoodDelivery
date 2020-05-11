@@ -14,13 +14,10 @@
     <string name="photos">Pics</string>
     <string name="call">Call</string>
     <string name="title_activity_home">Home</string>
-
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-
     <string name="action_settings">Settings</string>
     <string name="action_refresh">Refresh</string>
-
     <string name="facebook_app_id" translatable="false">440220469885998</string>
     <string name="facebook_login_protocol_name" translatable="false">fb440220469885998</string>
     <string name="title_activity_tracking_order">Map</string>
@@ -59,13 +56,12 @@
     <string name="about">About</string>
     <string name="promo_codes">Promo Codes</string>
     <string name="having_trouble">Having trouble?</string>
-    <string name="sign_in_to_hodam">Sign in to Hodam</string>
+    <string name="sign_in_to_hodam">Sign in to Dine</string>
     <string name="enter_your_phone_number">Enter your Phone Number</string>
     <string name="enter_your_name">Enter your Name</string>
     <string name="next">next</string>
     <string name="vegetarian">Vegetarian</string>
     <string name="home_address">Delivery Address</string>
-
     <string name="transition_image">image</string>
     <string name="transition_description">description</string>
     <string name="help" >Help</string>
@@ -96,6 +92,33 @@
     <string name="feedback">Feed Back</string>
     <string name="feedback_below">Type in your feedback below</string>
     <string name="feedback_success">Feedback Successfully Submitted</string>
+    <string name="loading_restaurants">Loading Restaurants…</string>
+    <string name="gps_disabled">GPS Disabled, Enable gps?</string>
+    <string name="retry">Retry</string>
+    <string name="menu_list">Menu List</string>
+    <string name="your_order">Your Order</string>
+    <string name="i_e_swipe_from_right_to_delete">i.e: Swipe from right to delete</string>
+    <string name="add_promo_code">Add promo code</string>
+    <string name="add_a_note">add a note …</string>
+    <string name="subtotal">Subtotal</string>
+    <string name="tax">Tax</string>
+    <string name="delivery_fee">Delivery Fee</string>
+    <string name="total">Total</string>
+    <string name="pay_when_delivered_to_you">Pay when delivered to you</string>
+    <string name="change">Change</string>
+    <string name="empty_cart">Your cart is Empty</string>
+    <string name="calculating_total">Calculating Total…</string>
+    <string name="confirm_order">Confirm your Order</string>
+    <string name="no_enough_balance">You don\'t Have enough balance, please Choose Other Method</string>
+    <string name="removed_from_cart">removed from cart!</string>
+    <string name="undo">Undo</string>
+    <string name="thanks_for_rating">Thanks for the rating</string>
+    <string name="comments_here">Comment here</string>
+    <string name="rate_this">Rate this food</string>
+    <string name="submit">Submit</string>
+    <string name="only_from_one">Sorry, but you can only order from one restaurant at a time</string>
+    <string name="removed_from_fav">removed from favorites!</string>
+    <string name="no_favourite_items_yet">No favourite items yet</string>
 
 
 </resources>

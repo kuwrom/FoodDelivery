@@ -196,7 +196,7 @@ public class FoodList extends AppCompatActivity {
                     if (Common.isConnectedToInternet(getBaseContext()))
                         loadListFood(categoryId);
                     else {
-                        Toast.makeText(FoodList.this, "No internet connection!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(FoodList.this, getResources().getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -212,12 +212,12 @@ public class FoodList extends AppCompatActivity {
                     if (Common.isConnectedToInternet(getBaseContext()))
                         loadListFood(categoryId);
                     else {
-                        Toast.makeText(FoodList.this, "No internet Connection!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(FoodList.this, getResources().getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
                     }
                 }
                 //Search
                 materialSearchBar = findViewById(R.id.searchBar);
-                materialSearchBar.setHint("Search any Food...");
+                materialSearchBar.setHint(getResources().getString(R.string.search));
                 loadSuggest();//function to load suggestion from firebase
                 materialSearchBar.setCardViewElevation(10);
                 materialSearchBar.addTextChangeListener(new TextWatcher() {
@@ -269,7 +269,7 @@ public class FoodList extends AppCompatActivity {
 //        View emptyView = findViewById(R.id.empty_view);
 //        recyclerView.setEmptyView(emptyView);
         TextView view = new TextView(FoodList.this);
-        view.setText("No items available");
+        //view.setText("No items available");
         recyclerView.setEmptyView(view);
 
         setCartStatus();

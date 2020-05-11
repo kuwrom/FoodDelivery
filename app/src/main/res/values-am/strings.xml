@@ -32,7 +32,7 @@
     <string name="about_hodam_and_privacy">About Hodam and Privacy</string>
     <string name="start">Start</string>
     <string name="the_best_food_from_the_restaurants_nyou_love_selected_just_for_you">The best food from the restaurants  you love, selected just for you</string>
-    <string name="checkout">CHECKOUT</string>
+    <string name="checkout">የገዛሀውን እይ</string>
     <string name="enter_your_promo_code_here">Enter your Promo Code Here</string>
     <string name="referer_phone_number">Referer Phone Number</string>
     <string name="confirm">Confirm</string>
@@ -74,10 +74,10 @@
     <string name="apply" translatable="false">Apply</string>
     <string name="pay_wiz_paypal">Pay With Paypal</string>
     <string name="pay_with_app_balence">Pay with app balance</string>
-    <string name="cod" translatable="false">Pay when delivered to you</string>
+    <string name="cod">Pay when delivered to you</string>
     <string name="food_name">Food Name</string>
     <string name="loading">…</string>
-    <string name="call_us">ደውልልን</string>
+    <string name="call_us">ደውሉልን</string>
     <string name="share_dine">ለሌሎች አካፍል</string>
     <string name="restaurants_near_you">ቅርብ ሬስቶራንቶች</string>
     <string name="no_restaurant_around">No restaurant around</string>
@@ -92,4 +92,32 @@
     <string name="feedback">Feed Back</string>
     <string name="feedback_below">Type in your feedback below</string>
     <string name="feedback_success">Feedback Successfully Submitted</string>
+    <string name="loading_restaurants">Loading Restaurants…</string>
+    <string name="gps_disabled">GPS Disabled, Enable gps?</string>
+    <string name="retry">Retry</string>
+    <string name="menu_list">Menu List</string>
+    <string name="your_order">Your Order</string>
+    <string name="i_e_swipe_from_right_to_delete">i.e: Swipe from right to delete</string>
+    <string name="add_promo_code">Add promo code</string>
+    <string name="add_a_note">add a note …</string>
+    <string name="subtotal">Subtotal</string>
+    <string name="tax">Tax</string>
+    <string name="delivery_fee">Delivery Fee</string>
+    <string name="total">Total</string>
+    <string name="pay_when_delivered_to_you">Pay when delivered to you</string>
+    <string name="change">Change</string>
+    <string name="empty_cart">Your cart is Empty</string>
+    <string name="calculating_total">Calculating Total…</string>
+    <string name="confirm_order">Confirm your Order</string>
+    <string name="no_enough_balance">You don\'t Have enough balance, please Choose Other Method</string>
+    <string name="removed_from_cart">removed from cart!</string>
+    <string name="undo">Undo</string>
+    <string name="thanks_for_rating">Thanks for the rating</string>
+    <string name="comments_here">Comment here</string>
+    <string name="rate_this">Rate this food</string>
+    <string name="submit">Submit</string>
+    <string name="only_from_one">Sorry, but you can only order from one restaurant at a time</string>
+    <string name="removed_from_fav">removed from favorites!</string>
+    <string name="no_favourite_items_yet">No favourite items yet</string>
+
 </resources>

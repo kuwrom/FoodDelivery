@@ -58,7 +58,7 @@
                     android:paddingLeft="16dp"
                     android:layout_marginTop="4dp"
                     android:textColor="@color/colorLightBlack"
-                    android:text="Menu List"
+                    android:text="@string/menu_list"
                     android:textSize="18sp"
                     android:layout_height="wrap_content"/>
 
@@ -81,7 +81,7 @@
                         android:gravity="center"
                         android:layout_centerHorizontal="true"
                         android:layout_centerVertical="true"
-                        android:text="dula gimi more"
+                        android:text="no food"
                         android:textSize="36sp" />
 
                 </android.support.v4.widget.SwipeRefreshLayout>

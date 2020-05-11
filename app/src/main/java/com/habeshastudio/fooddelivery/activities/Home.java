@@ -59,6 +59,7 @@ import com.habeshastudio.fooddelivery.R;
 import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.database.Database;
 import com.habeshastudio.fooddelivery.helper.EmptyRecyclerView;
+import com.habeshastudio.fooddelivery.helper.LocaleHelper;
 import com.habeshastudio.fooddelivery.helper.MyExceptionHandler;
 import com.habeshastudio.fooddelivery.models.Banner;
 import com.habeshastudio.fooddelivery.models.Category;
@@ -75,7 +76,6 @@ import java.util.Locale;
 
 import io.paperdb.Paper;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
-import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class Home extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
@@ -123,7 +123,8 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
 
     @Override
     protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+        //super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+        super.attachBaseContext(LocaleHelper.onAtach(newBase, "en"));
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -243,7 +244,7 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
                 if (Common.isConnectedToInternet(getBaseContext())) {
                     loadMenu();
                 } else {
-                    Toast.makeText(getBaseContext(), "Please Check your connection", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(), getResources().getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
                     swipeRefreshLayout.setRefreshing(false);
                     return;
                 }
@@ -259,7 +260,7 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
                 if (Common.isConnectedToInternet(getBaseContext())) {
                     loadMenu();
                 } else {
-                    Toast.makeText(getBaseContext(), "Please Check your connection", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(), getResources().getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
                     swipeRefreshLayout.setRefreshing(false);
                     return;
                 }
@@ -303,11 +304,8 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
                 createLocationRequest();
             }
         }
-        if (!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            showGpsDisabledDialog();
-        }
         mDialog = new ProgressDialog(this);
-        mDialog.setMessage("Loading Restaurants...");
+        mDialog.setMessage(getResources().getString(R.string.loading_restaurants));
         mDialog.setCancelable(false);
         mDialog.setCanceledOnTouchOutside(false);
         mDialog.show();
@@ -493,6 +491,7 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
         if (!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             showGpsDisabledDialog();
         }
+
         setCartStatus();
     }
 
@@ -533,8 +532,8 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
 
     public void showGpsDisabledDialog(){
         final android.support.v7.app.AlertDialog.Builder alertDialog = new AlertDialog.Builder(Home.this);
-        alertDialog.setTitle("GPS Disabled, Enable gps?");
-        alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+        alertDialog.setTitle(getResources().getString(R.string.gps_disabled));
+        alertDialog.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 startActivity(new Intent("android.settings.LOCATION_SOURCE_SETTINGS"));
@@ -635,8 +634,6 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
             ActivityCompat.requestPermissions(this, new String[]{
                     Manifest.permission.ACCESS_FINE_LOCATION
             }, LOCATION_REQUEST_CODE);
-        } else {
-
         }
     }
 
@@ -652,8 +649,8 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
 
     void isInternet() {
         if (!Common.isConnectedToInternet(getBaseContext())) {
-            final Snackbar snackbar = Snackbar.make(rootLayout, "Connection lost", Snackbar.LENGTH_INDEFINITE);
-            snackbar.setAction("RETRY", new View.OnClickListener() {
+            final Snackbar snackbar = Snackbar.make(rootLayout, getResources().getString(R.string.no_connection), Snackbar.LENGTH_INDEFINITE);
+            snackbar.setAction(getResources().getString(R.string.retry), new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (!Common.isConnectedToInternet(getBaseContext())) {
@@ -688,5 +685,6 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
+
 
 }

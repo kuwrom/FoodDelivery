@@ -1,5 +1,6 @@
 package com.habeshastudio.fooddelivery.activities;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -22,7 +23,6 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,7 +49,6 @@ import com.habeshastudio.fooddelivery.activities.profile.PromoCodes;
 import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.database.Database;
 import com.habeshastudio.fooddelivery.helper.LocaleHelper;
-import com.habeshastudio.fooddelivery.helper.MyExceptionHandler;
 import com.habeshastudio.fooddelivery.models.Order;
 import com.habeshastudio.fooddelivery.models.User;
 import com.mikhaellopez.circularimageview.CircularImageView;
@@ -57,15 +56,11 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.picasso.Picasso;
 
 import java.text.NumberFormat;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
-import dmax.dialog.SpotsDialog;
 import io.paperdb.Paper;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
-import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class Profile extends AppCompatActivity {
 
@@ -79,11 +74,12 @@ public class Profile extends AppCompatActivity {
     Button about, loved, promo, feedBack;
     TextView name_display, address_display, balance_display, moreOptions, textPaymentMethod, textDeliveryAddress, textTransactions, textShare, textHelp;
     CircularImageView  profile;
-    boolean isUsd, isLanguage, isNightMode;
+    boolean isUsd, isAmharic;
     FloatingActionButton notificationSwitch, languageSwitch, nightModeSwitch, currencySwitch;
     @Override
     protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+        //super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+        super.attachBaseContext(LocaleHelper.onAtach(newBase, "en"));
     }
 
     //Url
@@ -100,7 +96,7 @@ public class Profile extends AppCompatActivity {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             getWindow().setStatusBarColor(Color.WHITE);
         }
-        Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
+        //Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
         name_display = findViewById(R.id.name_display);
         profile = findViewById(R.id.profile_pic);
         address_display = findViewById(R.id.address_display);
@@ -119,10 +115,7 @@ public class Profile extends AppCompatActivity {
         storageReference = storage.getReference();
 
         Paper.init(Profile.this);
-        String language = Paper.book().read("language");
-        if (language == null)
-            Paper.book().write("language", "en");
-        updateView((String) Paper.book().read("language"));
+
 
         //Refresh user status
         loadUser();
@@ -236,8 +229,6 @@ public class Profile extends AppCompatActivity {
                     startActivity(new Intent(Profile.this, FavoritesActivity.class));
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                     finish();
-                } else if (position == 4) {
-
                 } else {
 
                 }
@@ -333,7 +324,10 @@ public class Profile extends AppCompatActivity {
                 showHomeAddressDialog();
             }
         });
-
+        String language = Paper.book().read("language");
+        if (language == null)
+            Paper.book().write("language", "en");
+        updateView((String) Paper.book().read("language"));
         setCartStatus();
 
     }
@@ -373,6 +367,7 @@ public class Profile extends AppCompatActivity {
 
 
 
+
     }
 
     private void changeCurrency() {
@@ -380,40 +375,6 @@ public class Profile extends AppCompatActivity {
 
     private void changePaymentMethod() {
         Toast.makeText(this, getResources().getString(R.string.payments_are_disabled), Toast.LENGTH_SHORT).show();
-    }
-
-    private void chaneLanguage() {
-
-    }
-
-    private void showSettingsDialog() {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(Profile.this);
-        alertDialog.setTitle("Settings");
-
-        LayoutInflater inflater = LayoutInflater.from(this);
-        View layout_settings = inflater.inflate(R.layout.setting_layout, null);
-        final CheckBox checkBox_news = layout_settings.findViewById(R.id.ckb_sub_news);
-        Paper.init(this);
-        String isSubscribed = Paper.book().read("sub_new");
-        if (isSubscribed == null || TextUtils.isEmpty(isSubscribed) || isSubscribed.equals("false"))
-            checkBox_news.setChecked(false);
-        else checkBox_news.setChecked(true);
-        alertDialog.setView(layout_settings);
-
-        alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                if (checkBox_news.isChecked()) {
-                    FirebaseMessaging.getInstance().subscribeToTopic(Common.topicName);
-                    Paper.book().write("sub_new", "true");
-                } else {
-                    FirebaseMessaging.getInstance().unsubscribeFromTopic(Common.topicName);
-                    Paper.book().write("sub_new", "false");
-                }
-            }
-        });
-        alertDialog.show();
     }
 
     private void showHomeAddressDialog() {
@@ -509,6 +470,7 @@ public class Profile extends AppCompatActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         Common.currentUser = dataSnapshot.getValue(User.class);
+                        assert Common.currentUser != null;
                         name_display.setText(Common.currentUser.getName());
                         balance_display.setText(Common.currentUser.getBalance().toString());
                         if (!TextUtils.isEmpty(Common.currentUser.getHomeAddress()) ||
@@ -518,7 +480,7 @@ public class Profile extends AppCompatActivity {
                         try {
                             Picasso.with(getBaseContext()).load(Common.currentUser.getImage()).placeholder(R.drawable.profile_pic)
                                     .into(profile);
-                        } catch (Exception e) {
+                        } catch (Exception ignored) {
 
                         }
                     }
@@ -529,67 +491,6 @@ public class Profile extends AppCompatActivity {
                     }
                 });
 
-    }
-
-    private void showChangePasswordDialog() {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(Profile.this);
-        alertDialog.setTitle("Change Password");
-        alertDialog.setMessage("Please fill in all info");
-
-        LayoutInflater inflater = LayoutInflater.from(this);
-        View layout_pwd = inflater.inflate(R.layout.change_password_layout, null);
-        final MaterialEditText editPassword = layout_pwd.findViewById(R.id.editPassword);
-        final MaterialEditText editNewPassword = layout_pwd.findViewById(R.id.editNewPassword);
-        final MaterialEditText editConfirmPassword = layout_pwd.findViewById(R.id.editConfirmPassword);
-
-        alertDialog.setView(layout_pwd);
-        alertDialog.setPositiveButton("Change", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                //Change password Here
-                final android.app.AlertDialog waitingDialog = new SpotsDialog(Profile.this);
-                waitingDialog.show();
-
-                //Check old Password
-                if (editPassword.getText().toString().equals(Common.currentUser.getPassword())) {
-                    //check password match
-                    if (editNewPassword.getText().toString().equals(editConfirmPassword.getText().toString())) {
-                        Map<String, Object> passwordUpdate = new HashMap<>();
-                        passwordUpdate.put("password", editNewPassword.getText().toString());
-                        //Commit Update
-                        users.child(Common.currentUser.getPhone()).updateChildren(passwordUpdate)
-                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        waitingDialog.dismiss();
-                                        Toast.makeText(Profile.this, "Password Successfully Updated", Toast.LENGTH_SHORT).show();
-                                    }
-                                })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Toast.makeText(Profile.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-
-                    } else {
-                        Toast.makeText(Profile.this, "Passwords Doesn't match", Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    waitingDialog.dismiss();
-                    Toast.makeText(Profile.this, "Wrong old Password", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-
-        alertDialog.show();
     }
 
     private void uploadImage() {
@@ -623,6 +524,7 @@ public class Profile extends AppCompatActivity {
                         }
                     })
                     .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @SuppressLint("DefaultLocale")
                         @Override
                         public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
                             double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());

@@ -238,11 +238,11 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
                     if (Common.isConnectedToInternet(getBaseContext())) {
                         showAlertDialog();
                     } else {
-                        Toast.makeText(getBaseContext(), "Please Check your connection", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getBaseContext(), getResources().getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
                     }
 
                 else
-                    Toast.makeText(Cart.this, "Your cart is Empty", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Cart.this, getResources().getString(R.string.empty_cart), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -251,7 +251,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
             showGpsDisabledDialog();
         }
         mDialog = new ProgressDialog(this);
-        mDialog.setMessage("Calculating Total...");
+        mDialog.setMessage(getResources().getString(R.string.calculating_total));
         mDialog.setCancelable(false);
         mDialog.setCanceledOnTouchOutside(false);
         mDialog.show();
@@ -293,8 +293,8 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
 
     private void showAlertDialog() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(Cart.this);
-        alertDialog.setTitle("One more Step...");
-        alertDialog.setMessage("Confirm your Order");
+        alertDialog.setTitle(getResources().getString(R.string.one_more_step));
+        alertDialog.setMessage(getResources().getString(R.string.confirm_order));
 
         final LayoutInflater inflater = this.getLayoutInflater();
         View order_address_comment = inflater.inflate(R.layout.order_address_comment, null);
@@ -382,7 +382,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
         alertDialog.setView(order_address_comment);
         alertDialog.setIcon(R.drawable.ic_shopping_cart_black_24dp);
         alertDialog.setCancelable(false);
-        alertDialog.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+        alertDialog.setPositiveButton(getResources().getString(R.string.confirm), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
@@ -505,7 +505,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
                         Paper.book().delete("beenToCart");
                         finish();
                     } else {
-                        Toast.makeText(Cart.this, "You don't Have enough balance, please Choose Other Method", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Cart.this, getResources().getString(R.string.no_enough_balance), Toast.LENGTH_SHORT).show();
                     }
 
                 } else if (paymentMethodSelected == 0) {
@@ -514,7 +514,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
                             Common.currentUser.getPhone(),
                             Common.currentUser.getName(),
                             address,
-                            txtTotalPrice.getText().toString() + ", Delivery price: " + deliveryFeeView.getText().toString(),
+                            txtTotalPrice.getText().toString() + " [Delivery price: " + deliveryFeeView.getText().toString() + "]",
                             "0",
                             comment,
                             "Unpaid",
@@ -552,7 +552,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
             }
         });
 
-        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        alertDialog.setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -811,8 +811,8 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
             else txtTotalPrice.setText(String.format("ETB %s", total + currentDeliveryPrice));
             calculateTotalPrice();
             //make snackbar
-            Snackbar snackbar = Snackbar.make(rootLayout, name + " removed from cart!", Snackbar.LENGTH_LONG);
-            snackbar.setAction("UNDO", new View.OnClickListener() {
+            Snackbar snackbar = Snackbar.make(rootLayout, name + " " + getResources().getString(R.string.removed_from_cart), Snackbar.LENGTH_LONG);
+            snackbar.setAction(getResources().getString(R.string.undo), new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     adapter.restoreItem(deleteItem, deleteIndex);
@@ -906,8 +906,8 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
 
     public void showGpsDisabledDialog() {
         final android.support.v7.app.AlertDialog.Builder alertDialog = new AlertDialog.Builder(Cart.this);
-        alertDialog.setTitle("GPS Disabled, Enable gps?");
-        alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+        alertDialog.setTitle(getResources().getString(R.string.gps_disabled));
+        alertDialog.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 startActivity(new Intent("android.settings.LOCATION_SOURCE_SETTINGS"));
