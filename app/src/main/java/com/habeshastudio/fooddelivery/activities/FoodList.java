@@ -44,6 +44,7 @@ import com.habeshastudio.fooddelivery.R;
 import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.database.Database;
 import com.habeshastudio.fooddelivery.helper.EmptyRecyclerView;
+import com.habeshastudio.fooddelivery.helper.LocaleHelper;
 import com.habeshastudio.fooddelivery.helper.MyExceptionHandler;
 import com.habeshastudio.fooddelivery.interfaces.ItemClickListener;
 import com.habeshastudio.fooddelivery.models.Favorites;
@@ -60,7 +61,6 @@ import java.util.List;
 import java.util.Locale;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
-import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class FoodList extends AppCompatActivity {
 
@@ -116,7 +116,8 @@ public class FoodList extends AppCompatActivity {
 
     @Override
     protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+//        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+        super.attachBaseContext(LocaleHelper.onAtach(newBase, "en"));
     }
 
     @Override
