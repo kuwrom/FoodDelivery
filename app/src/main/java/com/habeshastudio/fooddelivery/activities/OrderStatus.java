@@ -110,6 +110,18 @@ public class OrderStatus extends AppCompatActivity {
             }
         });
 
+        users.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User currentUser = dataSnapshot.child(Paper.book().read("userPhone").toString()).getValue(User.class);
+                Common.currentUser = currentUser;
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
 
         try {
             if (getIntent() == null)
@@ -288,8 +300,8 @@ public class OrderStatus extends AppCompatActivity {
     }
 
     @Override
-    protected void onPostResume() {
-        super.onPostResume();
+    protected void onResume() {
+        super.onResume();
         users.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

@@ -119,7 +119,7 @@ public class Profile extends AppCompatActivity {
 
 
         //Refresh user status
-        loadUser();
+        //loadUser();
 
         promo = findViewById(R.id.promo_button);
         loved = findViewById(R.id.loved_button);
@@ -329,7 +329,7 @@ public class Profile extends AppCompatActivity {
         if (language == null)
             Paper.book().write("language", "en");
         updateView((String) Paper.book().read("language"));
-        setCartStatus();
+
 
     }
 
@@ -591,18 +591,20 @@ public class Profile extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User currentUser = dataSnapshot.child(Paper.book().read("userPhone").toString()).getValue(User.class);
                 Common.currentUser = currentUser;
+                loadUser();
+                setCartStatus();
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
         });
-        loadUser();
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        setCartStatus();
+        //setCartStatus();
     }
 }

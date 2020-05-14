@@ -8,6 +8,7 @@ public class Category {
     private String Name;
     private String Image;
     private String Location;
+    private boolean isOpened;
 
     public Category() {
     }

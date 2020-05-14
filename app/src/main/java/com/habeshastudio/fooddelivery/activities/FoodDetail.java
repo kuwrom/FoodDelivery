@@ -134,6 +134,18 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
 
         Paper.init(this);
 
+        users.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User currentUser = dataSnapshot.child(Paper.book().read("userPhone").toString()).getValue(User.class);
+                Common.currentUser = currentUser;
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
         FirebaseRecyclerOptions<FoodMenu> options = new FirebaseRecyclerOptions.Builder<FoodMenu>()
                 .setQuery(foodList, FoodMenu.class)
                 .build();

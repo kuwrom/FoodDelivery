@@ -174,6 +174,18 @@ public class FoodList extends AppCompatActivity {
         });
         localDb = new Database(this);
 
+        users.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User currentUser = dataSnapshot.child(Paper.book().read("userPhone").toString()).getValue(User.class);
+                Common.currentUser = currentUser;
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
         final BubbleNavigationLinearView bubbleNavigationLinearView = findViewById(R.id.bottom_navigation_view_linear);
         bubbleNavigationLinearView.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/rf.ttf"));
         bubbleNavigationLinearView.setNavigationChangeListener(new BubbleNavigationChangeListener() {

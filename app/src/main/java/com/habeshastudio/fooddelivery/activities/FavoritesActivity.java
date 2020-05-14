@@ -110,7 +110,7 @@ public class FavoritesActivity extends AppCompatActivity implements RecyclerItem
         //swipe to delete
         ItemTouchHelper.SimpleCallback itemTouchHelperCallBack = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, this);
         new ItemTouchHelper(itemTouchHelperCallBack).attachToRecyclerView(recyclerView);
-        loadFavorites();
+
 
         final BubbleNavigationLinearView bubbleNavigationLinearView = findViewById(R.id.bottom_navigation_view_linear);
         bubbleNavigationLinearView.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/rf.ttf"));
@@ -209,13 +209,14 @@ public class FavoritesActivity extends AppCompatActivity implements RecyclerItem
     }
 
     @Override
-    protected void onPostResume() {
-        super.onPostResume();
+    protected void onResume() {
+        super.onResume();
         users.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User currentUser = dataSnapshot.child(Paper.book().read("userPhone").toString()).getValue(User.class);
                 Common.currentUser = currentUser;
+                loadFavorites();
             }
 
             @Override
