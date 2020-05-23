@@ -23,7 +23,7 @@ public class Request {
     public Request() {
     }
 
-    public Request(String phone, String name, String address, String total, String status, String comment, String paymentState, String paymentMethod, String latLng, List<Order> foods, boolean partial) {
+    public Request(String phone, String name, String address, String total, String status, String comment, String paymentState, String paymentMethod, String latLng, List<Order> foods, boolean partial, String restaurantId) {
         this.phone = phone;
         this.name = name;
         this.address = address;
@@ -35,6 +35,7 @@ public class Request {
         this.latLng = latLng;
         this.foods = foods;
         this.partial = partial;
+        this.restaurantId = restaurantId;
     }
 
     public String getPhone() {

@@ -258,19 +258,29 @@ public class Profile extends AppCompatActivity {
         currencySwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Paper.book().read("usd")!=null)
-                isUsd = Paper.book().read("usd");
-                if (isUsd) {
-                    Common.isUsdSelected = false;
-                    Paper.book().write("usd", false);
-                    currencySwitch.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorWhite)));
-                    setCartStatus();
-                } else {
-                    Common.isUsdSelected = true;
-                    Paper.book().write("usd", true);
-                    currencySwitch.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.purple_bg_light)));
-                    setCartStatus();
-                }
+
+                currencySwitch.startAnimation(animShake);
+                final android.support.v7.app.AlertDialog.Builder alertDialog = new AlertDialog.Builder(Profile.this);
+                alertDialog.setTitle(R.string.change_currency);
+                alertDialog.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (Paper.book().read("usd") != null)
+                            isUsd = Paper.book().read("usd");
+                        if (isUsd) {
+                            Common.isUsdSelected = false;
+                            Paper.book().write("usd", false);
+                            currencySwitch.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorWhite)));
+                            setCartStatus();
+                        } else {
+                            Common.isUsdSelected = true;
+                            Paper.book().write("usd", true);
+                            currencySwitch.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.purple_bg_light)));
+                            setCartStatus();
+                        }
+                    }
+                });
+                alertDialog.show();
             }
         });
 

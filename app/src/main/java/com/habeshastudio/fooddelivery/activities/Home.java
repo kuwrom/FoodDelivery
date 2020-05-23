@@ -149,7 +149,7 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
         geoRef = database.getReference("CurrentUserLocation");
         geoRestRef = database.getReference("RerstaurantLocation");
         geoFire = new GeoFire(geoRestRef);
-        geoFire.setLocation("-M4J0o7NnEEmL97i1vAt", new GeoLocation(13.488764, 39.471513));
+        geoFire.setLocation("-M72dHQYZhmcMq3ROANj", new GeoLocation(13.497123, 39.461125));
         rootLayout = findViewById(R.id.container_home);
         users = FirebaseDatabase.getInstance().getReference("User");
         category = database.getReference("Category");
@@ -166,17 +166,17 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
             }
         });
 
-        users.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                User currentUser = dataSnapshot.child(Paper.book().read("userPhone").toString()).getValue(User.class);
-                Common.currentUser = currentUser;
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
+//        users.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                User currentUser = dataSnapshot.child(Paper.book().read("userPhone").toString()).getValue(User.class);
+//                Common.currentUser = currentUser;
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//            }
+//        });
 
         final BubbleNavigationLinearView bubbleNavigationLinearView = findViewById(R.id.bottom_navigation_view_linear);
         bubbleNavigationLinearView.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/rf.ttf"));

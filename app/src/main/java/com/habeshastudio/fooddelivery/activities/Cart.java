@@ -117,7 +117,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
     DatabaseReference requests;
     DatabaseReference users;
     Button checkout_button;
-    LinearLayout btnPromoCode;
+    LinearLayout btnPromoCode, addMore;
     RelativeLayout btnCashChange;
     int paymentMethodSelected = 0;
     EditText addComment, addPromo;
@@ -193,6 +193,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
         new ItemTouchHelper(itemTouchHelperCallBack).attachToRecyclerView(recyclerView);
 
         txtTotalPrice = findViewById(R.id.total_text);
+        addMore = findViewById(R.id.add_more_layout);
         addPromoText = findViewById(R.id.add_promo_text);
         addComment = findViewById(R.id.add_note);
         addPromo = findViewById(R.id.enter_promo);
@@ -229,6 +230,13 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
                     paymentMethodDisplay.setTextColor(getResources().getColor(R.color.grey_active));
                     paymentMethodSelected = 0;
                 }
+            }
+        });
+
+        addMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
             }
         });
 
@@ -459,7 +467,8 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
                                 String.format("%s,%s", mLastLocation.getLatitude(), mLastLocation.getLongitude()),
                                 //String.format("%s,%s", 13.501090, 39.475850),
                                 cart,
-                                false
+                                false,
+                                Common.currentrestaurantID
                         );
 
                         // Submit to Firebase
@@ -524,7 +533,8 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
                             "COD",
                             String.format("%s,%s", mLastLocation.getLatitude(), mLastLocation.getLongitude()),
                             cart,
-                            false
+                            false,
+                            Common.currentrestaurantID
                     );
 
                     // Submit to Firebase
@@ -611,7 +621,8 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
                                 "PayPal",
                                 String.format("%s,%s", shippingAddress.getLatLng().latitude, shippingAddress.getLatLng().longitude),
                                 cart,
-                                false
+                                false,
+                                Common.currentrestaurantID
                         );
 
                         // Submit to Firebase
@@ -656,7 +667,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
 //                    Notification notification = new Notification("Derash", "You have a new order" + orderNumber);
 //                    Sender content = new Sender(serverToken.getToken(), notification);
                     Map<String, String> dataSend = new HashMap<>();
-                    dataSend.put("title", "Derash");
+                    dataSend.put("title", "Dine");
                     dataSend.put("message", "You have a new order" + orderNumber);
                     DataMessage dataMessage = new DataMessage(serverToken.getToken(), dataSend);
 

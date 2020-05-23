@@ -39,14 +39,58 @@
                 android:layout_height="wrap_content"/>
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/listCart"
-                android:layout_marginBottom="16dp"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent" />
+
+            <LinearLayout
+                android:id="@+id/add_more_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:background="@drawable/bg_ui_white"
+                android:clickable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="8dp">
+
+                <ImageView
+                    android:id="@+id/cart_image"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:contentDescription="TODO"
+                    android:padding="8dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/add_more"
+                    android:tint="@color/colorPrimary" />
+
+                <TextView
+                    android:id="@+id/cart_item_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center_vertical|start"
+                    android:text="Add More Food"
+                    android:textAllCaps="true"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="18dp"
+                    android:textStyle="bold" />
+
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_gravity="bottom"
+                android:background="@color/grey_active" />
             <EditText
                 android:id="@+id/enter_promo"
                 android:layout_width="match_parent"
                 android:layout_height="54dp"
+                android:layout_marginBottom="16dp"
                 android:layout_marginLeft="16dp"
                 android:background="@color/white"
                 android:visibility="gone"

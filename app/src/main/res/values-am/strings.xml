@@ -149,5 +149,6 @@
     <string name="intro_about">Whatever you want, we get it. \nDine is whatever-you-can-think-of delivery\nNeed another charger? Kitchen staples? Or Alcohol? We’ve got everything you need available for delivery within an hour.</string>
     <string name="not_yet_verification">እስካሁን የይለፍ ቃል አልደረሶትም? ድጋሜ ለማስላክ ከስር ይጫኑ</string>
     <string name="cance_verification">የማረጋገጫ ክንውኑ ይቋረጥ?</string>
-    <string name="swipe_to_delete">ለመሰረዝ ያንሸራቱ</string>
+    <string name="swipe_to_delete">ሰርዝ</string>
+    <string name="change_currency">Change Currency?</string>
 </resources>

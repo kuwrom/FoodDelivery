@@ -58,6 +58,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartViewHolder> {
             @Override
             public void onClick(View v) {
                 holder.view_foreground.startAnimation(animShake);
+                //cart.onSwiped(holder, 0, position);
                 //Toast.makeText(cart, "Swipe from left to delete this", Toast.LENGTH_SHORT).show();
             }
         });

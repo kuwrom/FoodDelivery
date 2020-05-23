@@ -16,12 +16,22 @@
             android:layout_width="wrap_content"
             android:layout_centerVertical="true"
             android:textColor="@color/white"
-            android:layout_alignParentEnd="true"
+            android:layout_height="wrap_content"
             android:text="@string/swipe_to_delete"
             android:textStyle="bold"
-            android:textSize="13sp"
-            android:layout_marginEnd="16dp"
-            android:layout_height="wrap_content" />
+            android:layout_marginEnd="4dp"
+            android:layout_toLeftOf="@id/swipe_img"
+            android:textSize="14sp" />
+
+        <ImageView
+            android:id="@+id/swipe_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="8dp"
+            android:src="@drawable/ic_arrow_left_black_48dp"
+            android:tint="@color/colorWhite" />
 
     </RelativeLayout>
 
@@ -60,6 +70,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="8dp"
                 android:gravity="center_vertical|start"
+                android:maxLines="2"
                 android:text="Food 01"
                 android:textColor="@color/colorLightBlack"
                 android:textAllCaps="true"

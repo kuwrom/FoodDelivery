@@ -23,6 +23,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.habeshastudio.fooddelivery.activities.Home;
 import com.habeshastudio.fooddelivery.activities.authentication.Register;
 import com.habeshastudio.fooddelivery.common.Common;
@@ -69,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
         geoRef = database.getReference("CurrentUserLocation");
         geoRestRef = database.getReference("RerstaurantLocation");
         geoFire = new GeoFire(geoRestRef);
-        //geoFire.setLocation("-M6iO4I5aDsX5g6LE8U5", new GeoLocation(13.489735,39.477404));
+        //geoFire.setLocation("-M7xP-8rGQjtHbPE2-8kP", new GeoLocation(13.488099,39.472419));
         //Toast.makeText(this, "hi", Toast.LENGTH_SHORT).show();
 
         //notification
@@ -77,6 +78,12 @@ public class MainActivity extends AppCompatActivity {
         String language = Paper.book().read("language");
         if (language == null)
             Paper.book().write("language", "en");
+
+        if (Paper.book().read("sub_new") == null) {
+            FirebaseMessaging.getInstance().subscribeToTopic(Common.topicName);
+            Paper.book().write("sub_new", "true");
+        }
+
         if (Paper.book().read("usd") != null)
         Common.isUsdSelected  = Paper.book().read("usd");
         if (Paper.book().read("restId") != null)
@@ -91,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
                             doSmtn();
                         }
                         else {
-                            final Snackbar snackbar = Snackbar.make(rootLayout, "😫😫Please install play services and try again😫😫", Snackbar.LENGTH_INDEFINITE);
+                            final Snackbar snackbar = Snackbar.make(rootLayout, "😫😫Please install play services and try again 😫😫", Snackbar.LENGTH_INDEFINITE);
                             snackbar.setActionTextColor(Color.YELLOW);
                             snackbar.show();
                         }

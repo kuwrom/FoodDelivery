@@ -152,6 +152,7 @@
     <string name="our_team">Our Team</string>
     <string name="not_yet_verification">didn\'t get the verification code yet? press resend to request a new one</string>
     <string name="cance_verification">Cancel verification process?</string>
-    <string name="swipe_to_delete">Swipe to Delete</string>
+    <string name="swipe_to_delete">Delete</string>
+    <string name="change_currency">Change Currency?</string>
 
 </resources>

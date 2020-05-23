@@ -73,6 +73,21 @@
 -keepclassmembers class com.habeshastudio.fooddelivery.models.** {
   *;
 }
+-keepclassmembers class com.habeshastudio.fooddelivery.database.** {
+  *;
+}
+-keepclassmembers class com.habeshastudio.fooddelivery.helper.** {
+  *;
+}
+-keepclassmembers class com.habeshastudio.fooddelivery.common.** {
+  *;
+}
+-keepclassmembers class com.habeshastudio.fooddelivery.remote.** {
+  *;
+}
+-keepclassmembers class com.habeshastudio.fooddelivery.service.** {
+  *;
+}
 
 -keepattributes Signature
 # For using GSON @Expose annotation
@@ -80,3 +95,27 @@
 # Gson specific classes
 -keep class sun.misc.Unsafe { *; }
 #-keep class com.google.gson.stream.** { *; }
+
+# java.nio.file.* usage which cannot be used at runtime. Animal sniffer annotation.
+-dontwarn okio.Okio
+# JDK 7-only method which is @hide on Android. Animal sniffer annotation.
+-dontwarn okio.DeflaterSink
+-dontwarn com.firebase.ui.firestore.paging.**
+
+-keepattributes SourceFile,LineNumberTable
+-keepclasseswithmembers class io.requery.android.database.** {
+  native <methods>;
+  public <init>(...);
+}
+-keepnames class io.requery.android.database.** { *; }
+-keep public class io.requery.android.database.sqlite.SQLiteFunction { *; }
+-keep public class io.requery.android.database.sqlite.SQLiteCustomFunction { *; }
+-keep public class io.requery.android.database.sqlite.SQLiteCursor { *; }
+-keep public class io.requery.android.database.sqlite.SQLiteDebug** { *; }
+-keep public class io.requery.android.database.sqlite.SQLiteDatabase { *; }
+-keep public class io.requery.android.database.sqlite.SQLiteOpenHelper { *; }
+-keep public class io.requery.android.database.sqlite.SQLiteStatement { *; }
+-keep public class io.requery.android.database.CursorWindow { *; }
+-keepattributes Exceptions,InnerClasses
+-keep class org.sqlite.** { *; }
+-keep class org.sqlite.database.** { *; }
