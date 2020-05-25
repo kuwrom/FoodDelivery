@@ -51,7 +51,7 @@
     <string name="more_options">More Options</string>
     <string name="setup_payment_method">Setup payment method</string>
     <string name="set_home_address">Set Delivery Address</string>
-    <string name="history_and_transactions">History and transactions</string>
+    <string name="history_and_transactions">Order History</string>
     <string name="send_feedback">Send feedback</string>
     <string name="about">About</string>
     <string name="promo_codes">Promo Codes</string>
@@ -64,7 +64,7 @@
     <string name="home_address">Delivery Address</string>
     <string name="transition_image" translatable="false">image</string>
     <string name="transition_description" translatable="false">description</string>
-    <string name="help" >Help</string>
+    <string name="help">Help</string>
     <string name="place_order">Place Order</string>
     <string name="shipping_address">Shipping Address</string>
     <string name="feed_back_here">Feedback here</string>

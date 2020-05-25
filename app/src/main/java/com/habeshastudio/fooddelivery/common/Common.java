@@ -43,7 +43,7 @@ public class Common {
     public static int totalQuantity = 0;
     public static int totalPrice = 0;
     public static boolean isUsdSelected = false;
-    public static double ETB_RATE = 32.0;
+    public static double ETB_RATE = 34.0;
     public static HashMap<String, Double> restaurantDistance = new HashMap<>();
 
     public static APIService getFCMService() {
@@ -64,8 +64,14 @@ public class Common {
                 return "Your Food is Ordered";
             case "2":
                 return "Food Shipping";
+            case "3":
+                return "Food Delivered to You";
+            case "4":
+                return "Cancelled by User";
+            case "5":
+                return "Cancelled by Admin";
             default:
-                return "Food delivered to you";
+                return "";
         }
     }
 

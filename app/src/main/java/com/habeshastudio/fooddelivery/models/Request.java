@@ -17,13 +17,14 @@ public class Request {
     private String paymentMethod;
     private String latLng;
     private String restaurantId;
+    private String orderHandler;
     private List<Order> foods;
     private boolean partial = false;
 
     public Request() {
     }
 
-    public Request(String phone, String name, String address, String total, String status, String comment, String paymentState, String paymentMethod, String latLng, List<Order> foods, boolean partial, String restaurantId) {
+    public Request(String phone, String name, String address, String total, String status, String comment, String paymentState, String paymentMethod, String latLng, List<Order> foods, boolean partial, String restaurantId, String orderHandler) {
         this.phone = phone;
         this.name = name;
         this.address = address;
@@ -36,6 +37,15 @@ public class Request {
         this.foods = foods;
         this.partial = partial;
         this.restaurantId = restaurantId;
+        this.orderHandler = orderHandler;
+    }
+
+    public String getOrderHandler() {
+        return orderHandler;
+    }
+
+    public void setOrderHandler(String orderHandler) {
+        this.orderHandler = orderHandler;
     }
 
     public String getPhone() {

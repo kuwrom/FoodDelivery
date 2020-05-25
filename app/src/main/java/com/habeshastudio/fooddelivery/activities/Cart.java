@@ -50,7 +50,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.habeshastudio.fooddelivery.R;
@@ -114,7 +113,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
     FirebaseDatabase database;
-    DatabaseReference requests;
+    DatabaseReference requests, record;
     DatabaseReference users;
     Button checkout_button;
     LinearLayout btnPromoCode, addMore;
@@ -178,6 +177,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
         database = FirebaseDatabase.getInstance();
         users = FirebaseDatabase.getInstance().getReference("User");
         requests = database.getReference("Requests");
+        record = database.getReference("ForTheRecord");
 
         //init
         recyclerView = findViewById(R.id.listCart);
@@ -468,7 +468,8 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
                                 //String.format("%s,%s", 13.501090, 39.475850),
                                 cart,
                                 false,
-                                Common.currentrestaurantID
+                                Common.currentrestaurantID,
+                                ""
                         );
 
                         // Submit to Firebase
@@ -497,7 +498,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
                                                         @Override
                                                         public void onDataChange(DataSnapshot dataSnapshot) {
                                                             Common.currentUser = dataSnapshot.getValue(User.class);
-                                                            sendNotificationOrder(orderNumber);
+                                                            sendNotificationOrder(orderNumber, "");
                                                         }
 
                                                         @Override
@@ -508,7 +509,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
                                         }
                                     }
                                 });
-                        sendNotificationOrder(orderNumber);
+                        sendNotificationOrder(orderNumber, "");
                         //Toast.makeText(Cart.this, "Thank you, Order placed!", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(Cart.this, OrderStatus.class));
                         Common.currentrestaurantID = null;
@@ -522,38 +523,51 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
 
                 } else if (paymentMethodSelected == 0) {
                     // Create new Request
-                    Request request = new Request(
-                            Common.currentUser.getPhone(),
-                            Common.currentUser.getName(),
-                            address,
-                            txtTotalPrice.getText().toString() + " [Delivery price: " + deliveryFeeView.getText().toString() + "]",
-                            "0",
-                            comment,
-                            "Unpaid",
-                            "COD",
-                            String.format("%s,%s", mLastLocation.getLatitude(), mLastLocation.getLongitude()),
-                            cart,
-                            false,
-                            Common.currentrestaurantID
-                    );
+                    FirebaseDatabase.getInstance().getReference("Category").child(Common.currentrestaurantID).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            Request request = new Request(
+                                    Common.currentUser.getPhone(),
+                                    Common.currentUser.getName(),
+                                    address,
+                                    txtTotalPrice.getText().toString() + " [D: " + deliveryFeeView.getText().toString() + "]",
+                                    "0",
+                                    comment,
+                                    "Unpaid",
+                                    "COD",
+                                    String.format("%s,%s", mLastLocation.getLatitude(), mLastLocation.getLongitude()),
+                                    cart,
+                                    false,
+                                    Common.currentrestaurantID,
+                                    dataSnapshot.child("orderHandler").getValue().toString()
+                            );
 
-                    // Submit to Firebase
-                    //use System.CurrentMilli to Key
-                    String orderNumber = String.valueOf(System.currentTimeMillis());
-                    requests.child(orderNumber)
-                            .setValue(request);
-                    sendNotificationOrder(orderNumber);
-                    //Delete cart
-                    new Database(getBaseContext()).cleanCart(Common.currentUser.getPhone());
+                            // Submit to Firebase
+                            //use System.CurrentMilli to Key
+                            String orderNumber = String.valueOf(System.currentTimeMillis());
+                            requests.child(orderNumber)
+                                    .setValue(request);
+                            record.child(orderNumber).setValue(request);
+                            sendNotificationOrder(orderNumber, dataSnapshot.child("orderHandler").getValue().toString());
+                            //Delete cart
+                            new Database(getBaseContext()).cleanCart(Common.currentUser.getPhone());
 
 
-                    //Toast.makeText(Cart.this, "Thank you, Order placed!", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(Cart.this, OrderStatus.class));
-                    Common.currentrestaurantID = null;
-                    Paper.book().delete("restId");
-                    Common.alreadyBeenToCart = false;
-                    Paper.book().delete("beenToCart");
-                    finish();
+                            //Toast.makeText(Cart.this, "Thank you, Order placed!", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(Cart.this, OrderStatus.class));
+                            Common.currentrestaurantID = null;
+                            Paper.book().delete("restId");
+                            Common.alreadyBeenToCart = false;
+                            Paper.book().delete("beenToCart");
+                            finish();
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
                 }
 
                 //Remove places fragment
@@ -622,7 +636,8 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
                                 String.format("%s,%s", shippingAddress.getLatLng().latitude, shippingAddress.getLatLng().longitude),
                                 cart,
                                 false,
-                                Common.currentrestaurantID
+                                Common.currentrestaurantID,
+                                ""
                         );
 
                         // Submit to Firebase
@@ -633,7 +648,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
                         //Delete cart
                         new Database(getBaseContext()).cleanCart(Common.currentUser.getPhone());
 
-                        sendNotificationOrder(orderNumber);
+                        sendNotificationOrder(orderNumber, "");
                         //Toast.makeText(Cart.this, "Thank you, Order placed!", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(Cart.this, OrderStatus.class));
                         Common.currentrestaurantID = null;
@@ -654,14 +669,14 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
         }
     }
 
-    private void sendNotificationOrder(final String orderNumber) {
+    private void sendNotificationOrder(final String orderNumber, String orderHandler) {
         DatabaseReference tokens = FirebaseDatabase.getInstance().getReference("Tokens");
-        Query data = tokens.orderByChild("serverToken").equalTo(true);
-        data.addValueEventListener(new ValueEventListener() {
+        tokens.child(orderHandler).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot postSnapSot : dataSnapshot.getChildren()) {
-                    Token serverToken = postSnapSot.getValue(Token.class);
+
+                if (dataSnapshot.exists()) {
+                    Token serverToken = dataSnapshot.getValue(Token.class);
 
                     //create raw payload to send
 //                    Notification notification = new Notification("Derash", "You have a new order" + orderNumber);
@@ -699,9 +714,9 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
                                     Log.e("ERROR", t.getMessage());
                                 }
                             });
+                }
 
                 }
-            }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {

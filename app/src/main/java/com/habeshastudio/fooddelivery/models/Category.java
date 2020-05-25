@@ -8,15 +8,25 @@ public class Category {
     private String Name;
     private String Image;
     private String Location;
+    private String orderHandler;
     private boolean isOpened;
+
+    public Category(String name, String image, String location, String orderHandler) {
+        Name = name;
+        Image = image;
+        Location = location;
+        orderHandler = orderHandler;
+    }
+
+    public String getOrderHandler() {
+        return orderHandler;
+    }
 
     public Category() {
     }
 
-    public Category(String name, String image, String location) {
-        Name = name;
-        Image = image;
-        Location = location;
+    public void setOrderHandler(String orderHandler) {
+        this.orderHandler = orderHandler;
     }
 
     public String getName() {

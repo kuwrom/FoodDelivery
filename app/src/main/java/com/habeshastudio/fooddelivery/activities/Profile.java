@@ -324,8 +324,8 @@ public class Profile extends AppCompatActivity {
         transactions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //startActivity(new Intent(Profile.this, HistoryAndReceipt.class));
-                Toast.makeText(Profile.this, getResources().getString(R.string.something_went_wrong), Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(Profile.this, OrderHistory.class));
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             }
         });
 

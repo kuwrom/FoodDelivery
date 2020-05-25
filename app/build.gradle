@@ -4,10 +4,10 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.habeshastudio.fooddelivery"
-        minSdkVersion 23
+        minSdkVersion 22
         targetSdkVersion 28
-        versionCode 8
-        versionName "4.3.1"
+        versionCode 9
+        versionName "4.3.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }

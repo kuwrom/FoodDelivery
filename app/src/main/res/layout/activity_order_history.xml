@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.OrderStatus">
+    tools:context=".activities.OrderHistory">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar_orders"
@@ -22,25 +22,16 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/refresh_orders"
+    <com.habeshastudio.fooddelivery.helper.EmptyRecyclerView
+        android:id="@+id/listOrders"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/btn_checkout_cart"
-        android:layout_below="@id/app_bar_orders">
+        android:layout_below="@id/app_bar_orders"
+        android:layout_margin="8dp"
+        android:background="@android:color/transparent">
 
-        <com.habeshastudio.fooddelivery.helper.EmptyRecyclerView
-            android:id="@+id/listOrders"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@id/btn_checkout_cart"
-            android:layout_below="@id/app_bar_orders"
-            android:layout_margin="8dp"
-            android:background="@android:color/transparent">
-
-        </com.habeshastudio.fooddelivery.helper.EmptyRecyclerView>
-    </android.support.v4.widget.SwipeRefreshLayout>
-
+    </com.habeshastudio.fooddelivery.helper.EmptyRecyclerView>
 
     <LinearLayout
         android:id="@+id/empty_view_orders"
@@ -68,49 +59,51 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
         android:id="@+id/btn_checkout_cart"
-        android:orientation="horizontal"
-        android:weightSum="3"
-        android:visibility="visible"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
         android:layout_above="@id/bottom_navigation_view_linear"
+        android:background="@color/colorPrimary"
         android:clickable="true"
+        android:focusable="true"
+        android:orientation="horizontal"
         android:paddingTop="12dp"
         android:paddingBottom="12dp"
-        android:background="@color/colorPrimary"
-        android:layout_height="48dp"
-        android:focusable="true">
+        android:visibility="visible"
+        android:weightSum="3">
+
+        <TextView
+            android:id="@+id/checkout_layout_price"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="ETB 200"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
 
         <TextView
             android:layout_width="0dp"
-            android:id="@+id/checkout_layout_price"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:gravity="center"
-            android:text="ETB 200"
-            android:textSize="16sp"
-            android:textColor="@color/white"
-            android:layout_height="wrap_content" />
-        <TextView
             android:layout_weight="1"
-            android:layout_gravity="center"
             android:gravity="center"
             android:text="@string/checkout"
-            android:textStyle="bold"
-            android:textSize="16sp"
             android:textColor="@color/white"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content" />
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
         <TextView
-            android:layout_weight="1"
-            android:text="1"
             android:id="@+id/items_count"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:textSize="16sp"
-            android:textColor="@color/white"
             android:layout_width="0dp"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="1"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
 
     </LinearLayout>
 
@@ -139,12 +132,10 @@
             app:bt_title="@string/home" />
 
 
-
         <com.gauravk.bubblenavigation.BubbleToggleView
             android:id="@+id/l_item_orders"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:bt_active="true"
             app:bt_colorActive="@color/green_active"
             app:bt_colorInactive="@color/green_inactive"
             app:bt_icon="@drawable/ic_playlist"
@@ -178,6 +169,7 @@
             android:id="@+id/l_item_profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:bt_active="true"
             app:bt_colorActive="@color/red_active"
             app:bt_colorInactive="@color/red_inactive"
             app:bt_icon="@drawable/ic_person"
