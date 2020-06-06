@@ -1,15 +1,24 @@
 package com.habeshastudio.fooddelivery.models;
 
 public class Banner {
-    private String id, name, image;
+    private String id, name, image, message;
 
     public Banner() {
     }
 
-    public Banner(String id, String name, String image) {
+    public Banner(String id, String name, String image, String message) {
         this.id = id;
+        this.message = message;
         this.name = name;
         this.image = image;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public String getId() {

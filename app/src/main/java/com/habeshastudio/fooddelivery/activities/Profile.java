@@ -49,7 +49,6 @@ import com.habeshastudio.fooddelivery.activities.profile.PromoCodes;
 import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.database.Database;
 import com.habeshastudio.fooddelivery.helper.LocaleHelper;
-import com.habeshastudio.fooddelivery.helper.MyExceptionHandler;
 import com.habeshastudio.fooddelivery.models.Order;
 import com.habeshastudio.fooddelivery.models.User;
 import com.mikhaellopez.circularimageview.CircularImageView;
@@ -61,7 +60,6 @@ import java.util.List;
 import java.util.Locale;
 
 import io.paperdb.Paper;
-import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 public class Profile extends AppCompatActivity {
 
@@ -88,16 +86,12 @@ public class Profile extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
-                .setDefaultFontPath("fonts/rf.ttf")
-                .setFontAttrId(R.attr.fontPath)
-                .build());
         setContentView(R.layout.activity_profile);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             getWindow().setStatusBarColor(Color.WHITE);
         }
-        Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
+        //Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
         name_display = findViewById(R.id.name_display);
         profile = findViewById(R.id.profile_pic);
         address_display = findViewById(R.id.address_display);
@@ -390,7 +384,7 @@ public class Profile extends AppCompatActivity {
 
     private void showHomeAddressDialog() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(Profile.this);
-        alertDialog.setTitle(getResources().getString(R.string.payments_are_disabled));
+        alertDialog.setTitle(getResources().getString(R.string.set_home_address));
 
         LayoutInflater inflater = LayoutInflater.from(this);
         View layout_home_address = inflater.inflate(R.layout.home_address_layout, null);
@@ -489,12 +483,8 @@ public class Profile extends AppCompatActivity {
                                 Common.currentUser.getHomeAddress() != null) {
                             address_display.setText(Common.currentUser.getHomeAddress());
                         }
-                        try {
-                            Picasso.with(getBaseContext()).load(Common.currentUser.getImage()).placeholder(R.drawable.profile_pic)
+                        Picasso.with(getBaseContext()).load(Common.currentUser.getImage() + "_512x512").placeholder(R.drawable.profile_pic)
                                     .into(profile);
-                        } catch (Exception ignored) {
-
-                        }
                     }
 
                     @Override
@@ -522,7 +512,7 @@ public class Profile extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(Uri uri) {
                                     //uri.toString()
-                                    users.child(Common.currentUser.getPhone()).child("Image").setValue(uri.toString());
+                                    users.child(Common.currentUser.getPhone()).child("image").setValue(uri.toString());
                                     loadUser();
                                 }
                             });

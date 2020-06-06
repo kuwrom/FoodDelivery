@@ -50,6 +50,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.habeshastudio.fooddelivery.R;
@@ -57,7 +58,6 @@ import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.common.Config;
 import com.habeshastudio.fooddelivery.database.Database;
 import com.habeshastudio.fooddelivery.helper.LocaleHelper;
-import com.habeshastudio.fooddelivery.helper.MyExceptionHandler;
 import com.habeshastudio.fooddelivery.helper.RecyclerItemTouchHelper;
 import com.habeshastudio.fooddelivery.interfaces.RecyclerItemTouchHelperListener;
 import com.habeshastudio.fooddelivery.models.DataMessage;
@@ -109,12 +109,13 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
             .environment(PayPalConfiguration.ENVIRONMENT_SANDBOX)
             .clientId(Config.PAYPAL_CLIENT_ID);
     public TextView txtTotalPrice, subTotalView, taxView, deliveryFeeView, paymentMethodDisplay, addPromoText, guide;
-    public Double currentDeliveryPrice;
+    public int currentDeliveryPrice;
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
     FirebaseDatabase database;
     DatabaseReference requests, record;
     DatabaseReference users;
+    DatabaseReference restaurant;
     Button checkout_button;
     LinearLayout btnPromoCode, addMore;
     RelativeLayout btnCashChange;
@@ -154,7 +155,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
 
         mGoogleMapService = Common.getGoogleMapApi();
         mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
+        //Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
 
         //Runtime permission
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -175,6 +176,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
 
         //Firebase
         database = FirebaseDatabase.getInstance();
+        restaurant = database.getReference("Category");
         users = FirebaseDatabase.getInstance().getReference("User");
         requests = database.getReference("Requests");
         record = database.getReference("ForTheRecord");
@@ -188,6 +190,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
         rootLayout = findViewById(R.id.root_cart_layout);
         Paper.init(Cart.this);
 
+        //Toast.makeText(this, ServerValue.TIMESTAMP.get(".sv"), Toast.LENGTH_SHORT).show();
         //swipe to delete
         ItemTouchHelper.SimpleCallback itemTouchHelperCallBack = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, this);
         new ItemTouchHelper(itemTouchHelperCallBack).attachToRecyclerView(recyclerView);
@@ -474,7 +477,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
 
                         // Submit to Firebase
                         //use System.CurrentMilli to Key
-                        final String orderNumber = String.valueOf(System.currentTimeMillis());
+                        final String orderNumber = String.valueOf(ServerValue.TIMESTAMP);
                         requests.child(orderNumber)
                                 .setValue(request);
                         //Delete cart
@@ -887,21 +890,35 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
         }
     }
 
-    public void calculateTotalPrice() {
-        try {
-            currentDeliveryPrice = Common.getDeliveryPrice();
-            loadListFood();
-            updatePriceTexts();
-            mDialog.dismiss();
-        } catch (Exception e) {
-            new Database(getBaseContext()).cleanCart(Common.currentUser.getPhone());
-            Common.currentrestaurantID = null;
-            Paper.book().delete("restId");
-            Common.alreadyBeenToCart = false;
-            Paper.book().delete("beenToCart");
-            finish();
-            //Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
-        }
+    public void calculateTotalPrice() throws NullPointerException {
+
+
+        restaurant.child(Common.currentrestaurantID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                try {
+                    currentDeliveryPrice = Common.getDeliveryPrice(dataSnapshot.child("deliveryPrice").getValue().toString());
+                    loadListFood();
+                    updatePriceTexts();
+                    mDialog.dismiss();
+                } catch (Exception e) {
+                    new Database(getBaseContext()).cleanCart(Common.currentUser.getPhone());
+                    Common.currentrestaurantID = null;
+                    Paper.book().delete("restId");
+                    Common.alreadyBeenToCart = false;
+                    Paper.book().delete("beenToCart");
+                    finish();
+                    //Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
     }
 
     public void updatePriceTexts() {

@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -60,7 +61,6 @@ import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.database.Database;
 import com.habeshastudio.fooddelivery.helper.EmptyRecyclerView;
 import com.habeshastudio.fooddelivery.helper.LocaleHelper;
-import com.habeshastudio.fooddelivery.helper.MyExceptionHandler;
 import com.habeshastudio.fooddelivery.models.Banner;
 import com.habeshastudio.fooddelivery.models.Category;
 import com.habeshastudio.fooddelivery.models.Order;
@@ -71,6 +71,7 @@ import com.habeshastudio.fooddelivery.remote.IGoogleService;
 import com.habeshastudio.fooddelivery.viewHolder.RestaurantAdapter;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -90,7 +91,7 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
 
 
     FirebaseDatabase database;
-    DatabaseReference category, geoRef, geoRestRef;
+    public ProgressDialog mDialog;
     DatabaseReference users;
     Query filteredRestaurant;
 
@@ -102,31 +103,148 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
     private LocationRequest mLocationRequest;
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
+    DatabaseReference category, geoRef, geoRestRef, geoBannerRef, banners;
 
     //CounterFab fab;
     TextView itemsCount, priceTag;
-    GeoQuery geoQuery;
-    private GeoFire geoFire;
+    AppBarLayout appBarLayout;
+    GeoQuery geoQuery, geoQueryBanner;
     LinearLayout checkoutButton;
     EmptyRecyclerView recycler_menu;
     RelativeLayout rootLayout;
     RecyclerView.LayoutManager layoutManager;
-    ProgressDialog mDialog;
+    HashMap<String, Banner> availableBanners = new HashMap<>();
 //    FirebaseRecyclerAdapter<Category, MenuViewHolder> adapter;
     RestaurantAdapter adapter;
+    BubbleNavigationLinearView bubbleNavigationLinearView;
 
     SwipeRefreshLayout swipeRefreshLayout;
     HashMap <String, Category> availableRestaurants = new HashMap<>();
-
     //Slider
-    HashMap<String, String> image_list;
+    //HashMap<String, String> image_list;
     SliderLayout mSlider;
+    private final GeoQueryEventListener geoQueryEventListenerBanner = new GeoQueryEventListener() {
+
+        @Override
+        public void onKeyEntered(final String key, GeoLocation location) {
+            Log.d("entered", String.format("Key %s entered the search area at [%f,%f]", key, location.latitude, location.longitude));
+
+            //retrieve the restaurant from the database with an async task
+            if (!availableBanners.containsKey(key)) {
+                banners.child(key).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Banner banner = dataSnapshot.getValue(Banner.class);
+                        if (banner != null) {
+                            availableBanners.put(key, banner);
+                            //recycler_menu.getAdapter().notifyDataSetChanged();
+                            setupSlider();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.d("Error", "onCancelled() called with: databaseError = [" + databaseError + "]");
+                        Log.w("Error", "onCancelled: ", databaseError.toException());
+                    }
+                });
+            }
+
+
+        }
+
+
+        @Override
+        public void onKeyExited(String key) {
+            Log.d("Error", String.format("Key %s is no longer in the search area", key));
+            availableRestaurants.remove(key);
+            availableBanners.remove(key);
+            setupSlider();
+        }
+
+
+        @Override
+        public void onKeyMoved(String key, GeoLocation location) {
+            Log.d("Log", String.format("Key %s moved within the search area to [%f,%f]", key, location.latitude, location.longitude));
+
+
+        }
+
+        @Override
+        public void onGeoQueryReady() {
+
+        }
+
+        @Override
+        public void onGeoQueryError(DatabaseError error) {
+
+        }
+    };
+    private GeoFire geoFire, geoFireBanner;
 
     @Override
     protected void attachBaseContext(Context newBase) {
         //super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
         super.attachBaseContext(LocaleHelper.onAtach(newBase, "en"));
     }
+
+    private List<String> restaurantKeyList = new ArrayList<>();
+    private final GeoQueryEventListener geoQueryEventListener = new GeoQueryEventListener() {
+
+        @Override
+        public void onKeyEntered(final String key, GeoLocation location) {
+            Log.d("entered", String.format("Key %s entered the search area at [%f,%f]", key, location.latitude, location.longitude));
+
+            //retrieve the restaurant from the database with an async task
+            if (!restaurantKeyList.contains(key))
+                restaurantKeyList.add(key);
+            category.child(key).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    Category category = dataSnapshot.getValue(Category.class);
+                    if (category != null) {
+                        availableRestaurants.put(key, category);
+                        //recycler_menu.getAdapter().notifyDataSetChanged();
+                        loadMenu();
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.d("Error", "onCancelled() called with: databaseError = [" + databaseError + "]");
+                    Log.w("Error", "onCancelled: ", databaseError.toException());
+                }
+            });
+        }
+
+
+        @Override
+        public void onKeyExited(String key) {
+            Log.d("Error", String.format("Key %s is no longer in the search area", key));
+            availableRestaurants.remove(key);
+            restaurantKeyList.remove(key);
+            //recycler_menu.getAdapter().notifyDataSetChanged();
+            updateList();
+        }
+
+
+        @Override
+        public void onKeyMoved(String key, GeoLocation location) {
+            Log.d("Log", String.format("Key %s moved within the search area to [%f,%f]", key, location.latitude, location.longitude));
+
+
+        }
+
+        @Override
+        public void onGeoQueryReady() {
+
+        }
+
+        @Override
+        public void onGeoQueryError(DatabaseError error) {
+
+        }
+    };
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -141,18 +259,23 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             getWindow().setStatusBarColor(Color.WHITE);
         }
-        Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
+        //Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
 
         isInternet();
         //Init Firebase
         Paper.init(Home.this);        database = FirebaseDatabase.getInstance();
         geoRef = database.getReference("CurrentUserLocation");
         geoRestRef = database.getReference("RerstaurantLocation");
+        geoBannerRef = database.getReference("BannerLocation");
         geoFire = new GeoFire(geoRestRef);
-        geoFire.setLocation("-M72dHQYZhmcMq3ROANj", new GeoLocation(13.497123, 39.461125));
+        appBarLayout = findViewById(R.id.app_bar_layout);
+        geoFireBanner = new GeoFire(geoBannerRef);
+        //geoFireBanner.setLocation("-M8UgGHAWfcgr_5ueqlM", new GeoLocation(13.487189,39.471165));
+        //geoFire.setLocation("-M8UgGHAWfcgr_5ueqlM", new GeoLocation(13.487189,39.471165));
         rootLayout = findViewById(R.id.container_home);
         users = FirebaseDatabase.getInstance().getReference("User");
         category = database.getReference("Category");
+        banners = database.getReference("Banner");
         mGoogleMapService = Common.getGoogleMapApi();
         mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
@@ -178,7 +301,7 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
 //            }
 //        });
 
-        final BubbleNavigationLinearView bubbleNavigationLinearView = findViewById(R.id.bottom_navigation_view_linear);
+        bubbleNavigationLinearView = findViewById(R.id.bottom_navigation_view_linear);
         bubbleNavigationLinearView.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/rf.ttf"));
         bubbleNavigationLinearView.setNavigationChangeListener(new BubbleNavigationChangeListener() {
             @Override
@@ -188,19 +311,15 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
                 } else if (position == 1) {
                     startActivity(new Intent(Home.this, OrderStatus.class));
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                    finish();
                 } else if (position == 2) {
                     startActivity(new Intent(Home.this, FavoritesActivity.class));
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                    finish();
                 } else if (position == 3) {
                     startActivity(new Intent(Home.this, Profile.class));
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                    finish();
                 } else if (position == 4) {
                     startActivity(new Intent(Home.this, Profile.class));
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                    finish();
                 } else {
 
                 }
@@ -255,7 +374,9 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
             public void onRefresh() {
 
                 if (Common.isConnectedToInternet(getBaseContext())) {
-                    loadMenu();
+                    updateQuery(new GeoLocation(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
+                    updateList();
+                    swipeRefreshLayout.setRefreshing(false);
                 } else {
                     Toast.makeText(getBaseContext(), getResources().getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
                     swipeRefreshLayout.setRefreshing(false);
@@ -272,6 +393,7 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
 
                 if (Common.isConnectedToInternet(getBaseContext())) {
                     loadMenu();
+                    //updateQuery(new GeoLocation(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
                 } else {
                     Toast.makeText(getBaseContext(), getResources().getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
                     swipeRefreshLayout.setRefreshing(false);
@@ -304,7 +426,7 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
         }
 
         //setup Slider
-        setupSlider();
+        //setupSlider();
 
         //Runtime permission
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -349,63 +471,27 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
 
     }
 
-    private final GeoQueryEventListener geoQueryEventListener = new GeoQueryEventListener() {
-
-        @Override
-        public void onKeyEntered(final String key, GeoLocation location) {
-            Log.d("entered", String.format("Key %s entered the search area at [%f,%f]", key, location.latitude, location.longitude));
-
-            //retrieve the restaurant from the database with an async task
-            if (!availableRestaurants.containsKey(key)){
-                category.child(key).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        Category category = dataSnapshot.getValue(Category.class);
-                        if (category != null) {
-                            availableRestaurants.put(key, category);
-                            //recycler_menu.getAdapter().notifyDataSetChanged();
-                            loadMenu();
-                        }
+    void updateList() {
+        for (final String key : restaurantKeyList) {
+            category.child(key).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    Category category = dataSnapshot.getValue(Category.class);
+                    if (category != null) {
+                        availableRestaurants.put(key, category);
+                        //recycler_menu.getAdapter().notifyDataSetChanged();
+                        loadMenu();
                     }
+                }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        Log.d("Error", "onCancelled() called with: databaseError = [" + databaseError + "]");
-                        Log.w("Error", "onCancelled: ", databaseError.toException());
-                    }
-                });
-            }
-
-
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.d("Error", "onCancelled() called with: databaseError = [" + databaseError + "]");
+                    Log.w("Error", "onCancelled: ", databaseError.toException());
+                }
+            });
         }
-
-
-        @Override
-        public void onKeyExited(String key) {
-            Log.d("Error", String.format("Key %s is no longer in the search area", key));
-            availableRestaurants.remove(key);
-            //recycler_menu.getAdapter().notifyDataSetChanged();
-            loadMenu();
-        }
-
-
-        @Override
-        public void onKeyMoved(String key, GeoLocation location) {
-            Log.d("Log", String.format("Key %s moved within the search area to [%f,%f]", key, location.latitude, location.longitude));
-
-
-        }
-
-        @Override
-        public void onGeoQueryReady() {
-
-        }
-
-        @Override
-        public void onGeoQueryError(DatabaseError error) {
-
-        }
-    };
+    }
 
     private void updateQuery(GeoLocation myLocation) {
         if (geoQuery == null) {
@@ -413,6 +499,12 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
             geoQuery.addGeoQueryEventListener(geoQueryEventListener);
         } else {
             geoQuery.setLocation(myLocation, 15);
+        }
+        if (geoQueryBanner == null) {
+            geoQueryBanner = geoFireBanner.queryAtLocation(myLocation, 25);
+            geoQueryBanner.addGeoQueryEventListener(geoQueryEventListenerBanner);
+        } else {
+            geoQueryBanner.setLocation(myLocation, 25);
         }
     }
 
@@ -436,27 +528,30 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
     }
 
     private void setupSlider() {
+        if (availableBanners.isEmpty())
+            appBarLayout.setVisibility(View.GONE);
+        else
+            appBarLayout.setVisibility(View.VISIBLE);
         isInternet();
         mSlider = findViewById(R.id.slider);
-        image_list = new HashMap<>();
-
-        final DatabaseReference banners = database.getReference("Banner");
-        banners.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    Banner banner = postSnapshot.getValue(Banner.class);
-                    image_list.put(banner.getName() + "@@@" + banner.getId(), banner.getImage());
-                }
-                for (String key : image_list.keySet()) {
-                    String[] keySplit = key.split("@@@");
-                    String nameOffood = keySplit[0];
-                    String idOfFood = keySplit[1];
+        //image_list = new HashMap<>();
+//        final DatabaseReference banners = database.getReference("Banner");
+//        banners.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+//                    Banner banner = postSnapshot.getValue(Banner.class);
+//                    image_list.put(banner.getName() + "@@@" + banner.getId(), banner.getImage());
+//                }
+        for (String key : availableBanners.keySet()) {
+//                    String[] keySplit = key.split("@@@");
+//                    String nameOffood = keySplit[0];
+//                    String idOfFood = keySplit[1];
 
                     //crete slider
                     final DefaultSliderView textSliderView = new DefaultSliderView(getBaseContext());
                     textSliderView
-                            .image(image_list.get(key))
+                            .image(availableBanners.get(key).getImage())
                             .setScaleType(BaseSliderView.ScaleType.Fit)
                             .setOnSliderClickListener(new BaseSliderView.OnSliderClickListener() {
                                 @Override
@@ -469,20 +564,21 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
                             });
                     //Add extra Bundle
                     textSliderView.bundle(new Bundle());
-                    textSliderView.getBundle().putString("FoodId", idOfFood);
+            textSliderView.getBundle().putString("Message", availableBanners.get(key).getMessage());
                     mSlider.addSlider(textSliderView);
                     //remove Event after finish
-                    banners.removeEventListener(this);
                 }
 
 
-            }
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
 
         mSlider.setPresetTransformer(SliderLayout.Transformer.Default);
         mSlider.setPresetIndicator(SliderLayout.PresetIndicators.Left_Bottom);
@@ -507,7 +603,7 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
             }
         });
 
-
+        bubbleNavigationLinearView.setCurrentActiveItem(0);
 
         checkPermission();
 
@@ -529,7 +625,7 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
     protected void onStop() {
         super.onStop();
         //adapter.stopListening();
-        mSlider.stopAutoCycle();
+        //mSlider.stopAutoCycle();
         if (geoQuery != null) {
             geoQuery.removeAllListeners();
             geoQuery = null;
@@ -542,6 +638,8 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
             adapter = new RestaurantAdapter(availableRestaurants, this);
             //adapter.startListening();
             recycler_menu.setAdapter(adapter);
+
+            mDialog.dismiss();
             recycler_menu.setEmptyView(findViewById(R.id.empty_view_restaurant));
             swipeRefreshLayout.setRefreshing(false);
 
@@ -609,7 +707,10 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
         super.onDestroy();
         if (geoQuery != null) {
             geoQuery.removeAllListeners();
+            if (geoQueryBanner != null)
+                geoQueryBanner.removeAllListeners();
             geoQuery = null;
+            geoQueryBanner = null;
         }
     }
     private boolean checkPlayServices() {
@@ -650,6 +751,10 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
         checkPermission();
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
 
     private void checkPermission() {
         //Runtime permission
@@ -667,7 +772,6 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
 //        geoFire.setLocation(Common.currentUser.getPhone(), new GeoLocation(location.getLatitude(), location.getLongitude()));
         updateQuery(new GeoLocation(location.getLatitude(), location.getLongitude()));
         Common.currentUserLocation = mLastLocation;
-        mDialog.dismiss();
     }
 
     void isInternet() {

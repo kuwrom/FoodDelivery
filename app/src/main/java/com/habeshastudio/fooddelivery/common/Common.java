@@ -1,5 +1,6 @@
 package com.habeshastudio.fooddelivery.common;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.location.Location;
 import android.net.ConnectivityManager;
@@ -98,25 +99,18 @@ public class Common {
         return (BigDecimal) format.parse(amount.replace("[^\\d.,]", ""));
     }
 
-    public static Double getDeliveryPrice(){
-        if (currentUserLocation!=null){
+    @SuppressLint("DefaultLocale")
+    public static int getDeliveryPrice(String prices) {
+        if (currentUserLocation != null && currentrestaurantID != null) {
+            int initialPrice = Integer.parseInt(prices.split("&")[0]);
+            int perKm = Integer.parseInt(prices.split("&")[1]);
             double distance = restaurantDistance.get(currentrestaurantID);
             if (distance < 1500) {
-                return 20.0;
-            } else if (distance < 2000) {
-                return 25.0;
-            } else if (distance < 3000) {
-                return 30.0;
-            } else if (distance < 4000) {
-                return 35.0;
-            } else if (distance < 5000) {
-                return 45.0;
-            } else if (distance < 6000) {
-                return 55.0;
-            }else{
-                return 100.0;
+                return initialPrice;
+            } else {
+                double deliveryPrice = initialPrice + (((distance - 1500) / 1000) * perKm);
+                return (int) deliveryPrice;
             }
-        }
-        else return 0.0;
+        } else return 0;
     }
 }

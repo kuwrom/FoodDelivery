@@ -43,7 +43,6 @@ import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.database.Database;
 import com.habeshastudio.fooddelivery.helper.EmptyRecyclerView;
 import com.habeshastudio.fooddelivery.helper.LocaleHelper;
-import com.habeshastudio.fooddelivery.helper.MyExceptionHandler;
 import com.habeshastudio.fooddelivery.interfaces.ItemClickListener;
 import com.habeshastudio.fooddelivery.models.Order;
 import com.habeshastudio.fooddelivery.models.Request;
@@ -93,7 +92,7 @@ public class OrderStatus extends AppCompatActivity {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             getWindow().setStatusBarColor(Color.WHITE);
         }
-        Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
+        //Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
         Paper.init(OrderStatus.this);
         //Init Firebase
         database = FirebaseDatabase.getInstance();
@@ -171,6 +170,7 @@ public class OrderStatus extends AppCompatActivity {
                 if (position == 0) {
                     startActivity(new Intent(OrderStatus.this, Home.class));
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+
                     finish();
                 } else if (position == 2) {
                     startActivity(new Intent(OrderStatus.this, FavoritesActivity.class));

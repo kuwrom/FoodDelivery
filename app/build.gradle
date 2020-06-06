@@ -6,8 +6,8 @@ android {
         applicationId "com.habeshastudio.fooddelivery"
         minSdkVersion 22
         targetSdkVersion 28
-        versionCode 9
-        versionName "4.3.2"
+        versionCode 10
+        versionName "4.4.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }

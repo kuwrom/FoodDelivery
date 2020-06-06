@@ -22,14 +22,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.habeshastudio.fooddelivery.R;
 import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.helper.LocaleHelper;
+import com.habeshastudio.fooddelivery.helper.MyExceptionHandler;
 
 import java.util.Objects;
 
@@ -43,10 +39,8 @@ public class Register extends AppCompatActivity {
     TextView btnTrouble, registerLable;
     FloatingActionButton btnSignMeUp;
     RelativeLayout rootLayout;
-    DatabaseReference users;
     ProgressDialog mDialog;
     AlertDialog dialog_verifying;
-    FirebaseDatabase database;
     boolean isNameEditing = false;
 
     @Override
@@ -67,6 +61,8 @@ public class Register extends AppCompatActivity {
 //            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
 //            getWindow().setStatusBarColor(Color.WHITE);
 //        }
+        Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
+
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
@@ -84,9 +80,7 @@ public class Register extends AppCompatActivity {
         edtName = findViewById(R.id.edtName);
         btnTrouble = findViewById(R.id.btn_trouble);
         btnSignMeUp = findViewById(R.id.btnRegisterMe);
-        database = FirebaseDatabase.getInstance();
         rootLayout = findViewById(R.id.root_register_layout);
-        users = database.getReference().child("User");
         final Animation animShake = AnimationUtils.loadAnimation(this, R.anim.shake);
 
         isInternet();
@@ -130,49 +124,24 @@ public class Register extends AppCompatActivity {
                         else if (phone.startsWith("9"))
                             phone = "+251"  + phone;
                         else return;
-//                        SharedPreferences.Editor editor = getSharedPreferences("userDetail", MODE_PRIVATE).edit();
-//                        editor.putString("phone", phone);
-//                        editor.putString("name", name);
-//                        editor.apply();
+                        Paper.book().write("userPhone", phone);
 
-                        users.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                if (dataSnapshot.child(phone).exists()) {
-                                    name = dataSnapshot.child(phone).child("name").getValue().toString();
-                                    dialog_verifying.dismiss();
-                                    Intent phoneAuth = new Intent(Register.this, PhoneAuth.class);
-                                    phoneAuth.putExtra("name", name);
-                                    phoneAuth.putExtra("phone", phone);
-                                    phoneAuth.putExtra("status", "not_new");
-                                    startActivity(phoneAuth);
-                                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                                    finish();
-                                    //Toast.makeText(Register.this, "Welcome back " + name, Toast.LENGTH_SHORT).show();
-                                } else {
-                                    dialog_verifying.dismiss();
-                                    edtName.setVisibility(View.VISIBLE);
-                                    if (!Objects.requireNonNull(edtName.getText()).toString().isEmpty() ) {
-                                        name = edtName.getText().toString().trim();
-                                        Intent phoneAuth = new Intent(Register.this, PhoneAuth.class);
-                                        phoneAuth.putExtra("name", name);
-                                        phoneAuth.putExtra("phone", phone);
-                                        phoneAuth.putExtra("status", "new");
-                                        startActivity(phoneAuth);
-                                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                                        finish();
-                                    }
-                                    else {
-                                        Toast.makeText(Register.this, "Please fill in your name", Toast.LENGTH_SHORT).show();
-                                        dialog_verifying.dismiss();
-                                        btnSignMeUp.startAnimation(animShake);
-                                    }
-                                }
-                            }
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-                            }
-                        });
+                        dialog_verifying.dismiss();
+                        edtName.setVisibility(View.VISIBLE);
+                        if (!Objects.requireNonNull(edtName.getText()).toString().isEmpty()) {
+                            name = edtName.getText().toString().trim();
+                            Intent phoneAuth = new Intent(Register.this, PhoneAuth.class);
+                            phoneAuth.putExtra("name", name);
+                            phoneAuth.putExtra("phone", phone);
+                            phoneAuth.putExtra("status", "new");
+                            startActivity(phoneAuth);
+                            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                            finish();
+                        } else {
+                            Toast.makeText(Register.this, "Please fill in your name", Toast.LENGTH_SHORT).show();
+                            dialog_verifying.dismiss();
+                            btnSignMeUp.startAnimation(animShake);
+                        }
                     } else {
                         Toast.makeText(Register.this, "Please check your Phone", Toast.LENGTH_SHORT).show();
 

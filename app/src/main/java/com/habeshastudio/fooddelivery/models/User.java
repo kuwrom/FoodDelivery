@@ -5,7 +5,7 @@ package com.habeshastudio.fooddelivery.models;
  */
 
 public class User {
-    String password = "";
+    private String password = "";
     private String Name, Phone, IsStaff, Image, HomeAddress,
             IsVerified, CreatedAt;
     private Object Balance;
@@ -14,9 +14,11 @@ public class User {
     }
 
 
-    public User(String name, String phone) {
+    public User(String name, String phone, String homeAddress, String image) {
         Name = name;
         Phone = phone;
+        HomeAddress = homeAddress;
+        Image = image;
         IsStaff = "false";
     }
 

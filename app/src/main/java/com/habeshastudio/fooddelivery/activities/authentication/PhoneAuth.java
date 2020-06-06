@@ -39,11 +39,9 @@ import com.habeshastudio.fooddelivery.R;
 import com.habeshastudio.fooddelivery.activities.Home;
 import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.helper.LocaleHelper;
+import com.habeshastudio.fooddelivery.helper.MyExceptionHandler;
 import com.habeshastudio.fooddelivery.models.User;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -87,6 +85,8 @@ public class PhoneAuth extends AppCompatActivity {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             getWindow().setStatusBarColor(Color.WHITE);
         }
+        Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
+
 
         Intent intent = getIntent();
         username = intent.getStringExtra("name");
@@ -284,23 +284,9 @@ public class PhoneAuth extends AppCompatActivity {
                                 public void onDataChange(DataSnapshot dataSnapshot) {
 
                                     mDialog.dismiss();
-//                                    FirebaseUser cursor = FirebaseAuth.getInstance().getCurrentUser();
-//                                    assert cursor != null;
-//                                    phone = cursor.getPhoneNumber();
-                                    User user = new User(username, phone);
-                                    if (status.equals("new")) {
-                                        user.setBalance(0.0);
-                                        user.setCreatedAt(new SimpleDateFormat
-                                                ("dd-MMM-yyyy hh:mm a", Locale.getDefault()).format(new Date()));
-                                        users.child(phone).setValue(user);
-                                    }
-                                    else
-                                    {
-                                        user.setBalance(users.child(phone).child("balance"));
-                                        //user.setHomeAddress(users.child(phone).child("j").toString());
-                                    }
-                                    //users.child(phone).setValue(user);
-                                    Common.currentUser = user;
+                                    users.child(phone).child("name").setValue(username);
+                                    users.child(phone).child("phone").setValue(phone);
+                                    Common.currentUser = dataSnapshot.child(phone).getValue(User.class);
                                     //Toast.makeText(PhoneAuth.this, "Signed in Successfully !", Toast.LENGTH_SHORT).show();
                                     startActivity(new Intent(PhoneAuth.this, Home.class));
                                     finish();

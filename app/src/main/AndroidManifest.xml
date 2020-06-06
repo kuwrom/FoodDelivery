@@ -45,6 +45,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.FavoritesActivity"
+            android:launchMode="singleTask"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
         <activity
@@ -62,10 +63,12 @@
 
         <activity
             android:name=".activities.FoodList"
+            android:launchMode="singleTask"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.FoodDetail"
+            android:launchMode="singleTask"
             android:configChanges="orientation"
             android:screenOrientation="portrait">
             <meta-data
@@ -74,10 +77,12 @@
         </activity>
         <activity
             android:name=".activities.Cart"
+            android:launchMode="singleTask"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.OrderStatus"
+            android:launchMode="singleTask"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
 
@@ -105,6 +110,7 @@
 
         <activity
             android:name=".activities.Profile"
+            android:launchMode="singleTask"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
         <activity
@@ -121,6 +127,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.Home"
+            android:launchMode="singleTask"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
         <activity

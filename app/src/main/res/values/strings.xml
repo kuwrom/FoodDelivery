@@ -154,5 +154,6 @@
     <string name="cance_verification">Cancel verification process?</string>
     <string name="swipe_to_delete">Delete</string>
     <string name="change_currency">Change Currency?</string>
+    <string name="free_delivery">Free Delivery</string>
 
 </resources>

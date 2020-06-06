@@ -3,6 +3,7 @@ package com.habeshastudio.fooddelivery;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -13,6 +14,7 @@ import android.view.WindowManager;
 import android.widget.RelativeLayout;
 
 import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -35,11 +37,13 @@ import io.paperdb.Paper;
 public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
+    LocationManager locationManager;
+    String provider;
     String phoneNumber, name;
     RelativeLayout rootLayout;
     FirebaseDatabase database;
-    private GeoFire geoFire;
-    DatabaseReference users, geoRef, geoRestRef;
+    DatabaseReference users, geoRef, geoRestRef, bannerRef;
+    private GeoFire geoFire, geofireBanner;
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -61,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
+
         //startService(new Intent(getBaseContext(), GpsServices.class));
 
         rootLayout = findViewById(R.id.container_main);
@@ -69,8 +74,11 @@ public class MainActivity extends AppCompatActivity {
 
         geoRef = database.getReference("CurrentUserLocation");
         geoRestRef = database.getReference("RerstaurantLocation");
+        bannerRef = database.getReference("BannerLocation");
         geoFire = new GeoFire(geoRestRef);
-        //geoFire.setLocation("-M7xP-8rGQjtHbPE2-8kP", new GeoLocation(13.488099,39.472419));
+        geofireBanner = new GeoFire(bannerRef);
+        //geoFire.setLocation("-M8k08fd4-1p-VamkJQf", new GeoLocation(13.490122,39.473612));
+        geofireBanner.setLocation("-M8jPeUC7cls3pucfAdX", new GeoLocation(13.489697, 39.473853));
         //Toast.makeText(this, "hi", Toast.LENGTH_SHORT).show();
 
         //notification
@@ -85,9 +93,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (Paper.book().read("usd") != null)
-        Common.isUsdSelected  = Paper.book().read("usd");
+            Common.isUsdSelected = Paper.book().read("usd");
         if (Paper.book().read("restId") != null)
-        Common.currentrestaurantID = Paper.book().read("restId");
+            Common.currentrestaurantID = Paper.book().read("restId");
         if (Paper.book().read("beenToCart") != null)
             Common.alreadyBeenToCart = Paper.book().read("beenToCart");
         GoogleApiAvailability.getInstance().makeGooglePlayServicesAvailable(this)
@@ -96,8 +104,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             doSmtn();
-                        }
-                        else {
+                        } else {
                             final Snackbar snackbar = Snackbar.make(rootLayout, "😫😫Please install play services and try again 😫😫", Snackbar.LENGTH_INDEFINITE);
                             snackbar.setActionTextColor(Color.YELLOW);
                             snackbar.show();
@@ -106,7 +113,8 @@ public class MainActivity extends AppCompatActivity {
                 });
 
     }
-    void doSmtn(){
+
+    void doSmtn() {
         if (Common.isConnectedToInternet(getBaseContext())) {
             mAuth = FirebaseAuth.getInstance();
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -137,8 +145,7 @@ public class MainActivity extends AppCompatActivity {
                         finish();
                     }
                 }, 2000);
-            }
-            else{
+            } else {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -146,10 +153,11 @@ public class MainActivity extends AppCompatActivity {
                         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                         finish();
                     }
-                },2000);
+                }, 2000);
             }
-        }else isInternet();
+        } else isInternet();
     }
+
     void isInternet() {
         if (!Common.isConnectedToInternet(getBaseContext())) {
             final Snackbar snackbar = Snackbar.make(rootLayout, getResources().getString(R.string.no_connection), Snackbar.LENGTH_INDEFINITE);
@@ -158,8 +166,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     if (!Common.isConnectedToInternet(getBaseContext())) {
                         isInternet();
-                    }
-                    else
+                    } else
                         doSmtn();
                 }
             });
@@ -178,6 +185,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         isInternet();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
     }
 
     @Override
