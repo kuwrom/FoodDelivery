@@ -483,7 +483,7 @@ public class Profile extends AppCompatActivity {
                                 Common.currentUser.getHomeAddress() != null) {
                             address_display.setText(Common.currentUser.getHomeAddress());
                         }
-                        Picasso.with(getBaseContext()).load(Common.currentUser.getImage() + "_512x512").placeholder(R.drawable.profile_pic)
+                        Picasso.with(getBaseContext()).load(Common.currentUser.getImage()).placeholder(R.drawable.profile_pic)
                                     .into(profile);
                     }
 

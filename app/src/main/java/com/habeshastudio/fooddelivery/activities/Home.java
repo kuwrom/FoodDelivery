@@ -131,7 +131,7 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
 
             //retrieve the restaurant from the database with an async task
             if (!availableBanners.containsKey(key)) {
-                banners.child(key).addListenerForSingleValueEvent(new ValueEventListener() {
+                banners.child(key).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         Banner banner = dataSnapshot.getValue(Banner.class);
@@ -157,7 +157,6 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
         @Override
         public void onKeyExited(String key) {
             Log.d("Error", String.format("Key %s is no longer in the search area", key));
-            availableRestaurants.remove(key);
             availableBanners.remove(key);
             setupSlider();
         }
@@ -198,7 +197,7 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
             //retrieve the restaurant from the database with an async task
             if (!restaurantKeyList.contains(key))
                 restaurantKeyList.add(key);
-            category.child(key).addListenerForSingleValueEvent(new ValueEventListener() {
+            category.child(key).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     Category category = dataSnapshot.getValue(Category.class);
@@ -473,7 +472,7 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
 
     void updateList() {
         for (final String key : restaurantKeyList) {
-            category.child(key).addListenerForSingleValueEvent(new ValueEventListener() {
+            category.child(key).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     Category category = dataSnapshot.getValue(Category.class);

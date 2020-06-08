@@ -14,7 +14,6 @@ import android.view.WindowManager;
 import android.widget.RelativeLayout;
 
 import com.firebase.geofire.GeoFire;
-import com.firebase.geofire.GeoLocation;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -77,8 +76,8 @@ public class MainActivity extends AppCompatActivity {
         bannerRef = database.getReference("BannerLocation");
         geoFire = new GeoFire(geoRestRef);
         geofireBanner = new GeoFire(bannerRef);
-        //geoFire.setLocation("-M8k08fd4-1p-VamkJQf", new GeoLocation(13.490122,39.473612));
-        geofireBanner.setLocation("-M8jPeUC7cls3pucfAdX", new GeoLocation(13.489697, 39.473853));
+        //geoFire.setLocation("-M8Kh-6ZdR9vS_KBFPJI", new GeoLocation(13.492295,39.472945));
+        //geofireBanner.setLocation("-M8jPeUC7cls3pucfAdX", new GeoLocation(13.489697, 39.473853));
         //Toast.makeText(this, "hi", Toast.LENGTH_SHORT).show();
 
         //notification
