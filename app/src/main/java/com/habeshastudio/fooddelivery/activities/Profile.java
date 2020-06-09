@@ -49,6 +49,7 @@ import com.habeshastudio.fooddelivery.activities.profile.PromoCodes;
 import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.database.Database;
 import com.habeshastudio.fooddelivery.helper.LocaleHelper;
+import com.habeshastudio.fooddelivery.helper.MyExceptionHandler;
 import com.habeshastudio.fooddelivery.models.Order;
 import com.habeshastudio.fooddelivery.models.User;
 import com.mikhaellopez.circularimageview.CircularImageView;
@@ -91,7 +92,7 @@ public class Profile extends AppCompatActivity {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             getWindow().setStatusBarColor(Color.WHITE);
         }
-        //Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
+        Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
         name_display = findViewById(R.id.name_display);
         profile = findViewById(R.id.profile_pic);
         address_display = findViewById(R.id.address_display);
@@ -501,14 +502,15 @@ public class Profile extends AppCompatActivity {
             mDialog.setMessage(getResources().getString(R.string.processing));
             mDialog.show();
 
-            final StorageReference imageFolder = storageReference.child("images/profile/"+Common.currentUser.getPhone());
+            final StorageReference imageFolder = storageReference.child("profile/" + Common.currentUser.getPhone());
             imageFolder.putFile(saveUri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             mDialog.dismiss();
                             Toast.makeText(Profile.this, getResources().getString(R.string.success), Toast.LENGTH_SHORT).show();
-                            imageFolder.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            final StorageReference imageMe = storageReference.child("profile/" + Common.currentUser.getPhone() + "_512x512");
+                            imageMe.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
                                     //uri.toString()

@@ -61,6 +61,7 @@ import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.database.Database;
 import com.habeshastudio.fooddelivery.helper.EmptyRecyclerView;
 import com.habeshastudio.fooddelivery.helper.LocaleHelper;
+import com.habeshastudio.fooddelivery.helper.MyExceptionHandler;
 import com.habeshastudio.fooddelivery.models.Banner;
 import com.habeshastudio.fooddelivery.models.Category;
 import com.habeshastudio.fooddelivery.models.Order;
@@ -258,7 +259,7 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             getWindow().setStatusBarColor(Color.WHITE);
         }
-        //Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
+        Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
 
         isInternet();
         //Init Firebase
@@ -500,10 +501,10 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
             geoQuery.setLocation(myLocation, 15);
         }
         if (geoQueryBanner == null) {
-            geoQueryBanner = geoFireBanner.queryAtLocation(myLocation, 25);
+            geoQueryBanner = geoFireBanner.queryAtLocation(myLocation, 100);
             geoQueryBanner.addGeoQueryEventListener(geoQueryEventListenerBanner);
         } else {
-            geoQueryBanner.setLocation(myLocation, 25);
+            geoQueryBanner.setLocation(myLocation, 100);
         }
     }
 
@@ -542,31 +543,32 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
 //                    Banner banner = postSnapshot.getValue(Banner.class);
 //                    image_list.put(banner.getName() + "@@@" + banner.getId(), banner.getImage());
 //                }
-        for (String key : availableBanners.keySet()) {
 //                    String[] keySplit = key.split("@@@");
 //                    String nameOffood = keySplit[0];
 //                    String idOfFood = keySplit[1];
 
-                    //crete slider
-                    final DefaultSliderView textSliderView = new DefaultSliderView(getBaseContext());
-                    textSliderView
-                            .image(availableBanners.get(key).getImage())
-                            .setScaleType(BaseSliderView.ScaleType.Fit)
-                            .setOnSliderClickListener(new BaseSliderView.OnSliderClickListener() {
-                                @Override
-                                public void onSliderClick(BaseSliderView slider) {
+        for (String key : availableBanners.keySet()) {
+
+            //crete slider
+            final DefaultSliderView textSliderView = new DefaultSliderView(getBaseContext());
+            textSliderView
+                    .image(availableBanners.get(key).getImage())
+                    .setScaleType(BaseSliderView.ScaleType.Fit)
+                    .setOnSliderClickListener(new BaseSliderView.OnSliderClickListener() {
+                        @Override
+                        public void onSliderClick(BaseSliderView slider) {
 //                                    Intent intent = new Intent(Home.this, FoodDetail.class);
 //                                    //send food id to food detail
 //                                    intent.putExtras(textSliderView.getBundle());
 //                                    startActivity(intent);
-                                }
-                            });
-                    //Add extra Bundle
-                    textSliderView.bundle(new Bundle());
+                        }
+                    });
+            //Add extra Bundle
+            textSliderView.bundle(new Bundle());
             textSliderView.getBundle().putString("Message", availableBanners.get(key).getMessage());
-                    mSlider.addSlider(textSliderView);
-                    //remove Event after finish
-                }
+            mSlider.addSlider(textSliderView);
+            //remove Event after finish
+        }
 
 
 //            }

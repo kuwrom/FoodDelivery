@@ -40,6 +40,7 @@ import com.habeshastudio.fooddelivery.R;
 import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.database.Database;
 import com.habeshastudio.fooddelivery.helper.LocaleHelper;
+import com.habeshastudio.fooddelivery.helper.MyExceptionHandler;
 import com.habeshastudio.fooddelivery.interfaces.ItemClickListener;
 import com.habeshastudio.fooddelivery.models.Food;
 import com.habeshastudio.fooddelivery.models.FoodMenu;
@@ -105,7 +106,7 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             getWindow().setStatusBarColor(Color.WHITE);
         }
-        //Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
+        Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
 
         Paper.init(FoodDetail.this);
         food_image = findViewById(R.id.img_food);
@@ -187,7 +188,7 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
                                     new Database(getBaseContext()).addToCart(new Order(
                                         Common.currentUser.getPhone(),
                                         foodId + "&" + adapter.getRef(position).getKey(),
-                                        currentFood.getName() + "\n" + model.getName(),
+                                            model.getName(),
                                         "1",
                                         model.getPrice(),
                                         currentFood.getDiscount(),

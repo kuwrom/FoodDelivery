@@ -45,6 +45,7 @@ import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.database.Database;
 import com.habeshastudio.fooddelivery.helper.EmptyRecyclerView;
 import com.habeshastudio.fooddelivery.helper.LocaleHelper;
+import com.habeshastudio.fooddelivery.helper.MyExceptionHandler;
 import com.habeshastudio.fooddelivery.interfaces.ItemClickListener;
 import com.habeshastudio.fooddelivery.models.Favorites;
 import com.habeshastudio.fooddelivery.models.Food;
@@ -152,7 +153,7 @@ public class FoodList extends AppCompatActivity {
             getWindow().setStatusBarColor(Color.WHITE);
         }
 
-        //Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
+        Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
 
         //init Facebook
         callbackManager = CallbackManager.Factory.create();

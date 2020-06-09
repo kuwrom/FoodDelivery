@@ -58,6 +58,7 @@ import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.common.Config;
 import com.habeshastudio.fooddelivery.database.Database;
 import com.habeshastudio.fooddelivery.helper.LocaleHelper;
+import com.habeshastudio.fooddelivery.helper.MyExceptionHandler;
 import com.habeshastudio.fooddelivery.helper.RecyclerItemTouchHelper;
 import com.habeshastudio.fooddelivery.interfaces.RecyclerItemTouchHelperListener;
 import com.habeshastudio.fooddelivery.models.DataMessage;
@@ -155,7 +156,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
 
         mGoogleMapService = Common.getGoogleMapApi();
         mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        //Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
+        Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
 
         //Runtime permission
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -220,19 +221,20 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
         btnCashChange.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (paymentMethodSelected == 0) {
-                    paymentMethodDisplay.setText(getString(R.string.pay_wiz_paypal));
-                    paymentMethodDisplay.setTextColor(getResources().getColor(R.color.blue_active));
-                    paymentMethodSelected = 1;
-                } else if (paymentMethodSelected == 1) {
-                    paymentMethodDisplay.setText(getString(R.string.pay_with_app_balence));
-                    paymentMethodDisplay.setTextColor(getResources().getColor(R.color.orange_active));
-                    paymentMethodSelected = 2;
-                } else if (paymentMethodSelected == 2) {
-                    paymentMethodDisplay.setText(getString(R.string.cod));
-                    paymentMethodDisplay.setTextColor(getResources().getColor(R.color.grey_active));
-                    paymentMethodSelected = 0;
-                }
+//                if (paymentMethodSelected == 0) {
+//                    paymentMethodDisplay.setText(getString(R.string.pay_wiz_paypal));
+//                    paymentMethodDisplay.setTextColor(getResources().getColor(R.color.blue_active));
+//                    paymentMethodSelected = 1;
+//                } else if (paymentMethodSelected == 1) {
+//                    paymentMethodDisplay.setText(getString(R.string.pay_with_app_balence));
+//                    paymentMethodDisplay.setTextColor(getResources().getColor(R.color.orange_active));
+//                    paymentMethodSelected = 2;
+//                } else if (paymentMethodSelected == 2) {
+//                    paymentMethodDisplay.setText(getString(R.string.cod));
+//                    paymentMethodDisplay.setTextColor(getResources().getColor(R.color.grey_active));
+//                    paymentMethodSelected = 0;
+//                }
+                Toast.makeText(Cart.this, "Temporarily Disabled", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -897,7 +899,10 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 try {
-                    currentDeliveryPrice = Common.getDeliveryPrice(dataSnapshot.child("deliveryPrice").getValue().toString());
+                    if (dataSnapshot.child("deliveryPrice").getValue() == null)
+                        currentDeliveryPrice = Common.getDeliveryPrice("20&10");
+                    else
+                        currentDeliveryPrice = Common.getDeliveryPrice(dataSnapshot.child("deliveryPrice").getValue().toString());
                     loadListFood();
                     updatePriceTexts();
                     mDialog.dismiss();
