@@ -188,7 +188,7 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
                                     new Database(getBaseContext()).addToCart(new Order(
                                         Common.currentUser.getPhone(),
                                         foodId + "&" + adapter.getRef(position).getKey(),
-                                            model.getName(),
+                                            currentFood.getName() + "\n" + model.getName(),
                                         "1",
                                         model.getPrice(),
                                         currentFood.getDiscount(),

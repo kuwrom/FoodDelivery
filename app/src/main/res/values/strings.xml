@@ -155,5 +155,14 @@
     <string name="swipe_to_delete">Delete</string>
     <string name="change_currency">Change Currency?</string>
     <string name="free_delivery">Free Delivery</string>
+    <string name="all_restaurants">All Restaurants</string>
+    <string name="burger">Burger</string>
+    <string name="pizza">Pizza</string>
+    <string name="traditional_foods">Traditional Dishes</string>
+    <string name="chicken">Chicken</string>
+    <string name="under_30_min">Under 30 min</string>
+    <string name="best_restaurants">Best Restaurants</string>
+    <string name="best_price">Best Price</string>
+    <string name="foreign_dishes">Foreign Dishes</string>
 
 </resources>

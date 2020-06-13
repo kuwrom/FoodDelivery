@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
         geoFire = new GeoFire(geoRestRef);
         geofireBanner = new GeoFire(bannerRef);
         //geoFire.setLocation("-M8Kh-6ZdR9vS_KBFPJI", new GeoLocation(13.492295,39.472945));
-        //geofireBanner.setLocation("-M8jPeUC7cls3pucfAdX", new GeoLocation(13.489697, 39.473853));
+        //geofireBanner.setLocation("-M9U2pZErGh52BFEEB4z", new GeoLocation(30.933934,76.799636));
         //Toast.makeText(this, "hi", Toast.LENGTH_SHORT).show();
 
         //notification

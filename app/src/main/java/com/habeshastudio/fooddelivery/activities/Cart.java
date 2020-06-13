@@ -272,7 +272,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
         mDialog.setCanceledOnTouchOutside(false);
         mDialog.show();
 
-        if (Paper.book().read("cartGuide")==null)
+        if (Paper.book().read("cartGuide") == null)
             guide.setVisibility(View.VISIBLE);
     }
 
@@ -721,7 +721,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
                             });
                 }
 
-                }
+            }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {

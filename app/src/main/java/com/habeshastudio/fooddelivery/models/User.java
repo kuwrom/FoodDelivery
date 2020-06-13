@@ -22,6 +22,11 @@ public class User {
         IsStaff = "false";
     }
 
+    public User(String username, String phone) {
+        Name = username;
+        Phone = phone;
+    }
+
     public String getImage() {
         return Image;
     }
