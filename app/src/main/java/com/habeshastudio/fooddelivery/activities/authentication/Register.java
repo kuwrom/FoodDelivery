@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -22,10 +21,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.habeshastudio.fooddelivery.R;
 import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.helper.LocaleHelper;
-import com.habeshastudio.fooddelivery.helper.MyExceptionHandler;
 
 import java.util.Objects;
 
@@ -40,6 +40,8 @@ public class Register extends AppCompatActivity {
     FloatingActionButton btnSignMeUp;
     RelativeLayout rootLayout;
     ProgressDialog mDialog;
+    FirebaseDatabase database;
+    DatabaseReference users;
     AlertDialog dialog_verifying;
     boolean isNameEditing = false;
 
@@ -61,7 +63,7 @@ public class Register extends AppCompatActivity {
 //            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
 //            getWindow().setStatusBarColor(Color.WHITE);
 //        }
-        Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
+        //Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
 
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -80,7 +82,9 @@ public class Register extends AppCompatActivity {
         edtName = findViewById(R.id.edtName);
         btnTrouble = findViewById(R.id.btn_trouble);
         btnSignMeUp = findViewById(R.id.btnRegisterMe);
+        database = FirebaseDatabase.getInstance();
         rootLayout = findViewById(R.id.root_register_layout);
+        users = database.getReference().child("User");
         final Animation animShake = AnimationUtils.loadAnimation(this, R.anim.shake);
 
         isInternet();
@@ -106,7 +110,7 @@ public class Register extends AppCompatActivity {
         show.setView(alertLayout);
         show.setCancelable(true);
         dialog_verifying = show.create();
-        dialog_verifying.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        //dialog_verifying.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 
         String language = Paper.book().read("language");
         if (language == null)
@@ -116,32 +120,20 @@ public class Register extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (Common.isConnectedToInternet(getBaseContext())) {
-                    if (!Objects.requireNonNull(edtPhone.getText()).toString().isEmpty() && Integer.parseInt(edtPhone.getText().toString().substring(1))>900000000 ) {
-                        dialog_verifying.show();
+                    if (!Objects.requireNonNull(edtPhone.getText()).toString().isEmpty() && Integer.parseInt(edtPhone.getText().toString().substring(1)) > 900000000) {
                         phone = edtPhone.getText().toString().trim();
                         if (phone.startsWith("0"))
-                            phone = "+251"  + phone.substring(1);
+                            phone = "+251" + phone.substring(1);
                         else if (phone.startsWith("9"))
-                            phone = "+251"  + phone;
+                            phone = "+251" + phone;
                         else return;
-                        Paper.book().write("userPhone", phone);
+                        Intent phoneAuth = new Intent(Register.this, PhoneAuth.class);
+                        phoneAuth.putExtra("phone", phone);
+                        startActivity(phoneAuth);
+                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                        finish();
+                        //Toast.makeText(Register.this, "Welcome back " + name, Toast.LENGTH_SHORT).show();
 
-                        dialog_verifying.dismiss();
-                        edtName.setVisibility(View.VISIBLE);
-                        if (!Objects.requireNonNull(edtName.getText()).toString().isEmpty()) {
-                            name = edtName.getText().toString().trim();
-                            Intent phoneAuth = new Intent(Register.this, PhoneAuth.class);
-                            phoneAuth.putExtra("name", name);
-                            phoneAuth.putExtra("phone", phone);
-                            phoneAuth.putExtra("status", "new");
-                            startActivity(phoneAuth);
-                            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                            finish();
-                        } else {
-                            Toast.makeText(Register.this, "Please fill in your name", Toast.LENGTH_SHORT).show();
-                            dialog_verifying.dismiss();
-                            btnSignMeUp.startAnimation(animShake);
-                        }
                     } else {
                         Toast.makeText(Register.this, "Please check your Phone", Toast.LENGTH_SHORT).show();
 

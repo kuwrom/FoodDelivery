@@ -36,10 +36,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.habeshastudio.fooddelivery.MainActivity;
 import com.habeshastudio.fooddelivery.R;
+import com.habeshastudio.fooddelivery.activities.Config;
 import com.habeshastudio.fooddelivery.activities.Home;
 import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.helper.LocaleHelper;
-import com.habeshastudio.fooddelivery.helper.MyExceptionHandler;
 import com.habeshastudio.fooddelivery.models.User;
 
 import java.text.SimpleDateFormat;
@@ -52,7 +52,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 public class PhoneAuth extends AppCompatActivity {
 
-    public String username, phone, status;
+    public String phone;
     TextView textTitle, firstText, phoneText, secondText, btnTrouble;
     Button btnContinue;
     PinView pinView;
@@ -88,13 +88,11 @@ public class PhoneAuth extends AppCompatActivity {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             getWindow().setStatusBarColor(Color.WHITE);
         }
-        Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
+        //Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
 
 
         Intent intent = getIntent();
-        username = intent.getStringExtra("name");
         phone = intent.getStringExtra("phone");
-        status = intent.getStringExtra("status");
 
         //view
         progressBar = findViewById(R.id.progressBarResend);
@@ -111,7 +109,7 @@ public class PhoneAuth extends AppCompatActivity {
         mDialog = new ProgressDialog(PhoneAuth.this);
 
         phoneText.setText(new StringBuilder(phone));
-        textTitle.setText(new StringBuilder(getResources().getString(R.string.dear) + " " + username));
+        textTitle.setText(new StringBuilder(getResources().getString(R.string.dear) + " " + "user"));
 
         btnTrouble.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -151,13 +149,13 @@ public class PhoneAuth extends AppCompatActivity {
                         secondText.setVisibility(View.GONE);
                         progressBar.setVisibility(View.VISIBLE);
                         firstTime = false;
-                        new CountDownTimer(60000, 1000) {
+                        new CountDownTimer(120000, 1000) {
                             @Override
                             public void onTick(long millisUntilFinished) {
                                 if (isJobDone)
                                     cancel();
-                                firstText.setText(new StringBuilder(getString(R.string.arrival_count_down) + " " +(millisUntilFinished / 1000)) );
-                                progressBar.setProgress(progressBar.getProgress()-1);
+                                firstText.setText(new StringBuilder(getString(R.string.arrival_count_down) + " " + (millisUntilFinished / 1000)));
+                                progressBar.setProgress(progressBar.getProgress() - 1);
                             }
 
                             @Override
@@ -290,21 +288,28 @@ public class PhoneAuth extends AppCompatActivity {
 //                                    FirebaseUser cursor = FirebaseAuth.getInstance().getCurrentUser();
 //                                    assert cursor != null;
 //                                    phone = cursor.getPhoneNumber();
-                                    User user = new User(username, phone);
+                                    User user = new User(phone);
                                     if (!dataSnapshot.child(phone).exists()) {
                                         user.setBalance(0.0);
                                         user.setCreatedAt(new SimpleDateFormat
                                                 ("dd-MMM-yyyy hh:mm a", Locale.getDefault()).format(new Date()));
                                         users.child(phone).setValue(user);
+                                        //users.child(phone).setValue(user);
+                                        Common.currentUser = user;
+                                        //Toast.makeText(PhoneAuth.this, "Signed in Successfully !", Toast.LENGTH_SHORT).show();
+                                        startActivity(new Intent(PhoneAuth.this, Config.class));
+                                        finish();
                                     } else {
                                         user.setBalance(users.child(phone).child("balance"));
                                         user.setHomeAddress(users.child(phone).child("homeAddress").toString());
+                                        user.setName(users.child(phone).child("name").toString());
+                                        //users.child(phone).setValue(user);
+                                        Common.currentUser = user;
+                                        //Toast.makeText(PhoneAuth.this, "Signed in Successfully !", Toast.LENGTH_SHORT).show();
+                                        startActivity(new Intent(PhoneAuth.this, Home.class));
+                                        finish();
                                     }
-                                    //users.child(phone).setValue(user);
-                                    Common.currentUser = user;
-                                    //Toast.makeText(PhoneAuth.this, "Signed in Successfully !", Toast.LENGTH_SHORT).show();
-                                    startActivity(new Intent(PhoneAuth.this, Home.class));
-                                    finish();
+
                                 }
 
                                 @Override

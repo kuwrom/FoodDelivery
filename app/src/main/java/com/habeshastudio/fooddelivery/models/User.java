@@ -27,6 +27,9 @@ public class User {
         Phone = phone;
     }
 
+    public User(String phone) {
+    }
+
     public String getImage() {
         return Image;
     }
