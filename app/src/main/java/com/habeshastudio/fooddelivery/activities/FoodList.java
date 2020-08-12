@@ -243,7 +243,7 @@ public class FoodList extends AppCompatActivity {
             public void run() {
                 if (getIntent() != null)
                     categoryId = getIntent().getStringExtra("CategoryId");
-                if (!categoryId.isEmpty() && categoryId != null) {
+                if (!categoryId.isEmpty()) {
                     if (Common.isConnectedToInternet(getBaseContext()))
                         loadListFood(categoryId);
                     else {
@@ -264,7 +264,7 @@ public class FoodList extends AppCompatActivity {
                     @Override
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-                        List<String> suggest = new ArrayList<String>();
+                        List<String> suggest = new ArrayList<>();
                         for (String search : suggestList) {
                             if (search.toLowerCase().contains(materialSearchBar.getText().toLowerCase()))
                                 suggest.add(search);
@@ -363,6 +363,7 @@ public class FoodList extends AppCompatActivity {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                             Food item = postSnapshot.getValue(Food.class);
+                            assert item != null;
                             suggestList.add(item.getName());
                         }
                         materialSearchBar.setLastSuggestions(suggestList);
@@ -387,12 +388,12 @@ public class FoodList extends AppCompatActivity {
 
         adapter = new FirebaseRecyclerAdapter<Food, FoodViewHolder>(foodOptions) {
             @Override
-            protected void onBindViewHolder(@NonNull final FoodViewHolder viewHolder, final int position, @NonNull final Food model) {
+            protected void onBindViewHolder(@NonNull final FoodViewHolder viewHolder, int position, @NonNull final Food model) {
 
                 viewHolder.food_name.setText(model.getName());
                 viewHolder.food_description.setText(model.getDescription());
                 if (Common.isUsdSelected)
-                viewHolder.food_price.setText(String.format("$ %s", Integer.parseInt(model.getPrice())/Common.ETB_RATE));
+                    viewHolder.food_price.setText(String.format("$ %s", Integer.parseInt(model.getPrice()) / Common.ETB_RATE));
                 else viewHolder.food_price.setText(String.format("ETB %s", model.getPrice()));
                 Log.d("TAG", "" + adapter.getItemCount());
                 Picasso.with(getBaseContext()).load(model.getImage())
@@ -408,7 +409,7 @@ public class FoodList extends AppCompatActivity {
                         if (!isAddedToCart) {
                             new Database(getBaseContext()).addToCart(new Order(
                                     Common.currentUser.getPhone(),
-                                    adapter.getRef(position).getKey(),
+                                    adapter.getRef(viewHolder.getAdapterPosition()).getKey(),
                                     model.getName(),
                                     "1",
                                     model.getPrice(),
@@ -443,7 +444,7 @@ public class FoodList extends AppCompatActivity {
                     public void onClick(View v) {
 
                         Favorites favorites = new Favorites();
-                        favorites.setFoodId(adapter.getRef(position).getKey());
+                        favorites.setFoodId(adapter.getRef(viewHolder.getAdapterPosition()).getKey());
                         favorites.setFoodName(model.getName());
                         favorites.setFoodDescription(model.getDescription());
                         favorites.setFoodDiscount(model.getDiscount());
@@ -453,12 +454,12 @@ public class FoodList extends AppCompatActivity {
                         favorites.setFoodPrice(model.getPrice());
 
 
-                        if (!localDb.isFavourite(adapter.getRef(position).getKey(), Common.currentUser.getPhone())) {
+                        if (!localDb.isFavourite(adapter.getRef(viewHolder.getAdapterPosition()).getKey(), Common.currentUser.getPhone())) {
                             localDb.addToFavourites(favorites);
                             viewHolder.fav_image.setImageResource(R.drawable.ic_favorite_black_24dp);
                             //Toast.makeText(FoodList.this, "" + model.getName() + " was added to favourites", Toast.LENGTH_SHORT).show();
                         } else {
-                            localDb.removeFromFavourites(adapter.getRef(position).getKey(), Common.currentUser.getPhone());
+                            localDb.removeFromFavourites(adapter.getRef(viewHolder.getAdapterPosition()).getKey(), Common.currentUser.getPhone());
                             viewHolder.fav_image.setImageResource(R.drawable.ic_favorite_border_black_24dp);
                             //Toast.makeText(FoodList.this, "" + model.getName() + " was removed from favourites", Toast.LENGTH_SHORT).show();
 

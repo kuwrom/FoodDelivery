@@ -56,6 +56,7 @@
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:visibility="visible"
                 android:paddingEnd="8dp">
 
                 <TextView
@@ -78,6 +79,110 @@
                     android:src="@drawable/ic_tune_black_24dp"
                     android:tint="@color/transparentBlack" />
             </RelativeLayout>
+            <!--            <HorizontalScrollView-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:scrollbars="none"-->
+            <!--                android:layout_height="wrap_content">-->
+            <android.support.design.chip.ChipGroup
+                android:id="@+id/filter_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:visibility="visible"
+                app:singleSelection="true">
+
+                <android.support.design.chip.Chip
+                    android:id="@+id/under_30_min"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:text="Under 30 min"
+                    android:theme="@style/Material"
+                    app:chipIcon="@drawable/ic_baseline_access_time_24"
+                    app:chipIconTint="@color/transparentBlack" />
+
+                <android.support.design.chip.Chip
+                    android:id="@+id/pizza"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:text="Free Delivery"
+                    android:theme="@style/Material"
+                    app:chipIcon="@drawable/ic_baseline_local_pizza_24"
+                    app:chipIconTint="@color/transparentBlack" />
+
+                <android.support.design.chip.Chip
+                    android:id="@+id/burger"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:text="Burger"
+                    android:theme="@style/Material"
+                    app:chipIcon="@drawable/ic_baseline_fastfood_24"
+                    app:chipIconTint="@color/transparentBlack" />
+
+                <android.support.design.chip.Chip
+                    android:id="@+id/free_delivery"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:text="Pizza"
+                    android:theme="@style/Material"
+                    app:chipIcon="@drawable/ic_baseline_money_off_24"
+                    app:chipIconTint="@color/transparentBlack" />
+
+                <android.support.design.chip.Chip
+                    android:id="@+id/under_30_min1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:text="Chicken"
+                    android:theme="@style/Material"
+                    app:chipIcon="@drawable/ic_baseline_access_time_24"
+                    app:chipIconTint="@color/transparentBlack" />
+
+                <android.support.design.chip.Chip
+                    android:id="@+id/local_dishes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:text="Pasta"
+                    android:theme="@style/Material"
+                    app:chipIcon="@drawable/ic_restaurant_black_24dp"
+                    app:chipIconTint="@color/transparentBlack" />
+
+                <android.support.design.chip.Chip
+                    android:id="@+id/pizza1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:text="Vegan"
+                    android:theme="@style/Material"
+                    app:chipIcon="@drawable/ic_baseline_local_pizza_24"
+                    app:chipIconTint="@color/transparentBlack" />
+
+                <android.support.design.chip.Chip
+                    android:id="@+id/local_dishes1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:text="Local Dish"
+                    android:theme="@style/Material"
+                    app:chipIcon="@drawable/ic_restaurant_black_24dp"
+                    app:chipIconTint="@color/transparentBlack" />
+
+                <android.support.design.chip.Chip
+                    android:id="@+id/burger1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:text="Featured"
+                    android:theme="@style/Material"
+                    app:chipIcon="@drawable/ic_baseline_fastfood_24"
+                    app:chipIconTint="@color/transparentBlack" />
+            </android.support.design.chip.ChipGroup>
+            <!--            </HorizontalScrollView>-->
+
             <android.support.v4.widget.SwipeRefreshLayout
                 android:id="@+id/homeSwipeLayout"
                 android:layout_width="match_parent"

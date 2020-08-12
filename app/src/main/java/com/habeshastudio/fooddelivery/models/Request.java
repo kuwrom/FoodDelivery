@@ -24,6 +24,7 @@ public class Request {
     public Request() {
     }
 
+
     public Request(String phone, String name, String address, String total, String status, String comment, String paymentState, String paymentMethod, String latLng, List<Order> foods, boolean partial, String restaurantId, String orderHandler) {
         this.phone = phone;
         this.name = name;

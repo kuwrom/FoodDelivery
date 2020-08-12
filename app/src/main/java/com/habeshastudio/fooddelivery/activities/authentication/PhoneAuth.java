@@ -42,9 +42,6 @@ import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.helper.LocaleHelper;
 import com.habeshastudio.fooddelivery.models.User;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -290,14 +287,16 @@ public class PhoneAuth extends AppCompatActivity {
 //                                    phone = cursor.getPhoneNumber();
                                     User user = new User(phone);
                                     if (!dataSnapshot.child(phone).exists()) {
-                                        user.setBalance(0.0);
-                                        user.setCreatedAt(new SimpleDateFormat
-                                                ("dd-MMM-yyyy hh:mm a", Locale.getDefault()).format(new Date()));
-                                        users.child(phone).setValue(user);
+
+//                                        user.setBalance(0.0);
+//                                        user.setCreatedAt(new SimpleDateFormat
+//                                                ("dd-MMM-yyyy hh:mm a", Locale.getDefault()).format(new Date()));
+//                                        users.child(phone).setValue(user);
+
                                         //users.child(phone).setValue(user);
                                         Common.currentUser = user;
                                         //Toast.makeText(PhoneAuth.this, "Signed in Successfully !", Toast.LENGTH_SHORT).show();
-                                        startActivity(new Intent(PhoneAuth.this, Config.class));
+                                        startActivity(new Intent(PhoneAuth.this, Config.class).putExtra("phone", phone));
                                         finish();
                                     } else {
                                         user.setBalance(users.child(phone).child("balance"));

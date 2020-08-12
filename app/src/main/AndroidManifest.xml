@@ -21,7 +21,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="LockedOrientationActivity">
-        <activity android:name=".activities.Config"></activity>
+        <activity android:name=".activities.OrderDetail"></activity>
+        <activity android:name=".activities.Config" />
         <activity android:name=".activities.OrderHistory" />
         <activity
             android:name=".activities.profile.PromoCodes"

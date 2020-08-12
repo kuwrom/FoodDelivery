@@ -25,6 +25,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.habeshastudio.fooddelivery.activities.Config;
 import com.habeshastudio.fooddelivery.activities.Home;
 import com.habeshastudio.fooddelivery.activities.authentication.Register;
 import com.habeshastudio.fooddelivery.common.Common;
@@ -127,23 +128,27 @@ public class MainActivity extends AppCompatActivity {
                 users.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        User currentUser = dataSnapshot.child(phoneNumber).getValue(User.class);
-                        Common.currentUser = currentUser;
+                        if (!dataSnapshot.child(phoneNumber).exists()) {
+                            startActivity(new Intent(MainActivity.this, Config.class).putExtra("phone", phoneNumber));
+                            finish();
+                        } else {
+                            User currentUser = dataSnapshot.child(phoneNumber).getValue(User.class);
+                            Common.currentUser = currentUser;
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    startActivity(new Intent(MainActivity.this, Home.class));
+                                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                                    finish();
+                                }
+                            }, 2000);
+                        }
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
                     }
                 });
-
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        startActivity(new Intent(MainActivity.this, Home.class));
-                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                        finish();
-                    }
-                }, 2000);
             } else {
                 new Handler().postDelayed(new Runnable() {
                     @Override

@@ -65,6 +65,7 @@ public class Register extends AppCompatActivity {
 //        }
         //Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
 
+        Paper.init(Register.this);
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
@@ -88,7 +89,6 @@ public class Register extends AppCompatActivity {
         final Animation animShake = AnimationUtils.loadAnimation(this, R.anim.shake);
 
         isInternet();
-        Paper.init(Register.this);
         btnTrouble.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -129,6 +129,7 @@ public class Register extends AppCompatActivity {
                         else return;
                         Intent phoneAuth = new Intent(Register.this, PhoneAuth.class);
                         phoneAuth.putExtra("phone", phone);
+                        Paper.book().write("userPhone", phone);
                         startActivity(phoneAuth);
                         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                         finish();

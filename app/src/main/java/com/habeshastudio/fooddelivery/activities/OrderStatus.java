@@ -201,7 +201,7 @@ public class OrderStatus extends AppCompatActivity {
             adapter = new FirebaseRecyclerAdapter<Request, OrderViewHolder>(orderOptions) {
 
                 @Override
-                protected void onBindViewHolder(@NonNull OrderViewHolder viewHolder, @SuppressLint("RecyclerView") final int position, @NonNull Request model) {
+                protected void onBindViewHolder(@NonNull final OrderViewHolder viewHolder, @SuppressLint("RecyclerView") final int position, @NonNull final Request model) {
 
                     viewHolder.txtOrderId.setText(adapter.getRef(position).getKey());
                     viewHolder.txtOrderStatus.setText(Common.convertCodeToStatus(model.getStatus()));
@@ -211,7 +211,13 @@ public class OrderStatus extends AppCompatActivity {
                         @Override
                         public void onClick(View view, int position, boolean isLongClick) {
                             Common.currentKey = adapter.getRef(position).getKey();
-                            startActivity(new Intent(OrderStatus.this, TrackingOrder.class));
+                            //
+                            // startActivity(new Intent(OrderStatus.this, TrackingOrder.class));
+
+                            Intent orderDetail = new Intent(OrderStatus.this, OrderDetail.class);
+                            Common.currentRequest = model;
+                            orderDetail.putExtra("OrderId", adapter.getRef(viewHolder.getAdapterPosition()).getKey());
+                            startActivity(orderDetail);
                         }
                     });
 

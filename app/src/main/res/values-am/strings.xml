@@ -5,14 +5,14 @@
     <string name="search">Search</string>
     <string name="profile">ፕሮፋይል</string>
     <string name="notification">Notify</string>
-    <string name="likes">ውድድ</string>
+    <string name="likes">የወደዷቸው</string>
     <string name="happy">Happy</string>
     <string name="room">Room</string>
     <string name="restaurant">Food</string>
     <string name="shop">Shop</string>
     <string name="photos">Pics</string>
     <string name="call">Call</string>
-    <string name="title_activity_home">ሆም</string>
+    <string name="title_activity_home">መግቢያ</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -29,7 +29,7 @@
     <string name="no_connection">ውይ! ኢንተርኔት ጠፋ</string>
     <string name="arrival_count_down">የይለፍ ቃልዎ ለመድረስ ትንሽ ጊዜ ሊወስድበት ይችላል. ካልደረስዎት ግን ትንሽ ይብቁና አዲስ የይለፍ ቃል እንልካለን</string>
     <string name="resend">ድጋሜ ላክ</string>
-    <string name="about_hodam_and_privacy">About Hodam and Privacy</string>
+    <string name="about_hodam_and_privacy">About dine and Privacy</string>
     <string name="start">Start</string>
     <string name="the_best_food_from_the_restaurants_nyou_love_selected_just_for_you">The best food from the restaurants  you love, selected just for you</string>
     <string name="checkout">የገዛሀውን እይ</string>
@@ -150,15 +150,19 @@
     <string name="not_yet_verification">እስካሁን የይለፍ ቃል አልደረሶትም? ድጋሜ ለማስላክ ከስር ይጫኑ</string>
     <string name="cance_verification">የማረጋገጫ ክንውኑ ይቋረጥ?</string>
     <string name="swipe_to_delete">ሰርዝ</string>
-    <string name="change_currency">Change Currency?</string>
-    <string name="free_delivery">Free Delivery</string>
-    <string name="all_restaurants">All Restaurants</string>
-    <string name="burger">Burger</string>
-    <string name="pizza">Pizza</string>
-    <string name="traditional_foods">Traditional Foods</string>
-    <string name="chicken">Chicken</string>
-    <string name="under_30_min">Under 30 min</string>
-    <string name="best_restaurants">Best Restaurants</string>
-    <string name="best_price">Best Price</string>
-    <string name="foreign_dishes">Foreign Dishes</string>
+    <string name="change_currency">Currency ይቀየር?</string>
+    <string name="free_delivery">ነፃ አገልግሎት</string>
+    <string name="all_restaurants">ሁሉም ሬስቶራንቶች</string>
+    <string name="burger">በርገር</string>
+    <string name="pizza">ፒዛ</string>
+    <string name="traditional_foods">የ ኢትዮጵያ ምግቦች</string>
+    <string name="chicken">ዶሮ</string>
+    <string name="under_30_min">በ 30 ደቂቃ ሚደርስ</string>
+    <string name="best_restaurants">ምርጥ ሬስቶራንቶች</string>
+    <string name="best_price">አሪፍ ዋጋ</string>
+    <string name="foreign_dishes">የ ውጭ ምግቦች</string>
+    <string name="username_required">የእርሶ ስም ያስፈልጋል</string>
+    <string name="type_your_name_here">እዚጋ ስሞትን ይፃፉ</string>
+    <string name="referer_phone_here">Referer Phone Here</string>
+    <string name="add_referer_number">Add referer number</string>
 </resources>

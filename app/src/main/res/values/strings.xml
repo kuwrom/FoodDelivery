@@ -164,5 +164,9 @@
     <string name="best_restaurants">Best Restaurants</string>
     <string name="best_price">Best Price</string>
     <string name="foreign_dishes">Foreign Dishes</string>
+    <string name="username_required">Username required</string>
+    <string name="type_your_name_here">Type your name here</string>
+    <string name="referer_phone_here">Referer Phone Here</string>
+    <string name="add_referer_number">Add referer number</string>
 
 </resources>

@@ -6,6 +6,7 @@ import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+import com.habeshastudio.fooddelivery.models.Request;
 import com.habeshastudio.fooddelivery.models.User;
 import com.habeshastudio.fooddelivery.remote.APIService;
 import com.habeshastudio.fooddelivery.remote.GoogleRetrofitClient;
@@ -24,6 +25,9 @@ import java.util.Locale;
  */
 
 public class Common {
+
+    public static Request currentRequest;
+
     public static final String INTENT_FOOD_ID = "FoodId";
     public static final String DELETE = "Delete";
     private static final String BASE_URL = "https://fcm.googleapis.com/";
@@ -46,6 +50,7 @@ public class Common {
     public static boolean isUsdSelected = false;
     public static double ETB_RATE = 34.0;
     public static HashMap<String, Double> restaurantDistance = new HashMap<>();
+
 
     public static APIService getFCMService() {
 

@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.support.design.chip.ChipGroup;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -27,6 +28,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -100,6 +102,7 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
     private LocationManager mLocationManager;
     APIService mService;
     //Location
+    ImageView filter;
     private LocationRequest mLocationRequest;
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
@@ -117,7 +120,7 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
 //    FirebaseRecyclerAdapter<Category, MenuViewHolder> adapter;
     RestaurantAdapter adapter;
     BubbleNavigationLinearView bubbleNavigationLinearView;
-
+    ChipGroup filterGroup;
     SwipeRefreshLayout swipeRefreshLayout;
     HashMap <String, Category> availableRestaurants = new HashMap<>();
     //Slider
@@ -278,8 +281,10 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
         mGoogleMapService = Common.getGoogleMapApi();
         mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
+        filter = findViewById(R.id.filter_button);
+        filterGroup = findViewById(R.id.filter_group);
 
-        checkoutButton =findViewById(R.id.btn_checkout_cart);
+        checkoutButton = findViewById(R.id.btn_checkout_cart);
         checkoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -299,6 +304,16 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
 //            public void onCancelled(DatabaseError databaseError) {
 //            }
 //        });
+
+
+        filter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (filterGroup.getVisibility() != View.VISIBLE)
+                    filterGroup.setVisibility(View.VISIBLE);
+                else filterGroup.setVisibility(View.GONE);
+            }
+        });
 
         bubbleNavigationLinearView = findViewById(R.id.bottom_navigation_view_linear);
         bubbleNavigationLinearView.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/rf.ttf"));
