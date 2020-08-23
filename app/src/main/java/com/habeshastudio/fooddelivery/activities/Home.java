@@ -77,6 +77,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import io.paperdb.Paper;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
@@ -122,7 +123,8 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
     BubbleNavigationLinearView bubbleNavigationLinearView;
     ChipGroup filterGroup;
     SwipeRefreshLayout swipeRefreshLayout;
-    HashMap <String, Category> availableRestaurants = new HashMap<>();
+    HashMap<String, Category> availableRestaurants = new HashMap<>();
+    HashMap<String, Category> filteredRestaurants = new HashMap<>();
     //Slider
     //HashMap<String, String> image_list;
     SliderLayout mSlider;
@@ -207,7 +209,7 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
                     if (category != null) {
                         availableRestaurants.put(key, category);
                         //recycler_menu.getAdapter().notifyDataSetChanged();
-                        loadMenu();
+                        loadMenu("1");
                     }
                 }
 
@@ -315,6 +317,14 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
             }
         });
 
+        filterGroup.setSingleSelection(true);
+        filterGroup.setOnCheckedChangeListener(new ChipGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(ChipGroup chipGroup, int i) {
+                Toast.makeText(Home.this, "checked" + i, Toast.LENGTH_SHORT).show();
+            }
+        });
+
         bubbleNavigationLinearView = findViewById(R.id.bottom_navigation_view_linear);
         bubbleNavigationLinearView.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/rf.ttf"));
         bubbleNavigationLinearView.setNavigationChangeListener(new BubbleNavigationChangeListener() {
@@ -406,7 +416,7 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
             public void run() {
 
                 if (Common.isConnectedToInternet(getBaseContext())) {
-                    loadMenu();
+                    loadMenu("1");
                     //updateQuery(new GeoLocation(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
                 } else {
                     Toast.makeText(getBaseContext(), getResources().getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
@@ -494,7 +504,7 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
                     if (category != null) {
                         availableRestaurants.put(key, category);
                         //recycler_menu.getAdapter().notifyDataSetChanged();
-                        loadMenu();
+                        loadMenu("1");
                     }
                 }
 
@@ -509,16 +519,16 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
 
     private void updateQuery(GeoLocation myLocation) {
         if (geoQuery == null) {
-            geoQuery = geoFire.queryAtLocation(myLocation, 15);
+            geoQuery = geoFire.queryAtLocation(myLocation, 10);
             geoQuery.addGeoQueryEventListener(geoQueryEventListener);
         } else {
-            geoQuery.setLocation(myLocation, 15);
+            geoQuery.setLocation(myLocation, 10);
         }
         if (geoQueryBanner == null) {
-            geoQueryBanner = geoFireBanner.queryAtLocation(myLocation, 100);
+            geoQueryBanner = geoFireBanner.queryAtLocation(myLocation, 50);
             geoQueryBanner.addGeoQueryEventListener(geoQueryEventListenerBanner);
         } else {
-            geoQueryBanner.setLocation(myLocation, 100);
+            geoQueryBanner.setLocation(myLocation, 50);
         }
     }
 
@@ -647,10 +657,15 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
         }
     }
 
-    private void loadMenu() {
+    private void loadMenu(String selectedCategory) {
         isInternet();
-        if (mLastLocation != null){
-            adapter = new RestaurantAdapter(availableRestaurants, this);
+        if (mLastLocation != null) {
+            for (Map.Entry<String, Category> cat : availableRestaurants.entrySet()) {
+                if (cat.getValue().getCategory().contains(selectedCategory))
+                    filteredRestaurants.put(cat.getKey(), cat.getValue());
+            }
+
+            adapter = new RestaurantAdapter(filteredRestaurants, this);
             //adapter.startListening();
             recycler_menu.setAdapter(adapter);
 

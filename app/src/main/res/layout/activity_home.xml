@@ -88,6 +88,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
+
                 android:visibility="visible"
                 app:singleSelection="true">
 
@@ -98,12 +99,14 @@
                     android:layout_margin="4dp"
                     android:text="Under 30 min"
                     android:theme="@style/Material"
+                    android:checkable="true"
                     app:chipIcon="@drawable/ic_baseline_access_time_24"
                     app:chipIconTint="@color/transparentBlack" />
 
                 <android.support.design.chip.Chip
                     android:id="@+id/pizza"
                     android:layout_width="wrap_content"
+                    android:checkable="true"
                     android:layout_height="wrap_content"
                     android:layout_margin="4dp"
                     android:text="Free Delivery"
@@ -117,6 +120,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="4dp"
                     android:text="Burger"
+                    android:checkable="true"
                     android:theme="@style/Material"
                     app:chipIcon="@drawable/ic_baseline_fastfood_24"
                     app:chipIconTint="@color/transparentBlack" />
@@ -127,6 +131,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="4dp"
                     android:text="Pizza"
+                    android:checkable="true"
                     android:theme="@style/Material"
                     app:chipIcon="@drawable/ic_baseline_money_off_24"
                     app:chipIconTint="@color/transparentBlack" />
@@ -137,6 +142,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="4dp"
                     android:text="Chicken"
+                    android:checkable="true"
                     android:theme="@style/Material"
                     app:chipIcon="@drawable/ic_baseline_access_time_24"
                     app:chipIconTint="@color/transparentBlack" />
@@ -147,6 +153,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="4dp"
                     android:text="Pasta"
+                    android:checkable="true"
                     android:theme="@style/Material"
                     app:chipIcon="@drawable/ic_restaurant_black_24dp"
                     app:chipIconTint="@color/transparentBlack" />
@@ -157,6 +164,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="4dp"
                     android:text="Vegan"
+                    android:checkable="true"
                     android:theme="@style/Material"
                     app:chipIcon="@drawable/ic_baseline_local_pizza_24"
                     app:chipIconTint="@color/transparentBlack" />
@@ -167,6 +175,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="4dp"
                     android:text="Local Dish"
+                    android:checkable="true"
                     android:theme="@style/Material"
                     app:chipIcon="@drawable/ic_restaurant_black_24dp"
                     app:chipIconTint="@color/transparentBlack" />
@@ -177,6 +186,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="4dp"
                     android:text="Featured"
+                    android:checkable="true"
                     android:theme="@style/Material"
                     app:chipIcon="@drawable/ic_baseline_fastfood_24"
                     app:chipIconTint="@color/transparentBlack" />
