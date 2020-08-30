@@ -12,12 +12,11 @@ public class Category {
     private String Location;
     private String orderHandler;
     private String deliveryPrice;
-    private String priority;
-    private int category;
+    private Object priority;
+    private Object category;
     private boolean opened;
 
-
-    public Category(String name, String image, String location, String orderHandler, String deliveryPrice, String priority, int category, boolean opened) {
+    public Category(String name, String image, String location, String orderHandler, String deliveryPrice, Object priority, Object category, boolean opened) {
         Name = name;
         Image = image;
         Location = location;
@@ -52,11 +51,14 @@ public class Category {
     public Category() {
     }
 
-    public String getPriority() {
-        return priority;
+    public int getPriority() {
+        if (priority.getClass() == String.class)
+            return Integer.parseInt((String) priority);
+        else
+            return ((Long) priority).intValue();
     }
 
-    public void setPriority(String priority) {
+    public void setPriority(Object priority) {
         this.priority = priority;
     }
 
@@ -64,7 +66,7 @@ public class Category {
         return String.valueOf(category);
     }
 
-    public void setCategory(int category) {
+    public void setCategory(Object category) {
         this.category = category;
     }
 

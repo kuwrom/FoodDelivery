@@ -12,9 +12,11 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.support.design.chip.Chip;
 import android.support.design.chip.ChipGroup;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.Snackbar;
@@ -74,7 +76,11 @@ import com.habeshastudio.fooddelivery.viewHolder.RestaurantAdapter;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -104,13 +110,70 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
     APIService mService;
     //Location
     ImageView filter;
+
+    //static int largestValue = 0;
+
+    public static String selectedFilter = "1";
     private LocationRequest mLocationRequest;
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
     DatabaseReference category, geoRef, geoRestRef, geoBannerRef, banners;
+    private final GeoQueryEventListener geoQueryEventListener = new GeoQueryEventListener() {
 
-    //CounterFab fab;
-    TextView itemsCount, priceTag;
+        @Override
+        public void onKeyEntered(final String key, GeoLocation location) {
+            Log.d("entered", String.format("Key %s entered the search area at [%f,%f]", key, location.latitude, location.longitude));
+
+            //retrieve the restaurant from the database with an async task
+            if (!restaurantKeyList.contains(key))
+                restaurantKeyList.add(key);
+            category.child(key).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    Category category = dataSnapshot.getValue(Category.class);
+                    if (category != null) {
+                        availableRestaurants.put(key, category);
+                        //recycler_menu.getAdapter().notifyDataSetChanged();
+                        loadMenu(selectedFilter);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.d("Error", "onCancelled() called with: databaseError = [" + databaseError + "]");
+                    Log.w("Error", "onCancelled: ", databaseError.toException());
+                }
+            });
+        }
+
+
+        @Override
+        public void onKeyExited(String key) {
+            Log.d("Error", String.format("Key %s is no longer in the search area", key));
+            availableRestaurants.remove(key);
+            restaurantKeyList.remove(key);
+            //recycler_menu.getAdapter().notifyDataSetChanged();
+            updateList();
+        }
+
+
+        @Override
+        public void onKeyMoved(String key, GeoLocation location) {
+            Log.d("Log", String.format("Key %s moved within the search area to [%f,%f]", key, location.latitude, location.longitude));
+
+
+        }
+
+        @Override
+        public void onGeoQueryReady() {
+
+        }
+
+        @Override
+        public void onGeoQueryError(DatabaseError error) {
+
+        }
+    };
     AppBarLayout appBarLayout;
     GeoQuery geoQuery, geoQueryBanner;
     LinearLayout checkoutButton;
@@ -193,62 +256,33 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
     }
 
     private List<String> restaurantKeyList = new ArrayList<>();
-    private final GeoQueryEventListener geoQueryEventListener = new GeoQueryEventListener() {
+    //CounterFab fab;
+    TextView itemsCount, priceTag, filterLabel;
 
-        @Override
-        public void onKeyEntered(final String key, GeoLocation location) {
-            Log.d("entered", String.format("Key %s entered the search area at [%f,%f]", key, location.latitude, location.longitude));
+    private static Map<String, Category> sortByComparator(Map<String, Category> unsortMap, final boolean order) {
 
-            //retrieve the restaurant from the database with an async task
-            if (!restaurantKeyList.contains(key))
-                restaurantKeyList.add(key);
-            category.child(key).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    Category category = dataSnapshot.getValue(Category.class);
-                    if (category != null) {
-                        availableRestaurants.put(key, category);
-                        //recycler_menu.getAdapter().notifyDataSetChanged();
-                        loadMenu("1");
-                    }
+        List<Map.Entry<String, Category>> list = new LinkedList<Map.Entry<String, Category>>(unsortMap.entrySet());
+
+        // Sorting the list based on values
+        Collections.sort(list, new Comparator<Map.Entry<String, Category>>() {
+            public int compare(Map.Entry<String, Category> o1,
+                               Map.Entry<String, Category> o2) {
+                if (order) {
+                    return o1.getValue().getPriority() >= o2.getValue().getPriority() ? 1 : -1;
+                } else {
+                    return o2.getValue().getPriority() >= o1.getValue().getPriority() ? 1 : -1;
                 }
+            }
+        });
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    Log.d("Error", "onCancelled() called with: databaseError = [" + databaseError + "]");
-                    Log.w("Error", "onCancelled: ", databaseError.toException());
-                }
-            });
+        // Maintaining insertion order with the help of LinkedList
+        Map<String, Category> sortedMap = new LinkedHashMap<String, Category>();
+        for (Map.Entry<String, Category> entry : list) {
+            sortedMap.put(entry.getKey(), entry.getValue());
         }
 
-
-        @Override
-        public void onKeyExited(String key) {
-            Log.d("Error", String.format("Key %s is no longer in the search area", key));
-            availableRestaurants.remove(key);
-            restaurantKeyList.remove(key);
-            //recycler_menu.getAdapter().notifyDataSetChanged();
-            updateList();
-        }
-
-
-        @Override
-        public void onKeyMoved(String key, GeoLocation location) {
-            Log.d("Log", String.format("Key %s moved within the search area to [%f,%f]", key, location.latitude, location.longitude));
-
-
-        }
-
-        @Override
-        public void onGeoQueryReady() {
-
-        }
-
-        @Override
-        public void onGeoQueryError(DatabaseError error) {
-
-        }
-    };
+        return sortedMap;
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -283,6 +317,7 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
         mGoogleMapService = Common.getGoogleMapApi();
         mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
+        filterLabel = findViewById(R.id.selected_restaurant_label);
         filter = findViewById(R.id.filter_button);
         filterGroup = findViewById(R.id.filter_group);
 
@@ -320,8 +355,72 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
         filterGroup.setSingleSelection(true);
         filterGroup.setOnCheckedChangeListener(new ChipGroup.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(ChipGroup chipGroup, int i) {
-                Toast.makeText(Home.this, "checked" + i, Toast.LENGTH_SHORT).show();
+            public void onCheckedChanged(final ChipGroup chipGroup, int i) {
+                Chip selectedOne = chipGroup.findViewById(i);
+
+                int index = filterGroup.indexOfChild(selectedOne);
+                if (selectedOne != null)
+                    filterLabel.setText(selectedOne.getText());
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        chipGroup.setVisibility(View.GONE);
+                    }
+                }, 700);
+
+//                new java.util.Timer().schedule(
+//                        new java.util.TimerTask() {
+//                            @Override
+//                            public void run() {
+//                                chipGroup.setVisibility(View.GONE);
+//                            }
+//                        },
+//                        2000
+//                );
+                switch (index) {
+                    case 0:
+                        loadMenu("0");
+                        selectedFilter = "0";
+                        break;
+                    case 1:
+                        loadMenu("1");
+                        selectedFilter = "1";
+                        break;
+                    case 2:
+                        loadMenu("2");
+                        selectedFilter = "2";
+                        break;
+                    case 3:
+                        loadMenu("3");
+                        selectedFilter = "3";
+                        break;
+                    case 4:
+                        loadMenu("4");
+                        selectedFilter = "4";
+                        break;
+                    case 5:
+                        loadMenu("5");
+                        selectedFilter = "5";
+                        break;
+                    case 6:
+                        loadMenu("6");
+                        selectedFilter = "6";
+                        break;
+                    case 7:
+                        loadMenu("7");
+                        selectedFilter = "7";
+                        break;
+                    case 8:
+                        loadMenu("8");
+                        selectedFilter = "8";
+                        break;
+                    case 9:
+                        loadMenu("9");
+                        selectedFilter = "9";
+                        break;
+                }
+
             }
         });
 
@@ -416,7 +515,7 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
             public void run() {
 
                 if (Common.isConnectedToInternet(getBaseContext())) {
-                    loadMenu("1");
+                    loadMenu(selectedFilter);
                     //updateQuery(new GeoLocation(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
                 } else {
                     Toast.makeText(getBaseContext(), getResources().getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
@@ -493,28 +592,6 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
 //            alertDialog.show();
 //        }
 
-    }
-
-    void updateList() {
-        for (final String key : restaurantKeyList) {
-            category.child(key).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    Category category = dataSnapshot.getValue(Category.class);
-                    if (category != null) {
-                        availableRestaurants.put(key, category);
-                        //recycler_menu.getAdapter().notifyDataSetChanged();
-                        loadMenu("1");
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    Log.d("Error", "onCancelled() called with: databaseError = [" + databaseError + "]");
-                    Log.w("Error", "onCancelled: ", databaseError.toException());
-                }
-            });
-        }
     }
 
     private void updateQuery(GeoLocation myLocation) {
@@ -657,15 +734,49 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
         }
     }
 
+    void updateList() {
+        for (final String key : restaurantKeyList) {
+            category.child(key).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    Category category = dataSnapshot.getValue(Category.class);
+                    if (category != null) {
+                        availableRestaurants.put(key, category);
+                        //recycler_menu.getAdapter().notifyDataSetChanged();
+                        loadMenu(selectedFilter);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.d("Error", "onCancelled() called with: databaseError = [" + databaseError + "]");
+                    Log.w("Error", "onCancelled: ", databaseError.toException());
+                }
+            });
+        }
+    }
+
     private void loadMenu(String selectedCategory) {
         isInternet();
+        filteredRestaurants.clear();
+        //largestValue = 0;
+
         if (mLastLocation != null) {
             for (Map.Entry<String, Category> cat : availableRestaurants.entrySet()) {
-                if (cat.getValue().getCategory().contains(selectedCategory))
-                    filteredRestaurants.put(cat.getKey(), cat.getValue());
+                if (cat.getValue().getCategory().contains(selectedCategory)) {
+                    if (selectedCategory.equals("0")) {
+                        Location temp = new Location("A");
+                        String[] restaurantLatLng = cat.getValue().getLocation().split(",");
+                        temp.setLatitude(Double.parseDouble(restaurantLatLng[0]));
+                        temp.setLongitude(Double.parseDouble(restaurantLatLng[1]));
+                        double distance = Common.currentUserLocation.distanceTo(temp);
+                        if (distance <= 200)
+                            filteredRestaurants.put(cat.getKey(), cat.getValue());
+                    } else filteredRestaurants.put(cat.getKey(), cat.getValue());
+                }
             }
 
-            adapter = new RestaurantAdapter(filteredRestaurants, this);
+            adapter = new RestaurantAdapter((HashMap<String, Category>) sortByComparator(filteredRestaurants, false), this);
             //adapter.startListening();
             recycler_menu.setAdapter(adapter);
 

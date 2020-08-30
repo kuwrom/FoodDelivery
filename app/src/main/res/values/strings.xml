@@ -133,7 +133,7 @@
     <string name="processing">Processing</string>
     <string name="success">Success</string>
     <string name="blank"> </string>
-    <string name="minutes_away">minutes away</string>
+    <string name="minutes_away">minutes</string>
     <string name="navigation">Navigation</string>
     <string name="list_of_restaurants_n_list_of_orders_you_make_n_search_any_food_n_profile_and_settings">❶ List of Restaurants\n❷ List of orders You make\n❸ List of the items you like\n❹ Profile and Settings</string>
     <string name="ordering_a_food">Ordering a Food</string>
