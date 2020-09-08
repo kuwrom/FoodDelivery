@@ -57,8 +57,11 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.picasso.Picasso;
 
 import java.text.NumberFormat;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
 
 import io.paperdb.Paper;
 
@@ -68,14 +71,16 @@ public class Profile extends AppCompatActivity {
     StorageReference storageReference;
     FirebaseStorage storage;
     TextView itemsCount, priceTag;
-    LinearLayout checkoutButton;
+    public ProgressDialog mDialog;
+    LinearLayout checkoutButton, balanceWithdraw;
     String isSubscribed;
-    LinearLayout  paymentMethod, promoCode, transactions, share, help;
+    LinearLayout paymentMethod, promoCode, transactions, share, help;
     Button about, loved, promo, feedBack;
     TextView name_display, address_display, balance_display, moreOptions, textPaymentMethod, textDeliveryAddress, textTransactions, textShare, textHelp;
-    CircularImageView  profile;
+    CircularImageView profile;
     boolean isUsd, isAmharic;
     FloatingActionButton notificationSwitch, languageSwitch, nightModeSwitch, currencySwitch;
+
     @Override
     protected void attachBaseContext(Context newBase) {
         //super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
@@ -97,13 +102,12 @@ public class Profile extends AppCompatActivity {
         profile = findViewById(R.id.profile_pic);
         address_display = findViewById(R.id.address_display);
         balance_display = findViewById(R.id.balance_display);
-
+        balanceWithdraw = findViewById(R.id.balance_withdraw);
         textPaymentMethod = findViewById(R.id.txt_payment);
         textDeliveryAddress = findViewById(R.id.txt_delivery);
         textTransactions = findViewById(R.id.txt_transactions);
         textShare = findViewById(R.id.txt_share);
         textHelp = findViewById(R.id.txt_help);
-
         moreOptions = findViewById(R.id.more_options);
         users = FirebaseDatabase.getInstance().getReference("User");
         feedback = FirebaseDatabase.getInstance().getReference("Feedback");
@@ -133,12 +137,19 @@ public class Profile extends AppCompatActivity {
         help = findViewById(R.id.btn_help);
         about = findViewById(R.id.btn_about);
         feedBack = findViewById(R.id.btn_feedback);
-        checkoutButton =findViewById(R.id.btn_checkout_cart);
+        checkoutButton = findViewById(R.id.btn_checkout_cart);
         checkoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent cartIntent = new Intent(Profile.this, Cart.class);
                 startActivity(cartIntent);
+            }
+        });
+
+        balanceWithdraw.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showBalanceWithdrawDialogue();
             }
         });
 
@@ -338,6 +349,191 @@ public class Profile extends AppCompatActivity {
 
     }
 
+    @SuppressLint("SetTextI18n")
+    private void showBalanceWithdrawDialogue() {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(Profile.this);
+        //alertDialog.setTitle("Withdraw Money");
+
+
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View layout_balance = inflater.inflate(R.layout.balance_layout, null);
+        Button buyCard = layout_balance.findViewById(R.id.btn_buy_a_card);
+        final LinearLayout cardList = layout_balance.findViewById(R.id.card_list);
+        TextView availableBalance = layout_balance.findViewById(R.id.available_display);
+        availableBalance.setText(R.string.available + Common.currentUser.getBalance().toString());
+
+
+        final TextView five, ten, fifteen, twentyFive, fifty, hundred, voucher;
+        five = layout_balance.findViewById(R.id.five_birr);
+        ten = layout_balance.findViewById(R.id.ten_birr);
+        fifteen = layout_balance.findViewById(R.id.fifteen_birr);
+        twentyFive = layout_balance.findViewById(R.id.twenty_five_birr);
+        fifty = layout_balance.findViewById(R.id.fifty_birr);
+        hundred = layout_balance.findViewById(R.id.hundred_birr);
+        voucher = layout_balance.findViewById(R.id.voucher_number);
+        if (Common.currentUser.getCurrentMobileCard() != null)
+            voucher.setText(Common.currentUser.getCurrentMobileCard());
+        buyCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cardList.setVisibility(View.VISIBLE);
+                if ((Long) Common.currentUser.getBalance() >= 5) five.setEnabled(true);
+                else five.setEnabled(false);
+                if ((Long) Common.currentUser.getBalance() >= 10) ten.setEnabled(true);
+                else ten.setEnabled(false);
+                if ((Long) Common.currentUser.getBalance() >= 15) fifteen.setEnabled(true);
+                else fifteen.setEnabled(false);
+                if ((Long) Common.currentUser.getBalance() >= 25) twentyFive.setEnabled(true);
+                else twentyFive.setEnabled(false);
+                if ((Long) Common.currentUser.getBalance() >= 50) fifty.setEnabled(true);
+                else fifty.setEnabled(false);
+                if ((Long) Common.currentUser.getBalance() >= 100) hundred.setEnabled(true);
+                else hundred.setEnabled(false);
+
+            }
+        });
+        five.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                requestVoucher(5);
+                voucher.setVisibility(View.VISIBLE);
+            }
+        });
+        ten.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                requestVoucher(10);
+            }
+        });
+        fifteen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                requestVoucher(15);
+            }
+        });
+        twentyFive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                requestVoucher(25);
+            }
+        });
+        fifty.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                requestVoucher(50);
+            }
+        });
+        hundred.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                requestVoucher(100);
+            }
+        });
+        voucher.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String voucherNumber = voucher.getText().toString();
+
+                Uri uri = Uri.parse("tel:" + voucherNumber);
+                Intent callIntent = new Intent(Intent.ACTION_DIAL, uri);
+                try {
+                    startActivity(callIntent);
+                } catch (ActivityNotFoundException activityNotFoundException) {
+                    // TODO: place code to handle users that have no call application installed, otherwise the app crashes
+                }
+            }
+        });
+
+
+        alertDialog.setView(layout_balance);
+        alertDialog.show();
+    }
+
+    //todo before calling this set processing dialogue
+    private void requestVoucher(final int amount) {
+        mDialog = new ProgressDialog(this);
+        mDialog.setMessage("Requesting a Mobile Card");
+        mDialog.setCancelable(false);
+        mDialog.setCanceledOnTouchOutside(false);
+        mDialog.show();
+        final android.support.v7.app.AlertDialog.Builder alertDialog = new AlertDialog.Builder(Profile.this);
+        alertDialog.setTitle("This will cost you " + amount + " birr.");
+        alertDialog.setMessage("Are you sure, do you want to continue?");
+        alertDialog.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if ((Long) Common.currentUser.getBalance() >= amount) {
+
+                    FirebaseDatabase.getInstance().getReference("confidential").child("mobileCards").child(String.valueOf(amount))
+                            .orderByChild("valid").equalTo(true).limitToFirst(1).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            final Map<String, Object> update_balance = new HashMap<>();
+                            final Map<String, Object> update_card = new HashMap<>();
+                            final Map<String, Object> transactionHistory = new HashMap<>();
+                            update_card.put("valid", false);
+                            update_card.put("userPhone", Common.currentUser.getPhone());
+                            update_card.put("timeStamp", String.valueOf(System.currentTimeMillis()));
+                            transactionHistory.put("amount", amount);
+                            transactionHistory.put("method", "mobile card");
+                            transactionHistory.put("comments", dataSnapshot.getKey());
+                            update_balance.put("currentMobileCard", dataSnapshot.getKey());
+
+                            FirebaseDatabase.getInstance().getReference("confidential").child("mobileCards")
+                                    .child(String.valueOf(amount)).child(dataSnapshot.getKey()).updateChildren(update_card)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            users.child(Paper.book().read("userPhone").toString()).child("balance")
+                                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                                            double balance = Double.parseDouble(Objects.requireNonNull(dataSnapshot.getValue()).toString());
+
+                                                            update_balance.put("balance", balance - amount);
+                                                            users.child(Common.currentUser.getPhone())
+                                                                    .updateChildren(update_balance)
+                                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                        @Override
+                                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                                            transactionHistory.put("newBalance", Objects.requireNonNull(update_balance.get("balance")));
+                                                                            String timeNow = String.valueOf(System.currentTimeMillis());
+                                                                            FirebaseDatabase.getInstance().getReference("confidential").child("withdrawalHistory")
+                                                                                    .child(Common.currentUser.getPhone()).child(timeNow).updateChildren(transactionHistory).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                @Override
+                                                                                public void onComplete(@NonNull Task<Void> task) {
+                                                                                    loadUser();
+                                                                                    mDialog.dismiss();
+                                                                                }
+                                                                            });
+                                                                        }
+                                                                    });
+                                                        }
+
+                                                        @Override
+                                                        public void onCancelled(DatabaseError databaseError) {
+
+                                                        }
+                                                    });
+                                        }
+                                    });
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
+                } else
+                    Toast.makeText(Profile.this, "Balance insufficient", Toast.LENGTH_SHORT).show();
+            }
+        });
+        alertDialog.show();
+    }
+
     private void updateView(String language) {
         Context context = LocaleHelper.setLocale(this, language);
         Resources resources = context.getResources();
@@ -471,19 +667,17 @@ public class Profile extends AppCompatActivity {
     }
 
     void loadUser() {
-        FirebaseDatabase.getInstance().getReference("User")
-                .child(Common.currentUser.getPhone())
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        Common.currentUser = dataSnapshot.getValue(User.class);
-                        assert Common.currentUser != null;
-                        name_display.setText(Common.currentUser.getName());
-                        balance_display.setText(Common.currentUser.getBalance().toString());
-                        if (!TextUtils.isEmpty(Common.currentUser.getHomeAddress()) ||
-                                Common.currentUser.getHomeAddress() != null) {
-                            address_display.setText(Common.currentUser.getHomeAddress());
-                        }
+        users.child(Paper.book().read("userPhone").toString()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Common.currentUser = dataSnapshot.getValue(User.class);
+                assert Common.currentUser != null;
+                name_display.setText(Common.currentUser.getName());
+                balance_display.setText(Common.currentUser.getBalance().toString());
+                if (!TextUtils.isEmpty(Common.currentUser.getHomeAddress()) ||
+                        Common.currentUser.getHomeAddress() != null) {
+                    address_display.setText(Common.currentUser.getHomeAddress());
+                }
                         Picasso.with(getBaseContext()).load(Common.currentUser.getImage()).placeholder(R.drawable.profile_pic)
                                     .into(profile);
                     }

@@ -83,16 +83,28 @@ public class Config extends AppCompatActivity {
                                                 @Override
                                                 public void onDataChange(DataSnapshot dataSnapshot) {
 
+                                                    final Map<String, Object> referralReward = new HashMap<>();
                                                     Map<String, Object> update_balance = new HashMap<>();
+                                                    referralReward.put("reward", Double.parseDouble(Objects.requireNonNull(dataSnapshot.getValue()).toString()));
+                                                    referralReward.put("referred", Common.currentUser.getPhone());
                                                     update_balance.put("balance", balance + Double.parseDouble(Objects.requireNonNull(dataSnapshot.getValue()).toString()));
+                                                    referralReward.put("new Balance", Objects.requireNonNull(update_balance.get("balance")));
                                                     users.child(phoneMe)
                                                             .updateChildren(update_balance)
                                                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                 @Override
                                                                 public void onComplete(@NonNull Task<Void> task) {
-                                                                    //Toast.makeText(Config.this, "Success", Toast.LENGTH_SHORT).show();
-                                                                    startActivity(new Intent(Config.this, Home.class));
-                                                                    finish();
+                                                                    String timeNow = String.valueOf(System.currentTimeMillis());
+                                                                    FirebaseDatabase.getInstance().getReference("confidential").child("transactionHistory").child("referralReward")
+                                                                            .child(phoneMe).child(timeNow).updateChildren(referralReward).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                        @Override
+                                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                                            //Toast.makeText(Config.this, "Success", Toast.LENGTH_SHORT).show();
+                                                                            startActivity(new Intent(Config.this, Home.class));
+                                                                            finish();
+                                                                        }
+                                                                    });
+
                                                                 }
                                                             });
                                                 }

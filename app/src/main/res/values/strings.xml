@@ -168,5 +168,8 @@
     <string name="type_your_name_here">Type your name here</string>
     <string name="referer_phone_here">Referer Phone Here</string>
     <string name="add_referer_number">Add referer number</string>
+    <string name="withdraw_money">Withdraw Money</string>
+    <string name="_1_buy_a_mobile_card">1 - buy a mobile card</string>
+    <string name="available">\"Available Balance: \"</string>
 
 </resources>

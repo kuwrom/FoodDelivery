@@ -7,12 +7,19 @@ package com.habeshastudio.fooddelivery.models;
 public class User {
     private String password = "";
     private String Name, Phone, IsStaff, Image, HomeAddress,
-            IsVerified, CreatedAt;
+            IsVerified, CreatedAt, currentMobileCard;
     private Object Balance;
 
     public User() {
     }
 
+    public String getCurrentMobileCard() {
+        return currentMobileCard;
+    }
+
+    public void setCurrentMobileCard(String currentMobileCard) {
+        this.currentMobileCard = currentMobileCard;
+    }
 
     public User(String name, String phone, String homeAddress, String image) {
         Name = name;
