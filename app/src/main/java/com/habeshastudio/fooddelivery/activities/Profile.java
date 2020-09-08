@@ -76,6 +76,7 @@ public class Profile extends AppCompatActivity {
     String isSubscribed;
     LinearLayout paymentMethod, promoCode, transactions, share, help;
     Button about, loved, promo, feedBack;
+    TextView voucher;
     TextView name_display, address_display, balance_display, moreOptions, textPaymentMethod, textDeliveryAddress, textTransactions, textShare, textHelp;
     CircularImageView profile;
     boolean isUsd, isAmharic;
@@ -346,7 +347,6 @@ public class Profile extends AppCompatActivity {
             Paper.book().write("language", "en");
         updateView((String) Paper.book().read("language"));
 
-
     }
 
     @SuppressLint("SetTextI18n")
@@ -363,7 +363,7 @@ public class Profile extends AppCompatActivity {
         availableBalance.setText(R.string.available + Common.currentUser.getBalance().toString());
 
 
-        final TextView five, ten, fifteen, twentyFive, fifty, hundred, voucher;
+        final TextView five, ten, fifteen, twentyFive, fifty, hundred;
         five = layout_balance.findViewById(R.id.five_birr);
         ten = layout_balance.findViewById(R.id.ten_birr);
         fifteen = layout_balance.findViewById(R.id.fifteen_birr);
@@ -371,8 +371,10 @@ public class Profile extends AppCompatActivity {
         fifty = layout_balance.findViewById(R.id.fifty_birr);
         hundred = layout_balance.findViewById(R.id.hundred_birr);
         voucher = layout_balance.findViewById(R.id.voucher_number);
-        if (Common.currentUser.getCurrentMobileCard() != null)
+
+        if (Common.currentUser.getCurrentMobileCard() != null )
             voucher.setText(Common.currentUser.getCurrentMobileCard());
+        voucher.setVisibility(View.VISIBLE);
         buyCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -396,7 +398,6 @@ public class Profile extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 requestVoucher(5);
-                voucher.setVisibility(View.VISIBLE);
             }
         });
         ten.setOnClickListener(new View.OnClickListener() {
@@ -469,55 +470,64 @@ public class Profile extends AppCompatActivity {
                             .orderByChild("valid").equalTo(true).limitToFirst(1).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            final Map<String, Object> update_balance = new HashMap<>();
-                            final Map<String, Object> update_card = new HashMap<>();
-                            final Map<String, Object> transactionHistory = new HashMap<>();
-                            update_card.put("valid", false);
-                            update_card.put("userPhone", Common.currentUser.getPhone());
-                            update_card.put("timeStamp", String.valueOf(System.currentTimeMillis()));
-                            transactionHistory.put("amount", amount);
-                            transactionHistory.put("method", "mobile card");
-                            transactionHistory.put("comments", dataSnapshot.getKey());
-                            update_balance.put("currentMobileCard", dataSnapshot.getKey());
+                            if (dataSnapshot.exists()) {
+                                final Map<String, Object> update_balance = new HashMap<>();
+                                final Map<String, Object> update_card = new HashMap<>();
+                                final Map<String, Object> transactionHistory = new HashMap<>();
+                                update_card.put("valid", false);
+                                update_card.put("userPhone", Common.currentUser.getPhone());
+                                update_card.put("timeStamp", String.valueOf(System.currentTimeMillis()));
+                                transactionHistory.put("amount", amount);
+                                transactionHistory.put("method", "mobile card");
+                                transactionHistory.put("comments", dataSnapshot.getKey());
+                                update_balance.put("currentMobileCard", dataSnapshot.getKey());
 
-                            FirebaseDatabase.getInstance().getReference("confidential").child("mobileCards")
-                                    .child(String.valueOf(amount)).child(dataSnapshot.getKey()).updateChildren(update_card)
-                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            users.child(Paper.book().read("userPhone").toString()).child("balance")
-                                                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                                                        @Override
-                                                        public void onDataChange(DataSnapshot dataSnapshot) {
-                                                            double balance = Double.parseDouble(Objects.requireNonNull(dataSnapshot.getValue()).toString());
+                                FirebaseDatabase.getInstance().getReference("confidential").child("mobileCards")
+                                        .child(String.valueOf(amount)).child(dataSnapshot.getKey()).updateChildren(update_card)
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                users.child(Paper.book().read("userPhone").toString()).child("balance")
+                                                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                                                            @Override
+                                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                                                double balance = Double.parseDouble(Objects.requireNonNull(dataSnapshot.getValue()).toString());
 
-                                                            update_balance.put("balance", balance - amount);
-                                                            users.child(Common.currentUser.getPhone())
-                                                                    .updateChildren(update_balance)
-                                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                        @Override
-                                                                        public void onComplete(@NonNull Task<Void> task) {
-                                                                            transactionHistory.put("newBalance", Objects.requireNonNull(update_balance.get("balance")));
-                                                                            String timeNow = String.valueOf(System.currentTimeMillis());
-                                                                            FirebaseDatabase.getInstance().getReference("confidential").child("withdrawalHistory")
-                                                                                    .child(Common.currentUser.getPhone()).child(timeNow).updateChildren(transactionHistory).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                                @Override
-                                                                                public void onComplete(@NonNull Task<Void> task) {
-                                                                                    loadUser();
-                                                                                    mDialog.dismiss();
-                                                                                }
-                                                                            });
-                                                                        }
-                                                                    });
-                                                        }
+                                                                update_balance.put("balance", balance - amount);
+                                                                users.child(Common.currentUser.getPhone())
+                                                                        .updateChildren(update_balance)
+                                                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                            @Override
+                                                                            public void onComplete(@NonNull Task<Void> task) {
+                                                                                transactionHistory.put("newBalance", Objects.requireNonNull(update_balance.get("balance")));
+                                                                                String timeNow = String.valueOf(System.currentTimeMillis());
+                                                                                FirebaseDatabase.getInstance().getReference("confidential").child("withdrawalHistory")
+                                                                                        .child(Common.currentUser.getPhone()).child(timeNow).updateChildren(transactionHistory).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                    @Override
+                                                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                                                        loadUser();
+                                                                                        if (Common.currentUser.getCurrentMobileCard() != null)
+                                                                                            voucher.setText(Common.currentUser.getCurrentMobileCard());
+                                                                                        voucher.setVisibility(View.VISIBLE);
+                                                                                        mDialog.dismiss();
+                                                                                    }
+                                                                                });
+                                                                            }
+                                                                        });
+                                                            }
 
-                                                        @Override
-                                                        public void onCancelled(DatabaseError databaseError) {
+                                                            @Override
+                                                            public void onCancelled(DatabaseError databaseError) {
 
-                                                        }
-                                                    });
-                                        }
-                                    });
+                                                            }
+                                                        });
+                                            }
+                                        });
+                            }
+                            else {
+                                Toast.makeText(Profile.this, "Sorry, out of Stock!", Toast.LENGTH_SHORT).show();
+                                mDialog.dismiss();
+                            }
 
                         }
 
