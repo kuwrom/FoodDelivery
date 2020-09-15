@@ -1,5 +1,9 @@
 package com.habeshastudio.fooddelivery.activities;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
@@ -17,6 +21,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +29,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,6 +56,7 @@ import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.database.Database;
 import com.habeshastudio.fooddelivery.helper.LocaleHelper;
 import com.habeshastudio.fooddelivery.helper.MyExceptionHandler;
+import com.habeshastudio.fooddelivery.models.Card;
 import com.habeshastudio.fooddelivery.models.Order;
 import com.habeshastudio.fooddelivery.models.User;
 import com.mikhaellopez.circularimageview.CircularImageView;
@@ -70,6 +77,7 @@ public class Profile extends AppCompatActivity {
     DatabaseReference users, feedback;
     StorageReference storageReference;
     FirebaseStorage storage;
+    ValueEventListener myListner;
     TextView itemsCount, priceTag;
     public ProgressDialog mDialog;
     LinearLayout checkoutButton, balanceWithdraw;
@@ -77,6 +85,8 @@ public class Profile extends AppCompatActivity {
     LinearLayout paymentMethod, promoCode, transactions, share, help;
     Button about, loved, promo, feedBack;
     TextView voucher;
+    CardView voucherCard;
+    DatabaseReference myReference;
     TextView name_display, address_display, balance_display, moreOptions, textPaymentMethod, textDeliveryAddress, textTransactions, textShare, textHelp;
     CircularImageView profile;
     boolean isUsd, isAmharic;
@@ -360,10 +370,34 @@ public class Profile extends AppCompatActivity {
         Button buyCard = layout_balance.findViewById(R.id.btn_buy_a_card);
         final LinearLayout cardList = layout_balance.findViewById(R.id.card_list);
         TextView availableBalance = layout_balance.findViewById(R.id.available_display);
-        availableBalance.setText(R.string.available + Common.currentUser.getBalance().toString());
+        Long balance = (Long) Common.currentUser.getBalance();
+
+        //Anim button Card ///////////////////////////////////////////////////////////////////////////////////////
+        RelativeLayout relativelayout = layout_balance.findViewById(R.id.relative_layout_id);
+        ObjectAnimator fadeOut = ObjectAnimator.ofFloat(relativelayout, "alpha", .7f, .1f);
+        fadeOut.setDuration(500);
+        ObjectAnimator fadeIn = ObjectAnimator.ofFloat(relativelayout, "alpha", .1f, .7f);
+        fadeIn.setDuration(500);
+
+        final AnimatorSet mAnimationSet = new AnimatorSet();
+
+        mAnimationSet.play(fadeIn).after(fadeOut);
+
+        mAnimationSet.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                mAnimationSet.start();
+            }
+        });
+        mAnimationSet.start();
+        /////////////////////////////////////////////////////
+
+        availableBalance.setText("Available Balance: " + balance.intValue() + " birr");
 
 
         final TextView five, ten, fifteen, twentyFive, fifty, hundred;
+        voucherCard = layout_balance.findViewById(R.id.voucher_card);
         five = layout_balance.findViewById(R.id.five_birr);
         ten = layout_balance.findViewById(R.id.ten_birr);
         fifteen = layout_balance.findViewById(R.id.fifteen_birr);
@@ -372,9 +406,11 @@ public class Profile extends AppCompatActivity {
         hundred = layout_balance.findViewById(R.id.hundred_birr);
         voucher = layout_balance.findViewById(R.id.voucher_number);
 
-        if (Common.currentUser.getCurrentMobileCard() != null )
+
+        if (Common.currentUser.getCurrentMobileCard() != null && !Common.currentUser.getCurrentMobileCard().isEmpty()) {
             voucher.setText(Common.currentUser.getCurrentMobileCard());
-        voucher.setVisibility(View.VISIBLE);
+            voucherCard.setVisibility(View.VISIBLE);
+        }
         buyCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -436,7 +472,7 @@ public class Profile extends AppCompatActivity {
 
                 String voucherNumber = voucher.getText().toString();
 
-                Uri uri = Uri.parse("tel:" + voucherNumber);
+                Uri uri = Uri.parse("tel:" + Uri.encode("*805*" + voucherNumber + "#"));
                 Intent callIntent = new Intent(Intent.ACTION_DIAL, uri);
                 try {
                     startActivity(callIntent);
@@ -461,16 +497,25 @@ public class Profile extends AppCompatActivity {
         final android.support.v7.app.AlertDialog.Builder alertDialog = new AlertDialog.Builder(Profile.this);
         alertDialog.setTitle("This will cost you " + amount + " birr.");
         alertDialog.setMessage("Are you sure, do you want to continue?");
+        alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                mDialog.dismiss();
+            }
+        });
         alertDialog.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if ((Long) Common.currentUser.getBalance() >= amount) {
 
-                    FirebaseDatabase.getInstance().getReference("confidential").child("mobileCards").child(String.valueOf(amount))
-                            .orderByChild("valid").equalTo(true).limitToFirst(1).addListenerForSingleValueEvent(new ValueEventListener() {
+                    myReference = FirebaseDatabase.getInstance().getReference("confidential").child("mobileCards")
+                            .child(String.valueOf(amount)).child("cards");
+                    myListner = new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (dataSnapshot.exists()) {
+                                String cardNumber = String.valueOf(new Card(dataSnapshot).getList().get(0).get("cards"));
+
                                 final Map<String, Object> update_balance = new HashMap<>();
                                 final Map<String, Object> update_card = new HashMap<>();
                                 final Map<String, Object> transactionHistory = new HashMap<>();
@@ -479,11 +524,11 @@ public class Profile extends AppCompatActivity {
                                 update_card.put("timeStamp", String.valueOf(System.currentTimeMillis()));
                                 transactionHistory.put("amount", amount);
                                 transactionHistory.put("method", "mobile card");
-                                transactionHistory.put("comments", dataSnapshot.getKey());
-                                update_balance.put("currentMobileCard", dataSnapshot.getKey());
+                                transactionHistory.put("comments", cardNumber);
+                                update_balance.put("currentMobileCard", cardNumber);
 
                                 FirebaseDatabase.getInstance().getReference("confidential").child("mobileCards")
-                                        .child(String.valueOf(amount)).child(dataSnapshot.getKey()).updateChildren(update_card)
+                                        .child(String.valueOf(amount)).child("cards").child(cardNumber).removeValue()
                                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
@@ -508,8 +553,11 @@ public class Profile extends AppCompatActivity {
                                                                                         loadUser();
                                                                                         if (Common.currentUser.getCurrentMobileCard() != null)
                                                                                             voucher.setText(Common.currentUser.getCurrentMobileCard());
-                                                                                        voucher.setVisibility(View.VISIBLE);
+                                                                                        voucherCard.setVisibility(View.VISIBLE);
+                                                                                        if (myListner != null)
+                                                                                            myReference.removeEventListener(myListner);
                                                                                         mDialog.dismiss();
+
                                                                                     }
                                                                                 });
                                                                             }
@@ -526,6 +574,8 @@ public class Profile extends AppCompatActivity {
                             }
                             else {
                                 Toast.makeText(Profile.this, "Sorry, out of Stock!", Toast.LENGTH_SHORT).show();
+                                if (myListner != null)
+                                    myReference.removeEventListener(myListner);
                                 mDialog.dismiss();
                             }
 
@@ -535,7 +585,9 @@ public class Profile extends AppCompatActivity {
                         public void onCancelled(DatabaseError databaseError) {
 
                         }
-                    });
+                    };
+                    myReference.limitToFirst(1).addListenerForSingleValueEvent(myListner);
+
 
                 } else
                     Toast.makeText(Profile.this, "Balance insufficient", Toast.LENGTH_SHORT).show();
@@ -674,6 +726,14 @@ public class Profile extends AppCompatActivity {
             }
         });
         alertDialog.show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (myListner != null)
+            myReference.removeEventListener(myListner);
+
     }
 
     void loadUser() {

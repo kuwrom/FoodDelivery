@@ -145,16 +145,19 @@
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="balance: "
+                                        android:text="Account Balance: ETB "
+                                        android:textColor="@color/com_facebook_messenger_blue"
                                         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                                        android:textColor="@color/colorLightBlack" />
+                                        android:textStyle="bold" />
+
                                     <TextView
                                         android:id="@+id/balance_display"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="ETB 0"
+                                        android:text="0"
+                                        android:textColor="@color/com_facebook_messenger_blue"
                                         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                                        android:textColor="@color/colorLightBlack" />
+                                        android:textStyle="bold" />
                                 </LinearLayout>
                             </LinearLayout>
 

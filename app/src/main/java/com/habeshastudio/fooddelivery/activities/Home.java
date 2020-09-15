@@ -69,7 +69,6 @@ import com.habeshastudio.fooddelivery.models.Banner;
 import com.habeshastudio.fooddelivery.models.Category;
 import com.habeshastudio.fooddelivery.models.Order;
 import com.habeshastudio.fooddelivery.models.Token;
-import com.habeshastudio.fooddelivery.models.User;
 import com.habeshastudio.fooddelivery.remote.APIService;
 import com.habeshastudio.fooddelivery.remote.IGoogleService;
 import com.habeshastudio.fooddelivery.viewHolder.RestaurantAdapter;
@@ -305,6 +304,7 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
         geoRef = database.getReference("CurrentUserLocation");
         geoRestRef = database.getReference("RerstaurantLocation");
         geoBannerRef = database.getReference("BannerLocation");
+        //FirebaseDatabase.getInstance().getReference("confidential").child("mobileCards").child("5").child("587456678646").child("valid").setValue(true);
         geoFire = new GeoFire(geoRestRef);
         appBarLayout = findViewById(R.id.app_bar_layout);
         geoFireBanner = new GeoFire(geoBannerRef);
@@ -693,17 +693,7 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
     protected void onResume() {
         isInternet();
         super.onResume();
-        users.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                User currentUser = dataSnapshot.child(Paper.book().read("userPhone").toString()).getValue(User.class);
-                Common.currentUser = currentUser;
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
+        Common.currentUser.setPhone(Paper.book().read("userPhone").toString());
 
         bubbleNavigationLinearView.setCurrentActiveItem(0);
 
