@@ -194,9 +194,10 @@
                             android:background="@drawable/bg_ui_white"
                             android:clickable="true"
                             android:focusable="true"
+                            android:text=""
                             android:gravity="center_horizontal"
                             android:singleLine="true"
-                            android:text="6876775756"
+                            android:textIsSelectable="true"
                             android:textSize="32sp"
                             android:textStyle="bold"
                             android:visibility="visible" />

@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
                 phoneNumber = user.getPhoneNumber();
                 Paper.book().write("userPhone", phoneNumber);
                 //currentUser.setPhone(phoneNumber);
-                users.addValueEventListener(new ValueEventListener() {
+                users.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (!dataSnapshot.child(phoneNumber).exists()) {

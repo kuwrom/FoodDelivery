@@ -180,7 +180,7 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
     RelativeLayout rootLayout;
     RecyclerView.LayoutManager layoutManager;
     HashMap<String, Banner> availableBanners = new HashMap<>();
-//    FirebaseRecyclerAdapter<Category, MenuViewHolder> adapter;
+    //    FirebaseRecyclerAdapter<Category, MenuViewHolder> adapter;
     RestaurantAdapter adapter;
     BubbleNavigationLinearView bubbleNavigationLinearView;
     ChipGroup filterGroup;
@@ -300,7 +300,8 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
 
         isInternet();
         //Init Firebase
-        Paper.init(Home.this);        database = FirebaseDatabase.getInstance();
+        Paper.init(Home.this);
+        database = FirebaseDatabase.getInstance();
         geoRef = database.getReference("CurrentUserLocation");
         geoRestRef = database.getReference("RerstaurantLocation");
         geoBannerRef = database.getReference("BannerLocation");
@@ -486,7 +487,6 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
 //        };
 
 
-
         swipeRefreshLayout = findViewById(R.id.homeSwipeLayout);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary,
                 android.R.color.holo_green_dark,
@@ -529,7 +529,6 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
         setCartStatus();
 
         ////////////////////////////////
-
 
 
         recycler_menu = findViewById(R.id.recycler_menu);
@@ -681,7 +680,6 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
 //        });
 
 
-
         mSlider.setPresetTransformer(SliderLayout.Transformer.Default);
         mSlider.setPresetIndicator(SliderLayout.PresetIndicators.Left_Bottom);
         mSlider.setCustomAnimation(new DescriptionAnimation());
@@ -782,7 +780,7 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
     }
 
 
-    public void showGpsDisabledDialog(){
+    public void showGpsDisabledDialog() {
         final android.support.v7.app.AlertDialog.Builder alertDialog = new AlertDialog.Builder(Home.this);
         alertDialog.setTitle(getResources().getString(R.string.gps_disabled));
         alertDialog.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
@@ -795,7 +793,7 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
     }
 
 
-    public void setCartStatus(){
+    public void setCartStatus() {
         priceTag = findViewById(R.id.checkout_layout_price);
         itemsCount = findViewById(R.id.items_count);
         int totalCount = 0;
@@ -811,7 +809,7 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
         }
         if (totalCount == 0)
             checkoutButton.setVisibility(View.GONE);
-        else{
+        else {
             checkoutButton.setVisibility(View.VISIBLE);
             itemsCount.setText(String.valueOf(totalCount));
             int total = 0;
@@ -821,7 +819,7 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
             Locale locale = new Locale("en", "US");
             NumberFormat fmt = NumberFormat.getCurrencyInstance(locale);
             if (Common.isUsdSelected)
-                priceTag.setText(fmt.format(total/Common.ETB_RATE));
+                priceTag.setText(fmt.format(total / Common.ETB_RATE));
             else priceTag.setText(String.format("ETB %s", total));
             //priceTag.setText(fmt.format(total));
         }
@@ -844,6 +842,7 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
             geoQueryBanner = null;
         }
     }
+
     private boolean checkPlayServices() {
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
         if (resultCode != ConnectionResult.SUCCESS) {

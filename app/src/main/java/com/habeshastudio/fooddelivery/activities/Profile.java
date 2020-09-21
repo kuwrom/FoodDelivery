@@ -121,6 +121,7 @@ public class Profile extends AppCompatActivity {
         textHelp = findViewById(R.id.txt_help);
         moreOptions = findViewById(R.id.more_options);
         users = FirebaseDatabase.getInstance().getReference("User");
+        users.child(Paper.book().read("userPhone").toString()).keepSynced(true);
         feedback = FirebaseDatabase.getInstance().getReference("Feedback");
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
@@ -364,6 +365,10 @@ public class Profile extends AppCompatActivity {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(Profile.this);
         //alertDialog.setTitle("Withdraw Money");
 
+        if (myListner != null) {
+            myReference.removeEventListener(myListner);
+            myListner = null;
+        }
 
         LayoutInflater inflater = LayoutInflater.from(this);
         View layout_balance = inflater.inflate(R.layout.balance_layout, null);
@@ -500,7 +505,7 @@ public class Profile extends AppCompatActivity {
         alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
-                mDialog.dismiss();
+                //mDialog.dismiss();
             }
         });
         alertDialog.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
@@ -510,6 +515,7 @@ public class Profile extends AppCompatActivity {
 
                     myReference = FirebaseDatabase.getInstance().getReference("confidential").child("mobileCards")
                             .child(String.valueOf(amount)).child("cards");
+                    myReference.keepSynced(true);
                     myListner = new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -589,8 +595,10 @@ public class Profile extends AppCompatActivity {
                     myReference.limitToFirst(1).addListenerForSingleValueEvent(myListner);
 
 
-                } else
+                } else {
+                    mDialog.dismiss();
                     Toast.makeText(Profile.this, "Balance insufficient", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         alertDialog.show();
@@ -852,7 +860,7 @@ public class Profile extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        users.addValueEventListener(new ValueEventListener() {
+        users.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User currentUser = dataSnapshot.child(Paper.book().read("userPhone").toString()).getValue(User.class);
