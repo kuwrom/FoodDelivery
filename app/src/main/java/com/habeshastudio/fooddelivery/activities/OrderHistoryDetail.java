@@ -14,7 +14,7 @@ import com.habeshastudio.fooddelivery.R;
 import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.viewHolder.OrderDetailAdapter;
 
-public class OrderDetail extends AppCompatActivity {
+public class OrderHistoryDetail extends AppCompatActivity {
 
     TextView order_id, order_phone, order_address, order_total, order_comment;
     String order_id_value;
@@ -25,7 +25,7 @@ public class OrderDetail extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_order_detail);
+        setContentView(R.layout.activity_order_history_detail);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle((CharSequence) "Order Details");
@@ -33,7 +33,7 @@ public class OrderDetail extends AppCompatActivity {
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                OrderDetail.this.finish();
+                OrderHistoryDetail.this.finish();
             }
         });
         setSupportActionBar(toolbar);

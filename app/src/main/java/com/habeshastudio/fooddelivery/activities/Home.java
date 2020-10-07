@@ -112,7 +112,7 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
 
     //static int largestValue = 0;
 
-    public static String selectedFilter = "1";
+    public static String selectedFilter = "0";
     private LocationRequest mLocationRequest;
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
@@ -752,13 +752,13 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
         if (mLastLocation != null) {
             for (Map.Entry<String, Category> cat : availableRestaurants.entrySet()) {
                 if (cat.getValue().getCategory().contains(selectedCategory)) {
-                    if (selectedCategory.equals("0")) {
+                    if (selectedCategory.equals("1")) {
                         Location temp = new Location("A");
                         String[] restaurantLatLng = cat.getValue().getLocation().split(",");
                         temp.setLatitude(Double.parseDouble(restaurantLatLng[0]));
                         temp.setLongitude(Double.parseDouble(restaurantLatLng[1]));
                         double distance = Common.currentUserLocation.distanceTo(temp);
-                        if (distance <= 200)
+                        if (distance <= 120)
                             filteredRestaurants.put(cat.getKey(), cat.getValue());
                     } else filteredRestaurants.put(cat.getKey(), cat.getValue());
                 }

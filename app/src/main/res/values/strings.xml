@@ -171,5 +171,17 @@
     <string name="withdraw_money">Withdraw Money</string>
     <string name="_1_buy_a_mobile_card">1 - buy a mobile card</string>
     <string name="available">\"Available Balance: \"</string>
+    <string name="alcohol_and_grocery">Alcohol and grocery</string>
+    <string name="vegan">Vegan</string>
+    <string name="pasta">Pasta</string>
+    <string name="local_dish">Local dish</string>
+    <string name="featured">Featured</string>
+    <string name="re_order">Re-Order</string>
+    <string name="order_list">Order List</string>
+    <string name="order_summary">Order Summary</string>
+    <string name="order_phone">Order Phone</string>
+    <string name="adress">Adress</string>
+    <string name="comment">Comment</string>
+    <string name="track_order">Track Order</string>
 
 </resources>

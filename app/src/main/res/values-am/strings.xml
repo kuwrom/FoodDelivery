@@ -1,9 +1,9 @@
 <resources>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
-    <string name="home">ሆም</string>
+    <string name="home">ማውጫ</string>
     <string name="search">Search</string>
-    <string name="profile">ፕሮፋይል</string>
+    <string name="profile">ስለኔ</string>
     <string name="notification">Notify</string>
     <string name="likes">የወደዷቸው</string>
     <string name="happy">Happy</string>
@@ -155,7 +155,7 @@
     <string name="all_restaurants">ሁሉም ሬስቶራንቶች</string>
     <string name="burger">በርገር</string>
     <string name="pizza">ፒዛ</string>
-    <string name="traditional_foods">የ ኢትዮጵያ ምግቦች</string>
+    <string name="traditional_foods">ባህላዊ ምግቦች</string>
     <string name="chicken">ዶሮ</string>
     <string name="under_30_min">በ 30 ደቂቃ ሚደርስ</string>
     <string name="best_restaurants">ምርጥ ሬስቶራንቶች</string>
@@ -163,9 +163,21 @@
     <string name="foreign_dishes">የ ውጭ ምግቦች</string>
     <string name="username_required">የእርሶ ስም ያስፈልጋል</string>
     <string name="type_your_name_here">እዚጋ ስሞትን ይፃፉ</string>
-    <string name="referer_phone_here">Referer Phone Here</string>
-    <string name="add_referer_number">Add referer number</string>
-    <string name="withdraw_money">Withdraw Money</string>
-    <string name="_1_buy_a_mobile_card">1 - buy a mobile card</string>
-    <string name="available">\"Available Balance: \"</string>
+    <string name="referer_phone_here">ስለኛ የነገሮት ሰው ስልክ</string>
+    <string name="add_referer_number">የሰው ስልክ ጨምር</string>
+    <string name="withdraw_money">ብር አውጣ</string>
+    <string name="_1_buy_a_mobile_card">1 - የሞባይል ካርድ ግዛ</string>
+    <string name="available">ያለውት ቀሪ ሂሳብ: </string>
+    <string name="alcohol_and_grocery">አልኮል እና ግሮሰሪ</string>
+    <string name="vegan">አትክልት</string>
+    <string name="pasta">ፓስታ</string>
+    <string name="local_dish">ባህላዊ ምግቦች</string>
+    <string name="featured">የተመረጡ</string>
+    <string name="re_order">ድጋሜ እዘዝ</string>
+    <string name="order_list">የትዛዞች ዝርዝር</string>
+    <string name="order_summary">ማጠቃለያ</string>
+    <string name="order_phone">የታዘዘበት ስልክ</string>
+    <string name="adress">አድራሻ</string>
+    <string name="comment">ስለ ትዛዙ አስተያየት</string>
+    <string name="track_order">ትዛዙ የት ደረሰ</string>
 </resources>

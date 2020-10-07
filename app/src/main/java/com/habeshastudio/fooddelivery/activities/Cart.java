@@ -50,7 +50,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.habeshastudio.fooddelivery.R;
@@ -89,6 +88,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import io.paperdb.Paper;
 import retrofit2.Call;
@@ -451,79 +451,77 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
                     intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config);
                     intent.putExtra(PaymentActivity.EXTRA_PAYMENT, payPalPayment);
                     startActivityForResult(intent, PAYPAL_REQUEST_CODE);
-                } else if (paymentMethodSelected == 2) {//app balance
-                    double amount = 0.0;
+                } else if (paymentMethodSelected == 2) {
+                    final double amount;
                     try {
-                        amount = Common.formatCurrency(txtTotalPrice.getText().toString(), Locale.US).doubleValue();
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-                    if (Double.parseDouble(Common.currentUser.getBalance().toString()) >= amount) {
-                        // Create new Request
-                        Request request = new Request(
-                                Common.currentUser.getPhone(),
-                                Common.currentUser.getName(),
-                                address,
-                                txtTotalPrice.getText().toString(),
-                                "0",
-                                comment,
-                                "Paid",
-                                "App Balance",
-                                String.format("%s,%s", mLastLocation.getLatitude(), mLastLocation.getLongitude()),
-                                //String.format("%s,%s", 13.501090, 39.475850),
-                                cart,
-                                false,
-                                Common.currentrestaurantID,
-                                ""
-                        );
+                        if ((Boolean) Paper.book().read("usd")) {
+                            amount = Common.formatCurrency(Cart.this.txtTotalPrice.getText().toString(), Locale.US).doubleValue() * Common.ETB_RATE;
+                        } else {
+                            amount = Double.parseDouble(Cart.this.txtTotalPrice.getText().toString().split("ETB ")[1]);
+                        }
+                        if (Double.parseDouble(Common.currentUser.getBalance().toString()) >= amount) {
+                            final double newBalance = Double.parseDouble(Common.currentUser.getBalance().toString()) - amount;
+                            HashMap<String, Object> hashMap = new HashMap<>();
+                            hashMap.put("balance", newBalance);
+                            Common.currentUser.setBalance(newBalance);
+                            FirebaseDatabase.getInstance().getReference("User").child(Common.currentUser.getPhone()).updateChildren(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                public void onComplete(Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        FirebaseDatabase.getInstance().getReference("Category").child(Common.currentrestaurantID).addListenerForSingleValueEvent(new ValueEventListener() {
+                                            public void onCancelled(DatabaseError databaseError) {
+                                            }
 
-                        // Submit to Firebase
-                        //use System.CurrentMilli to Key
-                        final String orderNumber = String.valueOf(ServerValue.TIMESTAMP);
-                        requests.child(orderNumber)
-                                .setValue(request);
-                        //Delete cart
-                        new Database(getBaseContext()).cleanCart(Common.currentUser.getPhone());
+                                            public void onDataChange(DataSnapshot dataSnapshot) {
 
-                        //Update Balance
-                        double balance = Double.parseDouble(Common.currentUser.getBalance().toString()) - amount;
-                        Map<String, Object> update_balance = new HashMap<>();
-                        update_balance.put("balance", balance);
-                        FirebaseDatabase.getInstance().getReference("User")
-                                .child(Common.currentUser.getPhone())
-                                .updateChildren(update_balance)
-                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        if (task.isSuccessful()) {
-                                            //Refresh user status
-                                            FirebaseDatabase.getInstance().getReference("User")
-                                                    .child(Common.currentUser.getPhone())
-                                                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                                                        @Override
-                                                        public void onDataChange(DataSnapshot dataSnapshot) {
-                                                            Common.currentUser = dataSnapshot.getValue(User.class);
-                                                            sendNotificationOrder(orderNumber, "");
-                                                        }
-
-                                                        @Override
-                                                        public void onCancelled(DatabaseError databaseError) {
-
-                                                        }
-                                                    });
-                                        }
+                                                Request request = new Request(
+                                                        Common.currentUser.getPhone(),
+                                                        Common.currentUser.getName(),
+                                                        address,
+                                                        txtTotalPrice.getText().toString() + " [D: " + deliveryFeeView.getText().toString() + "]",
+                                                        "0",
+                                                        comment,
+                                                        "Paid",
+                                                        "App Balance",
+                                                        String.format("%s,%s", mLastLocation.getLatitude(), mLastLocation.getLongitude()),
+                                                        cart,
+                                                        false,
+                                                        Common.currentrestaurantID,
+                                                        dataSnapshot.child("orderHandler").getValue().toString()
+                                                );
+                                                final String valueOf = String.valueOf(System.currentTimeMillis());
+                                                final Request request3 = request;
+                                                final DataSnapshot dataSnapshot3 = dataSnapshot;
+                                                requests.child(valueOf).setValue(request).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        HashMap<String, Object> hashMap = new HashMap<>();
+                                                        hashMap.put("amount", amount);
+                                                        hashMap.put("method", "ordered food");
+                                                        hashMap.put("comments", "ordered from: " + Common.currentrestaurantID);
+                                                        hashMap.put("newBalance", newBalance);
+                                                        FirebaseDatabase.getInstance().getReference("confidential").child("withdrawalHistory").child(Common.currentUser.getPhone()).child(String.valueOf(System.currentTimeMillis())).updateChildren(hashMap);
+                                                        Cart.this.record.child(valueOf).setValue(request3);
+                                                        Cart.this.sendNotificationOrder(valueOf, Objects.requireNonNull(dataSnapshot3.child("orderHandler").getValue()).toString());
+                                                        new Database(Cart.this.getBaseContext()).cleanCart(Common.currentUser.getPhone());
+                                                        Cart.this.startActivity(new Intent(Cart.this, OrderStatus.class));
+                                                        Common.currentrestaurantID = null;
+                                                        Paper.book().delete("restId");
+                                                        Common.alreadyBeenToCart = false;
+                                                        Paper.book().delete("beenToCart");
+                                                        Cart.this.finish();
+                                                    }
+                                                });
+                                            }
+                                        });
                                     }
-                                });
-                        sendNotificationOrder(orderNumber, "");
-                        //Toast.makeText(Cart.this, "Thank you, Order placed!", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(Cart.this, OrderStatus.class));
-                        Common.currentrestaurantID = null;
-                        Paper.book().delete("restId");
-                        Common.alreadyBeenToCart = false;
-                        Paper.book().delete("beenToCart");
-                        finish();
-                    } else {
-                        Toast.makeText(Cart.this, getResources().getString(R.string.no_enough_balance), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        } else {
+                            Toast.makeText(Cart.this, Cart.this.getResources().getString(R.string.no_enough_balance), Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (ParseException e) {
+                        Toast.makeText(Cart.this, "Oops. Something Went Wrong", Toast.LENGTH_SHORT).show();
+                        e.printStackTrace();
                     }
 
                 } else if (paymentMethodSelected == 0) {

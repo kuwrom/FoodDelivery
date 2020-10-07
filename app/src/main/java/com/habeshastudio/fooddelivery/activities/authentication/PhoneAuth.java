@@ -106,7 +106,7 @@ public class PhoneAuth extends AppCompatActivity {
         mDialog = new ProgressDialog(PhoneAuth.this);
 
         phoneText.setText(new StringBuilder(phone));
-        textTitle.setText(new StringBuilder(getResources().getString(R.string.dear) + " " + "user"));
+        textTitle.setText(new StringBuilder(getResources().getString(R.string.dear)));
 
         btnTrouble.setOnClickListener(new View.OnClickListener() {
             @Override
