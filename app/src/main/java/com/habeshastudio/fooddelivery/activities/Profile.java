@@ -553,7 +553,8 @@ public class Profile extends AppCompatActivity {
                                                                                 transactionHistory.put("newBalance", Objects.requireNonNull(update_balance.get("balance")));
                                                                                 String timeNow = String.valueOf(System.currentTimeMillis());
                                                                                 FirebaseDatabase.getInstance().getReference("confidential").child("withdrawalHistory")
-                                                                                        .child(Common.currentUser.getPhone()).child(timeNow).updateChildren(transactionHistory).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                        .child(Common.currentUser.getPhone()).child(timeNow).updateChildren(transactionHistory)
+                                                                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                                     @Override
                                                                                     public void onComplete(@NonNull Task<Void> task) {
                                                                                         loadUser();
