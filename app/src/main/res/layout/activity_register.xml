@@ -90,10 +90,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="64dp"
         android:clickable="false"
         android:padding="16dp"
         android:focusable="true"
+        android:textSize="@dimen/text_size_big"
         android:textColor="@color/grey_active"
         android:textStyle="bold"
         android:text="@string/change_language" />
