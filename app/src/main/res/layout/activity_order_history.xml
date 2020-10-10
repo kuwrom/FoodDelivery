@@ -22,16 +22,24 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <com.habeshastudio.fooddelivery.helper.EmptyRecyclerView
-        android:id="@+id/listOrders"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/refresh_orders"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/btn_checkout_cart"
-        android:layout_below="@id/app_bar_orders"
-        android:layout_margin="8dp"
-        android:background="@android:color/transparent">
+        android:layout_below="@id/app_bar_orders">
 
-    </com.habeshastudio.fooddelivery.helper.EmptyRecyclerView>
+        <com.habeshastudio.fooddelivery.helper.EmptyRecyclerView
+            android:id="@+id/listOrders"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/btn_checkout_cart"
+            android:layout_below="@id/app_bar_orders"
+            android:layout_margin="8dp"
+            android:background="@android:color/transparent">
+
+        </com.habeshastudio.fooddelivery.helper.EmptyRecyclerView>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <LinearLayout
         android:id="@+id/empty_view_orders"

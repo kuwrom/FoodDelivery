@@ -65,6 +65,7 @@ import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.database.Database;
 import com.habeshastudio.fooddelivery.helper.EmptyRecyclerView;
 import com.habeshastudio.fooddelivery.helper.LocaleHelper;
+import com.habeshastudio.fooddelivery.helper.MyExceptionHandler;
 import com.habeshastudio.fooddelivery.models.Banner;
 import com.habeshastudio.fooddelivery.models.Category;
 import com.habeshastudio.fooddelivery.models.Order;
@@ -296,7 +297,7 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             getWindow().setStatusBarColor(Color.WHITE);
         }
-        //Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
+        Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
 
         isInternet();
         //Init Firebase
@@ -708,7 +709,7 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
         FirebaseDatabase db = FirebaseDatabase.getInstance();
         DatabaseReference tokens = db.getReference("Tokens");
         Token data = new Token(token, false);
-        tokens.child(Common.currentUser.getPhone()).setValue(data);
+        tokens.child(Paper.book().read("userPhone").toString()).setValue(data);
     }
 
     @Override
@@ -798,7 +799,7 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
         itemsCount = findViewById(R.id.items_count);
         int totalCount = 0;
         if (Common.currentUser != null)
-            totalCount = new Database(this).getCountCart(Common.currentUser.getPhone());
+            totalCount = new Database(this).getCountCart(Paper.book().read("userPhone").toString());
 //        else if (Paper.book().read("userPhone") != null)
 //            totalCount =new Database(this).getCountCart(Paper.book().read("userPhone").toString());
 //
@@ -813,7 +814,7 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
             checkoutButton.setVisibility(View.VISIBLE);
             itemsCount.setText(String.valueOf(totalCount));
             int total = 0;
-            List<Order> orders = new Database(getBaseContext()).getCarts(Common.currentUser.getPhone());
+            List<Order> orders = new Database(getBaseContext()).getCarts(Paper.book().read("userPhone").toString());
             for (Order item : orders)
                 total += (Integer.parseInt(item.getPrice())) * (Integer.parseInt(item.getQuantity()));
             Locale locale = new Locale("en", "US");
@@ -899,7 +900,7 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
     public void onLocationChanged(Location location) {
         mLastLocation = location;
 //        GeoFire geoFire = new GeoFire(geoRef);
-//        geoFire.setLocation(Common.currentUser.getPhone(), new GeoLocation(location.getLatitude(), location.getLongitude()));
+//        geoFire.setLocation(Paper.book().read("userPhone").toString(), new GeoLocation(location.getLatitude(), location.getLongitude()));
         updateQuery(new GeoLocation(location.getLatitude(), location.getLongitude()));
         Common.currentUserLocation = mLastLocation;
     }

@@ -553,7 +553,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
                             record.child(orderNumber).setValue(request);
                             sendNotificationOrder(orderNumber, dataSnapshot.child("orderHandler").getValue().toString());
                             //Delete cart
-                            new Database(getBaseContext()).cleanCart(Common.currentUser.getPhone());
+                            new Database(getBaseContext()).cleanCart(Paper.book().read("userPhone").toString());
 
 
                             //Toast.makeText(Cart.this, "Thank you, Order placed!", Toast.LENGTH_SHORT).show();
@@ -649,7 +649,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
                         requests.child(orderNumber)
                                 .setValue(request);
                         //Delete cart
-                        new Database(getBaseContext()).cleanCart(Common.currentUser.getPhone());
+                        new Database(getBaseContext()).cleanCart(Paper.book().read("userPhone").toString());
 
                         sendNotificationOrder(orderNumber, "");
                         //Toast.makeText(Cart.this, "Thank you, Order placed!", Toast.LENGTH_SHORT).show();
@@ -729,7 +729,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
     }
 
     private void loadListFood() {
-        cart = new Database(this).getCarts(Common.currentUser.getPhone());
+        cart = new Database(this).getCarts(Paper.book().read("userPhone").toString());
         adapter = new CartAdapter(cart, this);
         adapter.notifyDataSetChanged();
         recyclerView.setAdapter(adapter);
@@ -763,7 +763,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
     private void deleteCart(int position) {
 
         cart.remove(position);
-        new Database(this).cleanCart(Common.currentUser.getPhone());
+        new Database(this).cleanCart(Paper.book().read("userPhone").toString());
         for (Order item : cart)
             new Database(this).addToCart(item);
         //refresh
@@ -829,11 +829,11 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
             String name = deleteItem.getProductName();
             final int deleteIndex = viewHolder.getAdapterPosition();
             adapter.removeItem(deleteIndex);
-            new Database(getBaseContext()).removeFromCart(deleteItem.getProductId(), Common.currentUser.getPhone());
+            new Database(getBaseContext()).removeFromCart(deleteItem.getProductId(), Paper.book().read("userPhone").toString());
             Paper.book().write("cartGuide", true);
             //update total
             int total = 0;
-            List<Order> orders = new Database(getBaseContext()).getCarts(Common.currentUser.getPhone());
+            List<Order> orders = new Database(getBaseContext()).getCarts(Paper.book().read("userPhone").toString());
             for (Order item : orders)
                 total += (Integer.parseInt(item.getPrice())) * (Integer.parseInt(item.getQuantity()));
             Locale locale = new Locale("en", "US");
@@ -852,7 +852,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
 
                     //update total
                     int total = 0;
-                    List<Order> orders = new Database(getBaseContext()).getCarts(Common.currentUser.getPhone());
+                    List<Order> orders = new Database(getBaseContext()).getCarts(Paper.book().read("userPhone").toString());
                     for (Order item : orders)
                         total += (Integer.parseInt(item.getPrice())) * (Integer.parseInt(item.getQuantity()));
                     Locale locale = new Locale("en", "US");
@@ -873,7 +873,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
                 public void onDismissed(Snackbar snackbar, int event) {
                     if (event == Snackbar.Callback.DISMISS_EVENT_TIMEOUT) {
                         int total = 0;
-                        List<Order> orders = new Database(getBaseContext()).getCarts(Common.currentUser.getPhone());
+                        List<Order> orders = new Database(getBaseContext()).getCarts(Paper.book().read("userPhone").toString());
                         for (Order item : orders)
                             total += (Integer.parseInt(item.getPrice())) * (Integer.parseInt(item.getQuantity()));
                         if (total == 0) {
@@ -905,7 +905,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
                     updatePriceTexts();
                     mDialog.dismiss();
                 } catch (Exception e) {
-                    new Database(getBaseContext()).cleanCart(Common.currentUser.getPhone());
+                    new Database(getBaseContext()).cleanCart(Paper.book().read("userPhone").toString());
                     Common.currentrestaurantID = null;
                     Paper.book().delete("restId");
                     Common.alreadyBeenToCart = false;

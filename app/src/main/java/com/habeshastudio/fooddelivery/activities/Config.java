@@ -19,6 +19,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.habeshastudio.fooddelivery.R;
 import com.habeshastudio.fooddelivery.common.Common;
+import com.habeshastudio.fooddelivery.helper.MyExceptionHandler;
 import com.habeshastudio.fooddelivery.models.User;
 
 import java.text.SimpleDateFormat;
@@ -42,6 +43,7 @@ public class Config extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_config);
+        Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
 
         Paper.init(this);
         addName = findViewById(R.id.btn_add_name);
@@ -63,7 +65,7 @@ public class Config extends AppCompatActivity {
                     user.setCreatedAt(new SimpleDateFormat
                             ("dd-MMM-yyyy hh:mm a", Locale.getDefault()).format(new Date()));
                     Common.currentUser = user;
-                    users.child(Common.currentUser.getPhone()).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    users.child(Paper.book().read("userPhone").toString()).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             //Common.currentUser.setName(editName.getText().toString());
@@ -86,7 +88,7 @@ public class Config extends AppCompatActivity {
                                                     final Map<String, Object> referralReward = new HashMap<>();
                                                     Map<String, Object> update_balance = new HashMap<>();
                                                     referralReward.put("reward", Double.parseDouble(Objects.requireNonNull(dataSnapshot.getValue()).toString()));
-                                                    referralReward.put("referred", Common.currentUser.getPhone());
+                                                    referralReward.put("referred", Paper.book().read("userPhone").toString());
                                                     update_balance.put("balance", balance + Double.parseDouble(Objects.requireNonNull(dataSnapshot.getValue()).toString()));
                                                     referralReward.put("new Balance", Objects.requireNonNull(update_balance.get("balance")));
                                                     users.child(phoneMe)

@@ -186,15 +186,15 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
                                 if (Common.currentrestaurantID .equals(Common.proposedrestaurantID)) {
                                     Paper.book().write("restId", Common.currentrestaurantID);
                                     new Database(getBaseContext()).addToCart(new Order(
-                                        Common.currentUser.getPhone(),
-                                        foodId + "&" + adapter.getRef(position).getKey(),
+                                            Paper.book().read("userPhone").toString(),
+                                            foodId + "&" + adapter.getRef(position).getKey(),
                                             currentFood.getName() + "\n" + model.getName(),
-                                        "1",
-                                        model.getPrice(),
-                                        currentFood.getDiscount(),
-                                        currentFood.getImage()
-                                ));
-                                setCartStatus();
+                                            "1",
+                                            model.getPrice(),
+                                            currentFood.getDiscount(),
+                                            currentFood.getImage()
+                                    ));
+                                    setCartStatus();
                                 }else{
                                     Toast.makeText(FoodDetail.this, getResources().getString(R.string.only_from_one), Toast.LENGTH_SHORT).show();
                                 }
@@ -278,7 +278,7 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
         itemsCount = findViewById(R.id.items_count);
         int totalCount = 0;
         if (Common.currentUser != null)
-            totalCount = new Database(this).getCountCart(Common.currentUser.getPhone());
+            totalCount = new Database(this).getCountCart(Paper.book().read("userPhone").toString());
 //        else if (Paper.book().read("userPhone") != null)
 //            totalCount =new Database(this).getCountCart(Paper.book().read("userPhone").toString());
 //
@@ -296,7 +296,7 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
             checkoutButton.setVisibility(View.VISIBLE);
             itemsCount.setText(String.valueOf(totalCount));
             int total = 0;
-            List<Order> orders = new Database(getBaseContext()).getCarts(Common.currentUser.getPhone());
+            List<Order> orders = new Database(getBaseContext()).getCarts(Paper.book().read("userPhone").toString());
             for (Order item : orders)
                 total += (Integer.parseInt(item.getPrice())) * (Integer.parseInt(item.getQuantity()));
             Locale locale = new Locale("en", "US");
@@ -445,7 +445,7 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
 
     @Override
     public void onPositiveButtonClicked(int value, @NotNull String comments) {
-        final Rating rating = new Rating(Common.currentUser.getPhone(), foodId, String.valueOf(value), comments);
+        final Rating rating = new Rating(Paper.book().read("userPhone").toString(), foodId, String.valueOf(value), comments);
 
         ratingTbl.push().setValue(rating)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {

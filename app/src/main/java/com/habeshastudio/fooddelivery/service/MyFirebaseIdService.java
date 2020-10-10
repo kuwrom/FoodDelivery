@@ -7,6 +7,8 @@ import com.google.firebase.iid.FirebaseInstanceIdService;
 import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.models.Token;
 
+import io.paperdb.Paper;
+
 public class MyFirebaseIdService extends FirebaseInstanceIdService {
     @Override
     public void onTokenRefresh() {
@@ -23,7 +25,7 @@ public class MyFirebaseIdService extends FirebaseInstanceIdService {
             FirebaseDatabase db = FirebaseDatabase.getInstance();
             DatabaseReference tokens = db.getReference("Tokens");
             Token token = new Token(tokenRefreshed, false);
-            tokens.child(Common.currentUser.getPhone()).setValue(token);
+            tokens.child(Paper.book().read("userPhone").toString()).setValue(token);
         }
     }
 }

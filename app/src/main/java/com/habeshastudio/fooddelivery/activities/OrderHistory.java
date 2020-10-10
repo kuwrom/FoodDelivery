@@ -8,9 +8,9 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -52,7 +53,6 @@ import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 public class OrderHistory extends AppCompatActivity {
 
     public EmptyRecyclerView recyclerView;
-    public RecyclerView.LayoutManager layoutManager;
 
     FirebaseRecyclerAdapter<Request, OrderViewHolder> adapter;
 
@@ -62,6 +62,8 @@ public class OrderHistory extends AppCompatActivity {
     DatabaseReference users;
     LinearLayout checkoutButton;
     TextView itemsCount, priceTag;
+    LinearLayoutManager layoutManager;
+    SwipeRefreshLayout refreshOrders;
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -77,9 +79,17 @@ public class OrderHistory extends AppCompatActivity {
                 .setFontAttrId(R.attr.fontPath)
                 .build());
         setContentView(R.layout.activity_order_history);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle("Order History");
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle((CharSequence) "Order History");
+        toolbar.setNavigationIcon((int) R.drawable.ic_baseline_arrow_back_ios_24);
         setSupportActionBar(toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                OrderHistory.this.finish();
+            }
+        });
+        setSupportActionBar(toolbar);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             getWindow().setStatusBarColor(Color.WHITE);
@@ -90,10 +100,13 @@ public class OrderHistory extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         users = database.getReference("User");
         requests = database.getReference("ForTheRecord");
+        refreshOrders = findViewById(R.id.refresh_orders);
         //final Animation animShake = AnimationUtils.loadAnimation(this, R.anim.shake);
         recyclerView = findViewById(R.id.listOrders);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
+        layoutManager.setReverseLayout(true);
+        layoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(layoutManager);
 
         checkoutButton = findViewById(R.id.btn_checkout_cart);
@@ -118,12 +131,46 @@ public class OrderHistory extends AppCompatActivity {
         });
 
 
+        refreshOrders.setColorSchemeResources(R.color.colorPrimary,
+                android.R.color.holo_green_dark,
+                android.R.color.holo_orange_dark,
+                android.R.color.holo_blue_dark);
+        refreshOrders.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshOrders.setRefreshing(false);
+                if (Common.isConnectedToInternet(getBaseContext())) {
+                    loadOrders(Common.currentUser.getPhone());
+                } else {
+                    Toast.makeText(getBaseContext(), getResources().getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+        });
+
+
+        //load for first time
+        refreshOrders.post(new Runnable() {
+            @Override
+            public void run() {
+
+                if (Common.isConnectedToInternet(getBaseContext())) {
+                    loadOrders(Paper.book().read("userPhone").toString());
+                } else {
+                    Toast.makeText(getBaseContext(), getResources().getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
+                    refreshOrders.setRefreshing(false);
+                    return;
+                }
+            }
+        });
+
+
         try {
             if (getIntent() == null)
-                loadOrders(Common.currentUser.getPhone());
+                loadOrders(Paper.book().read("userPhone").toString());
             else {
                 if (getIntent().getStringExtra("userPhone") == null)
-                    loadOrders(Common.currentUser.getPhone());
+                    loadOrders(Paper.book().read("userPhone").toString());
                 else
                     loadOrders(getIntent().getStringExtra("userPhone"));
             }
@@ -188,7 +235,7 @@ public class OrderHistory extends AppCompatActivity {
                             //
                             // startActivity(new Intent(OrderStatus.this, TrackingOrder.class));
 
-                            Intent orderDetail = new Intent(OrderHistory.this, OrderDetail.class);
+                            Intent orderDetail = new Intent(OrderHistory.this, OrderHistoryDetail.class);
                             Common.currentRequest = model;
                             orderDetail.putExtra("OrderId", adapter.getRef(viewHolder.getAdapterPosition()).getKey());
                             startActivity(orderDetail);
@@ -223,17 +270,24 @@ public class OrderHistory extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        users.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                User currentUser = dataSnapshot.child(Paper.book().read("userPhone").toString()).getValue(User.class);
-                Common.currentUser = currentUser;
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
+        if (Common.isConnectedToInternet(getBaseContext())) {
+            users.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    User currentUser = dataSnapshot.child(Paper.book().read("userPhone").toString()).getValue(User.class);
+                    Common.currentUser = currentUser;
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
+            loadOrders(Paper.book().read("userPhone").toString());
+        } else {
+            Toast.makeText(getBaseContext(), getResources().getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
+            return;
+        }
     }
 
     public void setCartStatus() {
@@ -242,7 +296,7 @@ public class OrderHistory extends AppCompatActivity {
         itemsCount = findViewById(R.id.items_count);
         int totalCount = 0;
         if (Common.currentUser != null)
-            totalCount = new Database(this).getCountCart(Common.currentUser.getPhone());
+            totalCount = new Database(this).getCountCart(Paper.book().read("userPhone").toString());
 //        else if (Paper.book().read("userPhone") != null)
 //            totalCount =new Database(this).getCountCart(Paper.book().read("userPhone").toString());
 //
@@ -257,7 +311,7 @@ public class OrderHistory extends AppCompatActivity {
             checkoutButton.setVisibility(View.VISIBLE);
             itemsCount.setText(String.valueOf(totalCount));
             int total = 0;
-            List<Order> orders = new Database(getBaseContext()).getCarts(Common.currentUser.getPhone());
+            List<Order> orders = new Database(getBaseContext()).getCarts(Paper.book().read("userPhone").toString());
             for (Order item : orders)
                 total += (Integer.parseInt(item.getPrice())) * (Integer.parseInt(item.getQuantity()));
             Locale locale = new Locale("en", "US");

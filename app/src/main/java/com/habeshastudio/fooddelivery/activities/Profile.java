@@ -526,7 +526,7 @@ public class Profile extends AppCompatActivity {
                                 final Map<String, Object> update_card = new HashMap<>();
                                 final Map<String, Object> transactionHistory = new HashMap<>();
                                 update_card.put("valid", false);
-                                update_card.put("userPhone", Common.currentUser.getPhone());
+                                update_card.put("userPhone", Paper.book().read("userPhone").toString());
                                 update_card.put("timeStamp", String.valueOf(System.currentTimeMillis()));
                                 transactionHistory.put("amount", amount);
                                 transactionHistory.put("method", "mobile card");
@@ -545,7 +545,7 @@ public class Profile extends AppCompatActivity {
                                                                 double balance = Double.parseDouble(Objects.requireNonNull(dataSnapshot.getValue()).toString());
 
                                                                 update_balance.put("balance", balance - amount);
-                                                                users.child(Common.currentUser.getPhone())
+                                                                users.child(Paper.book().read("userPhone").toString())
                                                                         .updateChildren(update_balance)
                                                                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                             @Override
@@ -553,7 +553,7 @@ public class Profile extends AppCompatActivity {
                                                                                 transactionHistory.put("newBalance", Objects.requireNonNull(update_balance.get("balance")));
                                                                                 String timeNow = String.valueOf(System.currentTimeMillis());
                                                                                 FirebaseDatabase.getInstance().getReference("confidential").child("withdrawalHistory")
-                                                                                        .child(Common.currentUser.getPhone()).child(timeNow).updateChildren(transactionHistory)
+                                                                                        .child(Paper.book().read("userPhone").toString()).child(timeNow).updateChildren(transactionHistory)
                                                                                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                                     @Override
                                                                                     public void onComplete(@NonNull Task<Void> task) {
@@ -665,7 +665,7 @@ public class Profile extends AppCompatActivity {
                 dialog.dismiss();
                 //Set new Home Address
                 Common.currentUser.setHomeAddress(editHomeAddress.getText().toString());
-                users.child(Common.currentUser.getPhone())
+                users.child(Paper.book().read("userPhone").toString())
                         .setValue(Common.currentUser)
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
@@ -718,7 +718,7 @@ public class Profile extends AppCompatActivity {
                 dialog.dismiss();
                 //Set new Home Address
                 Common.currentUser.setHomeAddress(editHomeAddress.getText().toString());
-                feedback.child(Common.currentUser.getPhone()).child(String.valueOf(System.currentTimeMillis()))
+                feedback.child(Paper.book().read("userPhone").toString()).child(String.valueOf(System.currentTimeMillis()))
                         .setValue(editHomeAddress.getText().toString())
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
@@ -775,19 +775,19 @@ public class Profile extends AppCompatActivity {
             mDialog.setMessage(getResources().getString(R.string.processing));
             mDialog.show();
 
-            final StorageReference imageFolder = storageReference.child("profile/" + Common.currentUser.getPhone());
+            final StorageReference imageFolder = storageReference.child("profile/" + Paper.book().read("userPhone").toString());
             imageFolder.putFile(saveUri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             mDialog.dismiss();
                             Toast.makeText(Profile.this, getResources().getString(R.string.success), Toast.LENGTH_SHORT).show();
-                            final StorageReference imageMe = storageReference.child("profile/" + Common.currentUser.getPhone() + "_512x512");
+                            final StorageReference imageMe = storageReference.child("profile/" + Paper.book().read("userPhone").toString() + "_512x512");
                             imageMe.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
                                     //uri.toString()
-                                    users.child(Common.currentUser.getPhone()).child("image").setValue(uri.toString());
+                                    users.child(Paper.book().read("userPhone").toString()).child("image").setValue(uri.toString());
                                     loadUser();
                                 }
                             });
@@ -833,14 +833,14 @@ public class Profile extends AppCompatActivity {
     public void setCartStatus(){
         priceTag = findViewById(R.id.checkout_layout_price);
         itemsCount = findViewById(R.id.items_count);
-        int totalCount = new Database(this).getCountCart(Common.currentUser.getPhone());
+        int totalCount = new Database(this).getCountCart(Paper.book().read("userPhone").toString());
         if (totalCount == 0)
             checkoutButton.setVisibility(View.GONE);
         else{
             checkoutButton.setVisibility(View.VISIBLE);
             itemsCount.setText(String.valueOf(totalCount));
             int total = 0;
-            List<Order> orders = new Database(getBaseContext()).getCarts(Common.currentUser.getPhone());
+            List<Order> orders = new Database(getBaseContext()).getCarts(Paper.book().read("userPhone").toString());
             for (Order item : orders)
                 total += (Integer.parseInt(item.getPrice())) * (Integer.parseInt(item.getQuantity()));
             Locale locale = new Locale("en", "US");

@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import io.paperdb.Paper;
+
 /**
  * Created by Kibrom on 14/04/2019.
  */
@@ -72,7 +74,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartViewHolder> {
 
                 //update total
                 int total = 0;
-                List<Order> orders = new Database(cart).getCarts(Common.currentUser.getPhone());
+                List<Order> orders = new Database(cart).getCarts(Paper.book().read("userPhone").toString());
                 for (Order item : orders)
                     total += (Integer.parseInt(order.getPrice())) * (Integer.parseInt(item.getQuantity()));
                 Locale locale = new Locale("en", "US");

@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.habeshastudio.fooddelivery.R;
 import com.habeshastudio.fooddelivery.common.Common;
+import com.habeshastudio.fooddelivery.helper.MyExceptionHandler;
 import com.habeshastudio.fooddelivery.viewHolder.OrderDetailAdapter;
 
 public class OrderHistoryDetail extends AppCompatActivity {
@@ -26,7 +27,7 @@ public class OrderHistoryDetail extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_history_detail);
-
+        Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle((CharSequence) "Order Details");
         toolbar.setNavigationIcon((int) R.drawable.ic_baseline_arrow_back_ios_24);
@@ -37,6 +38,7 @@ public class OrderHistoryDetail extends AppCompatActivity {
             }
         });
         setSupportActionBar(toolbar);
+        Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
 
         order_id = (TextView) findViewById(R.id.order_id);
         order_phone = (TextView) findViewById(R.id.order_phone);

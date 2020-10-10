@@ -143,7 +143,7 @@ public class FavoritesActivity extends AppCompatActivity implements RecyclerItem
 
     private void loadFavorites() {
         if (Common.currentUser != null)
-            adapter = new FavoritesAdapter(this, new Database(this).getAllFavorites(Common.currentUser.getPhone()));
+            adapter = new FavoritesAdapter(this, new Database(this).getAllFavorites(Paper.book().read("userPhone").toString()));
         else {
             startActivity(new Intent(FavoritesActivity.this, MainActivity.class));
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
@@ -161,7 +161,7 @@ public class FavoritesActivity extends AppCompatActivity implements RecyclerItem
             final int deleteIndex = viewHolder.getAdapterPosition();
             final Favorites deleteItem = ((FavoritesAdapter) recyclerView.getAdapter()).getItem(deleteIndex);
             adapter.removeItem(deleteIndex);
-            new Database(getBaseContext()).removeFromFavourites(deleteItem.getFoodId(), Common.currentUser.getPhone());
+            new Database(getBaseContext()).removeFromFavourites(deleteItem.getFoodId(), Paper.book().read("userPhone").toString());
 
             //make snackbar
             Snackbar snackbar = Snackbar.make(rootLayout, name + " " + getResources().getString(R.string.removed_from_fav), Snackbar.LENGTH_LONG);
@@ -182,7 +182,7 @@ public class FavoritesActivity extends AppCompatActivity implements RecyclerItem
 
         int totalCount = 0;
         if (Common.currentUser != null)
-            totalCount = new Database(this).getCountCart(Common.currentUser.getPhone());
+            totalCount = new Database(this).getCountCart(Paper.book().read("userPhone").toString());
 //        else if (Paper.book().read("userPhone") != null)
 //            totalCount =new Database(this).getCountCart(Paper.book().read("userPhone").toString());
 //
@@ -197,7 +197,7 @@ public class FavoritesActivity extends AppCompatActivity implements RecyclerItem
             checkoutButton.setVisibility(View.VISIBLE);
             itemsCount.setText(String.valueOf(totalCount));
             int total = 0;
-            List<Order> orders = new Database(getBaseContext()).getCarts(Common.currentUser.getPhone());
+            List<Order> orders = new Database(getBaseContext()).getCarts(Paper.book().read("userPhone").toString());
             for (Order item : orders)
                 total += (Integer.parseInt(item.getPrice())) * (Integer.parseInt(item.getQuantity()));
             Locale locale = new Locale("en", "US");

@@ -401,14 +401,14 @@ public class FoodList extends AppCompatActivity {
                         .into(viewHolder.food_image);
 
                 //quick cart
-                final boolean isAddedToCart = new Database(getBaseContext()).isAddedToCart(adapter.getRef(position).getKey(), Common.currentUser.getPhone());
+                final boolean isAddedToCart = new Database(getBaseContext()).isAddedToCart(adapter.getRef(position).getKey(), Paper.book().read("userPhone").toString());
 
                 viewHolder.quick_cart.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         if (!isAddedToCart) {
                             new Database(getBaseContext()).addToCart(new Order(
-                                    Common.currentUser.getPhone(),
+                                    Paper.book().read("userPhone").toString(),
                                     adapter.getRef(viewHolder.getAdapterPosition()).getKey(),
                                     model.getName(),
                                     "1",
@@ -427,7 +427,7 @@ public class FoodList extends AppCompatActivity {
 
 
                 //Add favourites
-                if (localDb.isFavourite(adapter.getRef(position).getKey(), Common.currentUser.getPhone()))
+                if (localDb.isFavourite(adapter.getRef(position).getKey(), Paper.book().read("userPhone").toString()))
                     viewHolder.fav_image.setImageResource(R.drawable.ic_favorite_black_24dp);
 
                 viewHolder.share_image.setOnClickListener(new View.OnClickListener() {
@@ -450,16 +450,16 @@ public class FoodList extends AppCompatActivity {
                         favorites.setFoodDiscount(model.getDiscount());
                         favorites.setFoodImage(model.getImage());
                         favorites.setFoodMenuId(model.getMenuId());
-                        favorites.setUserPhone(Common.currentUser.getPhone());
+                        favorites.setUserPhone(Paper.book().read("userPhone").toString());
                         favorites.setFoodPrice(model.getPrice());
 
 
-                        if (!localDb.isFavourite(adapter.getRef(viewHolder.getAdapterPosition()).getKey(), Common.currentUser.getPhone())) {
+                        if (!localDb.isFavourite(adapter.getRef(viewHolder.getAdapterPosition()).getKey(), Paper.book().read("userPhone").toString())) {
                             localDb.addToFavourites(favorites);
                             viewHolder.fav_image.setImageResource(R.drawable.ic_favorite_black_24dp);
                             //Toast.makeText(FoodList.this, "" + model.getName() + " was added to favourites", Toast.LENGTH_SHORT).show();
                         } else {
-                            localDb.removeFromFavourites(adapter.getRef(viewHolder.getAdapterPosition()).getKey(), Common.currentUser.getPhone());
+                            localDb.removeFromFavourites(adapter.getRef(viewHolder.getAdapterPosition()).getKey(), Paper.book().read("userPhone").toString());
                             viewHolder.fav_image.setImageResource(R.drawable.ic_favorite_border_black_24dp);
                             //Toast.makeText(FoodList.this, "" + model.getName() + " was removed from favourites", Toast.LENGTH_SHORT).show();
 
@@ -514,7 +514,7 @@ public class FoodList extends AppCompatActivity {
         itemsCount = findViewById(R.id.items_count);
         int totalCount = 0;
         if (Common.currentUser != null)
-            totalCount = new Database(this).getCountCart(Common.currentUser.getPhone());
+            totalCount = new Database(this).getCountCart(Paper.book().read("userPhone").toString());
 //        else if (Paper.book().read("userPhone") != null)
 //            totalCount =new Database(this).getCountCart(Paper.book().read("userPhone").toString());
 //
@@ -529,7 +529,7 @@ public class FoodList extends AppCompatActivity {
             checkoutButton.setVisibility(View.VISIBLE);
             itemsCount.setText(String.valueOf(totalCount));
             int total = 0;
-            List<Order> orders = new Database(getBaseContext()).getCarts(Common.currentUser.getPhone());
+            List<Order> orders = new Database(getBaseContext()).getCarts(Paper.book().read("userPhone").toString());
             for (Order item : orders)
                 total += (Integer.parseInt(item.getPrice())) * (Integer.parseInt(item.getQuantity()));
             Locale locale = new Locale("en", "US");

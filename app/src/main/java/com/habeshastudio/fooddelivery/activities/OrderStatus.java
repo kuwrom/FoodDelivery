@@ -13,7 +13,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -60,7 +59,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 public class OrderStatus extends AppCompatActivity {
 
     public EmptyRecyclerView recyclerView;
-    public RecyclerView.LayoutManager layoutManager;
+    public LinearLayoutManager layoutManager;
 
     FirebaseRecyclerAdapter<Request, OrderViewHolder> adapter;
 
@@ -105,9 +104,11 @@ public class OrderStatus extends AppCompatActivity {
         recyclerView = findViewById(R.id.listOrders);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
+        layoutManager.setReverseLayout(true);
+        layoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(layoutManager);
 
-        checkoutButton =findViewById(R.id.btn_checkout_cart);
+        checkoutButton = findViewById(R.id.btn_checkout_cart);
         checkoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -146,13 +147,13 @@ public class OrderStatus extends AppCompatActivity {
         });
 
 
-        //load menu for first time
+        //load for first time
         refreshOrders.post(new Runnable() {
             @Override
             public void run() {
 
                 if (Common.isConnectedToInternet(getBaseContext())) {
-                    loadOrders(Common.currentUser.getPhone());
+                    loadOrders(Paper.book().read("userPhone").toString());
                 } else {
                     Toast.makeText(getBaseContext(), getResources().getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
                     refreshOrders.setRefreshing(false);
@@ -286,7 +287,7 @@ public class OrderStatus extends AppCompatActivity {
                         //Map<String, Object> update_balance = new HashMap<>();
                         //update_balance.put("balance", balance);
 //                        FirebaseDatabase.getInstance().getReference("User")
-//                                .child(Common.currentUser.getPhone())
+//                                .child(Paper.book().read("userPhone").toString())
 //                                .updateChildren(update_balance)
 //                                .addOnCompleteListener(new OnCompleteListener<Void>() {
 //                                    @Override
@@ -304,19 +305,19 @@ public class OrderStatus extends AppCompatActivity {
                                                     Toast.makeText(OrderStatus.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                                                 }
                                             });
-                                            //Refresh user status
-                                            FirebaseDatabase.getInstance().getReference("User")
-                                                    .child(Common.currentUser.getPhone())
-                                                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                                                        @Override
-                                                        public void onDataChange(DataSnapshot dataSnapshot) {
-                                                            Common.currentUser = dataSnapshot.getValue(User.class);
-                                                        }
+                        //Refresh user status
+                        FirebaseDatabase.getInstance().getReference("User")
+                                .child(Paper.book().read("userPhone").toString())
+                                .addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        Common.currentUser = dataSnapshot.getValue(User.class);
+                                    }
 
-                                                        @Override
-                                                        public void onCancelled(DatabaseError databaseError) {
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
 
-                                                        }
+                                    }
                                                     });
                                         }
 //                                    }
@@ -339,17 +340,24 @@ public class OrderStatus extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        users.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                User currentUser = dataSnapshot.child(Paper.book().read("userPhone").toString()).getValue(User.class);
-                Common.currentUser = currentUser;
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
+        if (Common.isConnectedToInternet(getBaseContext())) {
+            users.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    User currentUser = dataSnapshot.child(Paper.book().read("userPhone").toString()).getValue(User.class);
+                    Common.currentUser = currentUser;
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
+            loadOrders(Paper.book().read("userPhone").toString());
+        } else {
+            Toast.makeText(getBaseContext(), getResources().getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
+            return;
+        }
     }
 
     public void setCartStatus() {
@@ -358,7 +366,7 @@ public class OrderStatus extends AppCompatActivity {
         itemsCount = findViewById(R.id.items_count);
         int totalCount = 0;
         if (Common.currentUser != null)
-            totalCount = new Database(this).getCountCart(Common.currentUser.getPhone());
+            totalCount = new Database(this).getCountCart(Paper.book().read("userPhone").toString());
 //        else if (Paper.book().read("userPhone") != null)
 //            totalCount =new Database(this).getCountCart(Paper.book().read("userPhone").toString());
 //
@@ -373,7 +381,7 @@ public class OrderStatus extends AppCompatActivity {
             checkoutButton.setVisibility(View.VISIBLE);
             itemsCount.setText(String.valueOf(totalCount));
             int total = 0;
-            List<Order> orders = new Database(getBaseContext()).getCarts(Common.currentUser.getPhone());
+            List<Order> orders = new Database(getBaseContext()).getCarts(Paper.book().read("userPhone").toString());
             for (Order item : orders)
                 total += (Integer.parseInt(item.getPrice())) * (Integer.parseInt(item.getQuantity()));
             Locale locale = new Locale("en", "US");
