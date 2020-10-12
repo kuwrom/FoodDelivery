@@ -1,12 +1,14 @@
 package com.habeshastudio.fooddelivery.activities;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -62,6 +64,7 @@ public class OrderHistory extends AppCompatActivity {
     DatabaseReference users;
     LinearLayout checkoutButton;
     TextView itemsCount, priceTag;
+    public ProgressDialog mDialog;
     LinearLayoutManager layoutManager;
     SwipeRefreshLayout refreshOrders;
 
@@ -108,6 +111,12 @@ public class OrderHistory extends AppCompatActivity {
         layoutManager.setReverseLayout(true);
         layoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(layoutManager);
+
+        mDialog = new ProgressDialog(this);
+        mDialog.setMessage("Loading Orders");
+        mDialog.setCancelable(false);
+        mDialog.setCanceledOnTouchOutside(false);
+        mDialog.show();
 
         checkoutButton = findViewById(R.id.btn_checkout_cart);
         checkoutButton.setOnClickListener(new View.OnClickListener() {
@@ -221,6 +230,18 @@ public class OrderHistory extends AppCompatActivity {
             adapter = new FirebaseRecyclerAdapter<Request, OrderViewHolder>(orderOptions) {
 
                 @Override
+                public void onDataChanged() {
+                    super.onDataChanged();
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mDialog.dismiss();
+                        }
+                    }, 1000);
+
+                }
+
+                @Override
                 protected void onBindViewHolder(@NonNull final OrderViewHolder viewHolder, @SuppressLint("RecyclerView") final int position, @NonNull final Request model) {
 
                     viewHolder.txtOrderId.setText(adapter.getRef(position).getKey());
@@ -251,14 +272,16 @@ public class OrderHistory extends AppCompatActivity {
                             .inflate(R.layout.order_layout, parent, false);
                     return new OrderViewHolder(itemView);
                 }
+
             };
             adapter.startListening();
             recyclerView.setAdapter(adapter);
             recyclerView.setEmptyView(findViewById(R.id.empty_view_orders));
+
+
         } catch (Exception e) {
             Log.e("error name", e.getMessage());
         }
-
     }
 
     @Override
