@@ -53,6 +53,7 @@ import com.habeshastudio.fooddelivery.models.Order;
 import com.habeshastudio.fooddelivery.models.User;
 import com.habeshastudio.fooddelivery.viewHolder.FoodViewHolder;
 import com.mancj.materialsearchbar.MaterialSearchBar;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -398,7 +399,7 @@ public class FoodList extends AppCompatActivity {
                 Log.d("TAG", "" + adapter.getItemCount());
                 Picasso.with(getBaseContext()).load(model.getImage())
                         .placeholder(R.drawable.foodbg)
-                        .into(viewHolder.food_image);
+                        .networkPolicy(NetworkPolicy.OFFLINE).into(viewHolder.food_image);
 
                 //quick cart
                 final boolean isAddedToCart = new Database(getBaseContext()).isAddedToCart(adapter.getRef(position).getKey(), Paper.book().read("userPhone").toString());

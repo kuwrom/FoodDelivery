@@ -217,7 +217,7 @@ public class OrderHistory extends AppCompatActivity {
             FirebaseRecyclerOptions<Request> orderOptions = new FirebaseRecyclerOptions.Builder<Request>()
                     .setQuery(getOrderByUser, Request.class)
                     .build();
-
+            getOrderByUser.keepSynced(true);
             adapter = new FirebaseRecyclerAdapter<Request, OrderViewHolder>(orderOptions) {
 
                 @Override

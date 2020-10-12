@@ -13,6 +13,7 @@ import com.habeshastudio.fooddelivery.activities.Cart;
 import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.database.Database;
 import com.habeshastudio.fooddelivery.models.Order;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.text.NumberFormat;
@@ -52,6 +53,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartViewHolder> {
                 .load(listData.get(position).getImage())
                 .resize(100, 100)
                 .centerCrop()
+                .networkPolicy(NetworkPolicy.OFFLINE)
                 .into(holder.cart_image);
 
         holder.btn_quantity.setNumber(listData.get(position).getQuantity());

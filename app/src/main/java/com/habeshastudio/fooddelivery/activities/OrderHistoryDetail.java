@@ -10,7 +10,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -79,56 +78,40 @@ public class OrderHistoryDetail extends AppCompatActivity {
                 alertDialog.setPositiveButton("yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        final String orderId = String.valueOf(System.currentTimeMillis());
                         if (order_id_value != null && !order_id_value.isEmpty())
                             FirebaseDatabase.getInstance().getReference("ForTheRecord").child(order_id_value)
                                     .addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot) {
-                                            try {
-                                                final String orderId = String.valueOf(System.currentTimeMillis());
-                                                FirebaseDatabase.getInstance().getReference("Requests").child(orderId).setValue(dataSnapshot)
-                                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                            @Override
-                                                            public void onComplete(@NonNull Task<Void> task) {
-                                                                HashMap<String, Object> updates = new HashMap<>();
-                                                                updates.put("status", "0");
-                                                                updates.put("paymentState", "Unpaid");
-                                                                updates.put("paymentMethod", "COD");
-                                                                FirebaseDatabase.getInstance().getReference("Requests").child(orderId).updateChildren(updates)
-                                                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                            @Override
-                                                                            public void onComplete(@NonNull Task<Void> task) {
-                                                                                FirebaseDatabase.getInstance().getReference("Requests").child(orderId)
-                                                                                        .addListenerForSingleValueEvent(new ValueEventListener() {
-                                                                                            @Override
-                                                                                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                                                                                FirebaseDatabase.getInstance().getReference("ForTheRecord").child(orderId).setValue(dataSnapshot)
-                                                                                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                                                            @Override
-                                                                                                            public void onComplete(@NonNull Task<Void> task) {
-                                                                                                                OrderHistoryDetail.this.startActivity(new Intent(OrderHistoryDetail.this, OrderStatus.class));
-                                                                                                            }
-                                                                                                        });
-                                                                                            }
-
-                                                                                            @Override
-                                                                                            public void onCancelled(DatabaseError databaseError) {
-
-                                                                                            }
-                                                                                        });
-                                                                            }
-                                                                        });
-                                                            }
-                                                        });
-                                            } catch (Exception e) {
-                                                Log.e("hihi", e.getMessage());
+                                            final HashMap<String, Object> reOrdered = new HashMap<>();
+                                            for (DataSnapshot newOrder : dataSnapshot.getChildren()) {
+                                                reOrdered.put(newOrder.getKey(), newOrder.getValue());
                                             }
+                                            reOrdered.put("status", "0");
+                                            reOrdered.put("paymentState", "Unpaid");
+                                            reOrdered.put("paymentMethod", "COD");
+
+                                            FirebaseDatabase.getInstance().getReference("Requests").child(orderId).updateChildren(reOrdered)
+                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+
+                                                            FirebaseDatabase.getInstance().getReference("ForTheRecord").child(orderId).setValue(reOrdered)
+                                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                        @Override
+                                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                                            startActivity(new Intent(OrderHistoryDetail.this, OrderStatus.class));
+                                                                            finish();
+                                                                        }
+                                                                    });
+                                                        }
+                                                        });
 
                                         }
 
                                         @Override
                                         public void onCancelled(DatabaseError databaseError) {
-
                                         }
                                     });
                         else

@@ -16,6 +16,7 @@ import com.habeshastudio.fooddelivery.activities.Home;
 import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.interfaces.ItemClickListener;
 import com.habeshastudio.fooddelivery.models.Category;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -64,7 +65,7 @@ public class RestaurantAdapter extends RecyclerView.Adapter<MenuViewHolder> {
         //Toast.makeText(home, String.valueOf(categoryKeyList.get(position)), Toast.LENGTH_SHORT).show();
         viewHolder.restaurantTime.setText(home.getString(R.string.blank) + String.format("%.0f", 20 + (distance / 165)) + " " + home.getString(R.string.minutes_away));
 
-        Picasso.with(home.getBaseContext()).load(restaurantList.get(categoryKeyList.get(position)).getImage()).placeholder(R.drawable.restaurantbg)
+        Picasso.with(home.getBaseContext()).load(restaurantList.get(categoryKeyList.get(position)).getImage()).networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.restaurantbg)
                 .into(viewHolder.imageView);
         final Animation animShake = AnimationUtils.loadAnimation(home, R.anim.shake);
 

@@ -61,6 +61,7 @@ import com.habeshastudio.fooddelivery.models.Order;
 import com.habeshastudio.fooddelivery.models.User;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.rengwuxian.materialedittext.MaterialEditText;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.text.NumberFormat;
@@ -757,7 +758,7 @@ public class Profile extends AppCompatActivity {
                         Common.currentUser.getHomeAddress() != null) {
                     address_display.setText(Common.currentUser.getHomeAddress());
                 }
-                        Picasso.with(getBaseContext()).load(Common.currentUser.getImage()).placeholder(R.drawable.profile_pic)
+                Picasso.with(getBaseContext()).load(Common.currentUser.getImage()).networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.profile_pic)
                                     .into(profile);
                     }
 
