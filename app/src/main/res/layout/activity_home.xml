@@ -221,13 +221,14 @@
     <LinearLayout
         android:id="@+id/empty_view_restaurant"
         android:layout_width="match_parent"
+        android:layout_above="@id/btn_checkout_cart"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:orientation="vertical">
 
         <ImageView
-            android:layout_width="120dp"
-            android:layout_height="120dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_gravity="center_horizontal"
             android:src="@drawable/logo"
             android:tint="@color/grey_active" />

@@ -1,26 +1,40 @@
 package com.habeshastudio.fooddelivery.activities;
 
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.habeshastudio.fooddelivery.R;
 import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.helper.MyExceptionHandler;
 import com.habeshastudio.fooddelivery.viewHolder.OrderDetailAdapter;
+
+import java.util.HashMap;
 
 public class OrderHistoryDetail extends AppCompatActivity {
 
     TextView order_id, order_phone, order_address, order_total, order_comment;
     String order_id_value;
     RecyclerView listFoods;
-    Button processed;
+    Button reOrder;
     RecyclerView.LayoutManager layoutManager;
 
     @Override
@@ -38,14 +52,17 @@ public class OrderHistoryDetail extends AppCompatActivity {
             }
         });
         setSupportActionBar(toolbar);
-        Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
+        //Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
+
+        if (getIntent() != null)
+            order_id_value = getIntent().getStringExtra("OrderId");
 
         order_id = (TextView) findViewById(R.id.order_id);
         order_phone = (TextView) findViewById(R.id.order_phone);
         order_address = (TextView) findViewById(R.id.order_addres);
         order_total = (TextView) findViewById(R.id.order_total);
         order_comment = (TextView) findViewById(R.id.order_comment);
-        processed = findViewById(R.id.order_processed);
+        reOrder = findViewById(R.id.re_order);
         //callRestaurant = findViewById(R.id.btn_call_restaurant);
         listFoods = (RecyclerView) findViewById(R.id.lstFoods);
         listFoods.setHasFixedSize(true);
@@ -53,12 +70,72 @@ public class OrderHistoryDetail extends AppCompatActivity {
         listFoods.setLayoutManager(layoutManager);
 
 
-        if (getIntent() != null)
-            order_id_value = getIntent().getStringExtra("OrderId");
-        processed.setOnClickListener(new View.OnClickListener() {
+        reOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                final android.support.v7.app.AlertDialog.Builder alertDialog = new AlertDialog.Builder(OrderHistoryDetail.this);
+                alertDialog.setTitle("This will cost you " + Common.currentRequest.getTotal().split(" ")[1] + " birr");
+                alertDialog.setMessage("Are you sure, do you want to continue?");
+                alertDialog.setPositiveButton("yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (order_id_value != null && !order_id_value.isEmpty())
+                            FirebaseDatabase.getInstance().getReference("ForTheRecord").child(order_id_value)
+                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            try {
+                                                final String orderId = String.valueOf(System.currentTimeMillis());
+                                                FirebaseDatabase.getInstance().getReference("Requests").child(orderId).setValue(dataSnapshot)
+                                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<Void> task) {
+                                                                HashMap<String, Object> updates = new HashMap<>();
+                                                                updates.put("status", "0");
+                                                                updates.put("paymentState", "Unpaid");
+                                                                updates.put("paymentMethod", "COD");
+                                                                FirebaseDatabase.getInstance().getReference("Requests").child(orderId).updateChildren(updates)
+                                                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                            @Override
+                                                                            public void onComplete(@NonNull Task<Void> task) {
+                                                                                FirebaseDatabase.getInstance().getReference("Requests").child(orderId)
+                                                                                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                                                                                            @Override
+                                                                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                                                                                FirebaseDatabase.getInstance().getReference("ForTheRecord").child(orderId).setValue(dataSnapshot)
+                                                                                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                                            @Override
+                                                                                                            public void onComplete(@NonNull Task<Void> task) {
+                                                                                                                OrderHistoryDetail.this.startActivity(new Intent(OrderHistoryDetail.this, OrderStatus.class));
+                                                                                                            }
+                                                                                                        });
+                                                                                            }
 
+                                                                                            @Override
+                                                                                            public void onCancelled(DatabaseError databaseError) {
+
+                                                                                            }
+                                                                                        });
+                                                                            }
+                                                                        });
+                                                            }
+                                                        });
+                                            } catch (Exception e) {
+                                                Log.e("hihi", e.getMessage());
+                                            }
+
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+                                    });
+                        else
+                            Toast.makeText(OrderHistoryDetail.this, "Error", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                alertDialog.show();
             }
         });
         //set Values
@@ -73,6 +150,5 @@ public class OrderHistoryDetail extends AppCompatActivity {
         listFoods.setAdapter(adapter);
 
     }
-
 
 }

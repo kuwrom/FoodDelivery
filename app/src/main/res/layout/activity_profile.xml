@@ -90,7 +90,7 @@
                                 android:layout_marginTop="10dp"
                                 android:elevation="10dp"
                                 android:id="@+id/name_display"
-                                android:text="..."
+                                android:text="@string/loading"
                                 android:textStyle="bold"
                                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"
                                 android:textColor="@color/colorLightBlack" />

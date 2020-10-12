@@ -270,7 +270,6 @@ public class OrderHistory extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
         if (Common.isConnectedToInternet(getBaseContext())) {
             users.addValueEventListener(new ValueEventListener() {
                 @Override
