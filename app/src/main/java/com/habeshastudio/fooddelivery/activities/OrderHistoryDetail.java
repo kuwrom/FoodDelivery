@@ -74,7 +74,7 @@ public class OrderHistoryDetail extends AppCompatActivity {
             public void onClick(View v) {
                 final android.support.v7.app.AlertDialog.Builder alertDialog = new AlertDialog.Builder(OrderHistoryDetail.this);
                 alertDialog.setTitle("This will cost you " + Common.currentRequest.getTotal().split(" ")[1] + " birr");
-                alertDialog.setMessage("Are you sure, do you want to continue?");
+                alertDialog.setMessage("Are you sure, do you want to continue?\n\ni.e. Shipping to your last Location");
                 alertDialog.setPositiveButton("yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
