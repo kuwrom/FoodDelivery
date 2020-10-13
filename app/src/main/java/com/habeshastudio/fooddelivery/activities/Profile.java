@@ -51,7 +51,6 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.habeshastudio.fooddelivery.BuildConfig;
 import com.habeshastudio.fooddelivery.R;
-import com.habeshastudio.fooddelivery.activities.profile.PromoCodes;
 import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.database.Database;
 import com.habeshastudio.fooddelivery.helper.LocaleHelper;
@@ -61,6 +60,7 @@ import com.habeshastudio.fooddelivery.models.Order;
 import com.habeshastudio.fooddelivery.models.User;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.rengwuxian.materialedittext.MaterialEditText;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
@@ -186,22 +186,22 @@ public class Profile extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Uri uri = Uri.parse("tel:" + "0976000070");
-                Intent callIntent = new Intent(Intent.ACTION_DIAL, uri);
-                try {
-                    startActivity(callIntent);
-                } catch (ActivityNotFoundException activityNotFoundException) {
-                    // TODO: place code to handle users that have no call application installed, otherwise the app crashes
-                }
-//                startActivity(new Intent(Profile.this, FavoritesActivity.class));
-//                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+//                Uri uri = Uri.parse("tel:" + "0976000070");
+//                Intent callIntent = new Intent(Intent.ACTION_DIAL, uri);
+//                try {
+//                    startActivity(callIntent);
+//                } catch (ActivityNotFoundException activityNotFoundException) {
+//                    // TODO: place code to handle users that have no call application installed, otherwise the app crashes
+//                }
+                startActivity(new Intent(Profile.this, FavoritesActivity.class));
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 //Toast.makeText(Profile.this, "Sorry but we are providing printed receipts instead", Toast.LENGTH_SHORT).show();
             }
         });
         promo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(Profile.this, PromoCodes.class));
+                startActivity(new Intent(Profile.this, OrderStatus.class));
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             }
         });
@@ -236,7 +236,6 @@ public class Profile extends AppCompatActivity {
                 if (position == 0) {
                     startActivity(new Intent(Profile.this, Home.class));
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                    finish();
                 } else if (position == 1) {
                     startActivity(new Intent(Profile.this, OrderStatus.class));
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
@@ -759,7 +758,18 @@ public class Profile extends AppCompatActivity {
                     address_display.setText(Common.currentUser.getHomeAddress());
                 }
                 Picasso.with(getBaseContext()).load(Common.currentUser.getImage()).networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.profile_pic)
-                                    .into(profile);
+                        .into(profile, new Callback() {
+                            @Override
+                            public void onSuccess() {
+
+                            }
+
+                            @Override
+                            public void onError() {
+                                Picasso.with(getBaseContext()).load(Common.currentUser.getImage()).placeholder(R.drawable.profile_pic)
+                                        .into(profile);
+                            }
+                        });
                     }
 
                     @Override

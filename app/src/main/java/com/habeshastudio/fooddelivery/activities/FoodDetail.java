@@ -48,6 +48,7 @@ import com.habeshastudio.fooddelivery.models.Order;
 import com.habeshastudio.fooddelivery.models.Rating;
 import com.habeshastudio.fooddelivery.models.User;
 import com.habeshastudio.fooddelivery.viewHolder.FlavoursViewHolder;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 import com.stepstone.apprating.AppRatingDialog;
@@ -381,7 +382,17 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
 
                 //Set Image
                 Picasso.with(getBaseContext()).load(currentFood.getImage())
-                        .networkPolicy(NetworkPolicy.OFFLINE).into(food_image);
+                        .networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.cover).into(food_image, new Callback() {
+                    @Override
+                    public void onSuccess() {
+
+                    }
+
+                    @Override
+                    public void onError() {
+                        Picasso.with(getBaseContext()).load(currentFood.getImage()).placeholder(R.drawable.cover).into(food_image);
+                    }
+                });
 
                 collapsingToolbarLayout.setTitle(currentFood.getName());
 

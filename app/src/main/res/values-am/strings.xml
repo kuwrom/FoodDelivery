@@ -180,4 +180,5 @@
     <string name="adress">አድራሻ</string>
     <string name="comment">ስለ ትዛዙ አስተያየት</string>
     <string name="track_order">ትዛዙ የት ደረሰ</string>
+    <string name="favs">favs</string>
 </resources>

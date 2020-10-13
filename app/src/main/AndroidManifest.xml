@@ -55,6 +55,7 @@
         <activity
             android:name=".activities.FavoritesActivity"
             android:configChanges="orientation"
+            android:parentActivityName=".activities.Profile"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
@@ -92,6 +93,7 @@
         <activity
             android:name=".activities.OrderStatus"
             android:configChanges="orientation"
+            android:parentActivityName=".activities.Profile"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
 

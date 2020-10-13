@@ -28,6 +28,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.widget.ImageView;
@@ -65,7 +66,6 @@ import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.database.Database;
 import com.habeshastudio.fooddelivery.helper.EmptyRecyclerView;
 import com.habeshastudio.fooddelivery.helper.LocaleHelper;
-import com.habeshastudio.fooddelivery.helper.MyExceptionHandler;
 import com.habeshastudio.fooddelivery.models.Banner;
 import com.habeshastudio.fooddelivery.models.Category;
 import com.habeshastudio.fooddelivery.models.Order;
@@ -111,8 +111,11 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
     //Location
     ImageView filter;
 
+    Animation slide_up, slide_down;
+
     //static int largestValue = 0;
 
+    LinearLayout bodyLayout;
     public static String selectedFilter = "0";
     private LocationRequest mLocationRequest;
     private GoogleApiClient mGoogleApiClient;
@@ -297,7 +300,16 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             getWindow().setStatusBarColor(Color.WHITE);
         }
-        Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
+        //Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
+
+        bodyLayout = findViewById(R.id.body_linear_layout);
+
+        //Load animation
+        slide_down = AnimationUtils.loadAnimation(getApplicationContext(),
+                R.anim.slide_down);
+
+        slide_up = AnimationUtils.loadAnimation(getApplicationContext(),
+                R.anim.slide_up);
 
         isInternet();
         //Init Firebase
@@ -442,9 +454,11 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
                 } else if (position == 3) {
                     startActivity(new Intent(Home.this, Profile.class));
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                    //overridePendingTransition(R.anim.slide_up, R.anim.slide_down);
                 } else if (position == 4) {
                     startActivity(new Intent(Home.this, Profile.class));
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                    //overridePendingTransition(R.anim.slide_up, R.anim.slide_up);
                 } else {
 
                 }
@@ -452,7 +466,6 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
         });
 
         isInternet();
-
 
 //        FirebaseRecyclerOptions<Category> options = new FirebaseRecyclerOptions.Builder<Category>()
 //                .setQuery(category, Category.class)
@@ -690,6 +703,8 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onResume() {
+
+        bodyLayout.startAnimation(slide_up);
         isInternet();
         super.onResume();
         Common.currentUser.setPhone(Paper.book().read("userPhone").toString());
@@ -885,6 +900,7 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
     @Override
     protected void onPause() {
         super.onPause();
+        //bodyLayout.startAnimation(slide_down);
     }
 
     private void checkPermission() {

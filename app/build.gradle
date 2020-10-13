@@ -6,7 +6,7 @@ android {
         applicationId "com.habeshastudio.fooddelivery"
         minSdkVersion 22
         targetSdkVersion 28
-        versionCode 13
+        versionCode 14
         versionName "5.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
@@ -86,6 +86,7 @@ dependencies {
     implementation 'com.mikhaellopez:circularimageview:3.2.0'
     implementation 'com.firebaseui:firebase-ui-database:3.2.2'
     implementation 'com.firebase:geofire-android:2.1.2'
+    implementation 'com.github.andrefrsousa:SuperBottomSheet:1.2.0'
 }
 apply plugin: 'com.google.gms.google-services'
 repositories {

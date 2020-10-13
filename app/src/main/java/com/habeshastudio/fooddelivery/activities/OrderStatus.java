@@ -86,7 +86,15 @@ public class OrderStatus extends AppCompatActivity {
                 .build());
         setContentView(R.layout.activity_order_status);
         Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle(getResources().getString(R.string.orders));
+        toolbar.setTitle(R.string.orders);
+        toolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_ios_24);
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                OrderStatus.this.finish();
+            }
+        });
         setSupportActionBar(toolbar);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);

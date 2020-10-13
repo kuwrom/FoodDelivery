@@ -16,6 +16,7 @@ import com.habeshastudio.fooddelivery.activities.Home;
 import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.interfaces.ItemClickListener;
 import com.habeshastudio.fooddelivery.models.Category;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
@@ -54,7 +55,7 @@ public class RestaurantAdapter extends RecyclerView.Adapter<MenuViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(final MenuViewHolder viewHolder, int position) {
+    public void onBindViewHolder(final MenuViewHolder viewHolder, final int position) {
         viewHolder.txtMenuName.setText(restaurantList.get(categoryKeyList.get(position)).getName());
         Location temp = new Location("A");
         String[] restaurantLatLng = restaurantList.get(categoryKeyList.get(position)).getLocation().split(",");
@@ -66,7 +67,18 @@ public class RestaurantAdapter extends RecyclerView.Adapter<MenuViewHolder> {
         viewHolder.restaurantTime.setText(home.getString(R.string.blank) + String.format("%.0f", 20 + (distance / 165)) + " " + home.getString(R.string.minutes_away));
 
         Picasso.with(home.getBaseContext()).load(restaurantList.get(categoryKeyList.get(position)).getImage()).networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.restaurantbg)
-                .into(viewHolder.imageView);
+                .into(viewHolder.imageView, new Callback() {
+                    @Override
+                    public void onSuccess() {
+
+                    }
+
+                    @Override
+                    public void onError() {
+                        Picasso.with(home.getBaseContext()).load(restaurantList.get(categoryKeyList.get(position)).getImage()).placeholder(R.drawable.restaurantbg)
+                                .into(viewHolder.imageView);
+                    }
+                });
         final Animation animShake = AnimationUtils.loadAnimation(home, R.anim.shake);
 
         if (restaurantList.get(categoryKeyList.get(position)).isOpened())

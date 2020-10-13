@@ -13,6 +13,7 @@ import com.habeshastudio.fooddelivery.activities.Cart;
 import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.database.Database;
 import com.habeshastudio.fooddelivery.models.Order;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
@@ -54,7 +55,21 @@ public class CartAdapter extends RecyclerView.Adapter<CartViewHolder> {
                 .resize(100, 100)
                 .centerCrop()
                 .networkPolicy(NetworkPolicy.OFFLINE)
-                .into(holder.cart_image);
+                .into(holder.cart_image, new Callback() {
+                    @Override
+                    public void onSuccess() {
+
+                    }
+
+                    @Override
+                    public void onError() {
+                        Picasso.with(cart.getBaseContext())
+                                .load(listData.get(position).getImage())
+                                .resize(100, 100)
+                                .centerCrop()
+                                .into(holder.cart_image);
+                    }
+                });
 
         holder.btn_quantity.setNumber(listData.get(position).getQuantity());
         final Animation animShake = AnimationUtils.loadAnimation(cart, R.anim.swipe_left);
@@ -70,7 +85,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartViewHolder> {
             @Override
             public void onValueChange(ElegantNumberButton view, int oldValue, int newValue) {
 
-                Order order = listData.get(position);
+                Order order = listData.get(holder.getAdapterPosition());
                 order.setQuantity(String.valueOf(newValue));
                 new Database(cart).updateCart(order);
 

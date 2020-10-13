@@ -173,25 +173,25 @@
                                 android:weightSum="2">
 
                                 <Button
-                                    android:id="@+id/loved_button"
+                                    android:id="@+id/promo_button"
                                     android:layout_width="0dp"
                                     android:layout_height="35dp"
                                     android:layout_marginRight="10dp"
                                     android:layout_weight="1"
                                     android:background="@drawable/bg_ui"
-                                    android:backgroundTint="@color/colorMoreGreen"
-                                    android:text="@string/call_us"
+                                    android:backgroundTint="@color/default_inactive"
+                                    android:text="Orders"
                                     android:textColor="@color/colorWhite" />
 
                                 <Button
-                                    android:id="@+id/promo_button"
+                                    android:id="@+id/loved_button"
                                     android:layout_width="0dp"
                                     android:layout_height="35dp"
                                     android:layout_marginLeft="10dp"
                                     android:layout_weight="1"
                                     android:background="@drawable/bg_ui"
-                                    android:backgroundTint="@color/media"
-                                    android:text="@string/promo"
+                                    android:backgroundTint="@color/default_inactive"
+                                    android:text="Favs"
                                     android:textColor="@color/colorWhite" />
 
                             </LinearLayout>
@@ -309,6 +309,40 @@
 
                 </LinearLayout>
 
+
+                <LinearLayout
+                    android:id="@+id/btnTransactions"
+                    android:layout_width="match_parent"
+                    android:layout_height="64dp"
+                    android:background="@drawable/bg_ui_white"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingLeft="16dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:contentDescription="TODO"
+                        android:src="@drawable/ic_account_balance_black_24dp"
+                        android:tint="@color/blue_grey_active" />
+
+                    <TextView
+                        android:id="@+id/txt_transactions"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="24dp"
+                        android:text="@string/history_and_transactions"
+                        android:textColor="@color/colorLightBlack"
+                        android:textSize="18sp" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/gery_inactive" />
+
                 <LinearLayout
                     android:id="@+id/btnPaymentMethod"
                     android:layout_width="match_parent"
@@ -375,38 +409,6 @@
                     android:layout_height="1dp"
                     android:background="@color/gery_inactive" />
 
-                <LinearLayout
-                    android:id="@+id/btnTransactions"
-                    android:layout_width="match_parent"
-                    android:layout_height="64dp"
-                    android:background="@drawable/bg_ui_white"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingLeft="16dp">
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_account_balance_black_24dp"
-                        android:contentDescription="TODO"
-                        android:tint="@color/blue_grey_active" />
-
-                    <TextView
-                        android:id="@+id/txt_transactions"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="24dp"
-                        android:text="@string/history_and_transactions"
-                        android:textColor="@color/colorLightBlack"
-                        android:textSize="18sp" />
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/gery_inactive" />
 
                 <LinearLayout
                     android:id="@+id/btnShare"
@@ -507,7 +509,7 @@
         android:id="@+id/btn_checkout_cart"
         android:orientation="horizontal"
         android:weightSum="3"
-        android:visibility="visible"
+        android:visibility="gone"
         android:layout_above="@id/bottom_navigation_view_linear"
         android:clickable="true"
         android:paddingTop="12dp"
@@ -580,6 +582,7 @@
             app:bt_colorActive="@color/green_active"
             app:bt_colorInactive="@color/green_inactive"
             app:bt_icon="@drawable/ic_playlist"
+            android:visibility="gone"
             app:bt_shape="@drawable/transition_background_drawable_list"
             app:bt_title="@string/orders" />
 
@@ -590,6 +593,7 @@
             app:bt_colorActive="@color/purple_active"
             app:bt_colorInactive="@color/purple_inactive"
             app:bt_icon="@drawable/ic_like"
+            android:visibility="gone"
             app:bt_shape="@drawable/transition_background_drawable_like"
             app:bt_title="@string/likes" />
 

@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container_home"
     android:layout_width="match_parent"
+    android:background="@color/white"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
     tools:context=".activities.Home">
 
     <android.support.design.widget.CoordinatorLayout
@@ -50,13 +50,14 @@
             android:id="@+id/body_linear_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            app:behavior_overlapTop="24dp"
             android:orientation="vertical"
             app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior">
 
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingEnd="8dp"
+                android:background="@drawable/bg_ui_top"
                 android:visibility="visible">
 
                 <TextView
@@ -64,7 +65,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
-                    android:layout_marginTop="12dp"
+                    android:layout_marginTop="14dp"
                     android:paddingStart="16dp"
                     android:text="@string/featured"
                     android:textColor="@color/colorLightBlack"
@@ -75,7 +76,9 @@
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:layout_alignParentEnd="true"
-                    android:layout_margin="8dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="4dp"
                     android:clickable="true"
                     android:src="@drawable/ic_tune_black_24dp"
                     android:focusable="true"
@@ -327,6 +330,7 @@
             app:bt_colorActive="@color/green_active"
             app:bt_colorInactive="@color/green_inactive"
             app:bt_icon="@drawable/ic_playlist"
+            android:visibility="gone"
             app:bt_shape="@drawable/transition_background_drawable_list"
             app:bt_title="@string/orders" />
 
@@ -337,6 +341,7 @@
             app:bt_colorActive="@color/purple_active"
             app:bt_colorInactive="@color/purple_inactive"
             app:bt_icon="@drawable/ic_like"
+            android:visibility="gone"
             app:bt_shape="@drawable/transition_background_drawable_like"
             app:bt_title="@string/likes" />
 

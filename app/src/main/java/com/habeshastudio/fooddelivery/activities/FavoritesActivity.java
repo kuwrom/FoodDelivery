@@ -77,7 +77,15 @@ public class FavoritesActivity extends AppCompatActivity implements RecyclerItem
                 .build());
         setContentView(R.layout.activity_favorites);
         Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle(getResources().getString(R.string.favorites));
+        toolbar.setTitle(R.string.favorites);
+        toolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_ios_24);
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                FavoritesActivity.this.finish();
+            }
+        });
         setSupportActionBar(toolbar);
         Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
 
