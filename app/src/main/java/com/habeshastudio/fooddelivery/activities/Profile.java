@@ -511,10 +511,10 @@ public class Profile extends AppCompatActivity {
         final android.support.v7.app.AlertDialog.Builder alertDialog = new AlertDialog.Builder(Profile.this);
         alertDialog.setTitle("This will cost you " + amount + " birr.");
         alertDialog.setMessage("Are you sure, do you want to continue?");
-        alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+        alertDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
-            public void onDismiss(DialogInterface dialog) {
-                //mDialog.dismiss();
+            public void onCancel(DialogInterface dialog) {
+                mDialog.dismiss();
             }
         });
         alertDialog.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
