@@ -28,6 +28,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -58,7 +59,6 @@ import com.habeshastudio.fooddelivery.helper.MyExceptionHandler;
 import com.habeshastudio.fooddelivery.models.Card;
 import com.habeshastudio.fooddelivery.models.Order;
 import com.habeshastudio.fooddelivery.models.User;
-import com.mikhaellopez.circularimageview.CircularImageView;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
@@ -80,16 +80,18 @@ public class Profile extends AppCompatActivity {
     FirebaseStorage storage;
     ValueEventListener myListner;
     TextView itemsCount, priceTag;
+    CardView profileItemsHolder;
+    Animation slide_up, slide_down;
     public ProgressDialog mDialog;
     LinearLayout checkoutButton, balanceWithdraw;
     String isSubscribed;
     LinearLayout paymentMethod, promoCode, transactions, share, help;
-    Button about, loved, promo, feedBack;
+    Button about, history, orders, feedBack;
     TextView voucher;
     CardView voucherCard;
     DatabaseReference myReference;
-    TextView name_display, address_display, balance_display, moreOptions, textPaymentMethod, textDeliveryAddress, textTransactions, textShare, textHelp;
-    CircularImageView profile;
+    TextView name_display, address_display, balance_display, moreOptions, textPaymentMethod, textDeliveryAddress, favourites, textShare, textHelp;
+    ImageView profile;
     boolean isUsd, isAmharic;
     FloatingActionButton notificationSwitch, languageSwitch, nightModeSwitch, currencySwitch;
 
@@ -117,15 +119,22 @@ public class Profile extends AppCompatActivity {
         balanceWithdraw = findViewById(R.id.balance_withdraw);
         textPaymentMethod = findViewById(R.id.txt_payment);
         textDeliveryAddress = findViewById(R.id.txt_delivery);
-        textTransactions = findViewById(R.id.txt_transactions);
+        favourites = findViewById(R.id.favourites);
         textShare = findViewById(R.id.txt_share);
         textHelp = findViewById(R.id.txt_help);
+        profileItemsHolder = findViewById(R.id.profile_items_holder);
         moreOptions = findViewById(R.id.more_options);
         users = FirebaseDatabase.getInstance().getReference("User");
         users.child(Paper.book().read("userPhone").toString()).keepSynced(true);
         feedback = FirebaseDatabase.getInstance().getReference("Feedback");
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
+        //Load animation
+        slide_down = AnimationUtils.loadAnimation(getApplicationContext(),
+                R.anim.slide_down);
+
+        slide_up = AnimationUtils.loadAnimation(getApplicationContext(),
+                R.anim.slide_up);
 
         Paper.init(Profile.this);
 
@@ -133,14 +142,14 @@ public class Profile extends AppCompatActivity {
         //Refresh user status
         //loadUser();
 
-        promo = findViewById(R.id.promo_button);
-        loved = findViewById(R.id.loved_button);
+        orders = findViewById(R.id.orders);
+        history = findViewById(R.id.history);
 
         //fab buttons
         notificationSwitch = findViewById(R.id.notification_switch);
-        languageSwitch =  findViewById(R.id.language_switch);
-        nightModeSwitch =  findViewById(R.id.easy_mode_switch);
-        currencySwitch =  findViewById(R.id.currency_switch);
+        languageSwitch = findViewById(R.id.language_switch);
+        nightModeSwitch = findViewById(R.id.easy_mode_switch);
+        currencySwitch = findViewById(R.id.currency_switch);
         final Animation animShake = AnimationUtils.loadAnimation(this, R.anim.shake);
 
         paymentMethod = findViewById(R.id.btnPaymentMethod);
@@ -182,7 +191,7 @@ public class Profile extends AppCompatActivity {
             }
         });
 
-        loved.setOnClickListener(new View.OnClickListener() {
+        history.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -193,12 +202,12 @@ public class Profile extends AppCompatActivity {
 //                } catch (ActivityNotFoundException activityNotFoundException) {
 //                    // TODO: place code to handle users that have no call application installed, otherwise the app crashes
 //                }
-                startActivity(new Intent(Profile.this, FavoritesActivity.class));
+                startActivity(new Intent(Profile.this, OrderHistory.class));
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 //Toast.makeText(Profile.this, "Sorry but we are providing printed receipts instead", Toast.LENGTH_SHORT).show();
             }
         });
-        promo.setOnClickListener(new View.OnClickListener() {
+        orders.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(Profile.this, OrderStatus.class));
@@ -342,7 +351,7 @@ public class Profile extends AppCompatActivity {
         transactions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(Profile.this, OrderHistory.class));
+                startActivity(new Intent(Profile.this, FavoritesActivity.class));
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             }
         });
@@ -608,13 +617,13 @@ public class Profile extends AppCompatActivity {
     private void updateView(String language) {
         Context context = LocaleHelper.setLocale(this, language);
         Resources resources = context.getResources();
-        loved.setText(resources.getString(R.string.call_us));
-        promo.setText(resources.getString(R.string.promo));
+        history.setText(resources.getString(R.string.history));
+        orders.setText(resources.getString(R.string.orders));
         moreOptions.setText(resources.getString(R.string.more_options));
 
         textPaymentMethod.setText(resources.getString(R.string.setup_payment_method));
         textDeliveryAddress.setText(resources.getString(R.string.home_address));
-        textTransactions.setText(resources.getString(R.string.history_and_transactions));
+        favourites.setText(resources.getString(R.string.my_favourites));
         textShare.setText(resources.getString(R.string.share_dine));
         textHelp.setText(resources.getString(R.string.help));
 
@@ -757,7 +766,7 @@ public class Profile extends AppCompatActivity {
                         Common.currentUser.getHomeAddress() != null) {
                     address_display.setText(Common.currentUser.getHomeAddress());
                 }
-                Picasso.with(getBaseContext()).load(Common.currentUser.getImage()).networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.profile_pic)
+                Picasso.with(getBaseContext()).load(Common.currentUser.getImage()).networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.bg)
                         .into(profile, new Callback() {
                             @Override
                             public void onSuccess() {
@@ -766,7 +775,7 @@ public class Profile extends AppCompatActivity {
 
                             @Override
                             public void onError() {
-                                Picasso.with(getBaseContext()).load(Common.currentUser.getImage()).placeholder(R.drawable.profile_pic)
+                                Picasso.with(getBaseContext()).load(Common.currentUser.getImage()).placeholder(R.drawable.bg)
                                         .into(profile);
                             }
                         });
@@ -872,6 +881,7 @@ public class Profile extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        profileItemsHolder.startAnimation(slide_up);
         users.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

@@ -181,4 +181,6 @@
     <string name="comment">ስለ ትዛዙ አስተያየት</string>
     <string name="track_order">ትዛዙ የት ደረሰ</string>
     <string name="favs">favs</string>
+    <string name="history">ማህደር</string>
+    <string name="my_favourites">እኔ የወደድኳቸው</string>
 </resources>

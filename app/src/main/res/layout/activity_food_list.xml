@@ -170,6 +170,7 @@
                 android:layout_height="wrap_content"
                 app:bt_colorActive="@color/green_active"
                 app:bt_colorInactive="@color/green_inactive"
+                android:visibility="gone"
                 app:bt_icon="@drawable/ic_playlist"
                 app:bt_shape="@drawable/transition_background_drawable_list"
                 app:bt_title="Orders" />
@@ -180,6 +181,7 @@
                 android:layout_height="wrap_content"
                 app:bt_colorActive="@color/purple_active"
                 app:bt_colorInactive="@color/purple_inactive"
+                android:visibility="gone"
                 app:bt_icon="@drawable/ic_like"
                 app:bt_shape="@drawable/transition_background_drawable_like"
                 app:bt_title="@string/likes" />

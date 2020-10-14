@@ -73,6 +73,7 @@
         android:layout_above="@id/bottom_navigation_view_linear"
         android:background="@color/colorPrimary"
         android:clickable="true"
+        android:layout_alignParentBottom="true"
         android:focusable="true"
         android:orientation="horizontal"
         android:paddingTop="12dp"
@@ -123,6 +124,7 @@
         android:background="@color/white"
         android:elevation="8dp"
         android:orientation="horizontal"
+        android:visibility="gone"
         android:padding="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -146,6 +148,7 @@
             android:layout_height="wrap_content"
             app:bt_colorActive="@color/green_active"
             app:bt_colorInactive="@color/green_inactive"
+            android:visibility="gone"
             app:bt_icon="@drawable/ic_playlist"
             app:bt_shape="@drawable/transition_background_drawable_list"
             app:bt_title="@string/orders" />
@@ -157,6 +160,7 @@
             app:bt_colorActive="@color/purple_active"
             app:bt_colorInactive="@color/purple_inactive"
             app:bt_icon="@drawable/ic_like"
+            android:visibility="gone"
             app:bt_shape="@drawable/transition_background_drawable_like"
             app:bt_title="@string/likes" />
 

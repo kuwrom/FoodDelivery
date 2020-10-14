@@ -82,9 +82,9 @@ public class OrderHistory extends AppCompatActivity {
                 .setFontAttrId(R.attr.fontPath)
                 .build());
         setContentView(R.layout.activity_order_history);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle((CharSequence) "Order History");
-        toolbar.setNavigationIcon((int) R.drawable.ic_baseline_arrow_back_ios_24);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("Order History");
+        toolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_ios_24);
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
@@ -149,7 +149,7 @@ public class OrderHistory extends AppCompatActivity {
             public void onRefresh() {
                 refreshOrders.setRefreshing(false);
                 if (Common.isConnectedToInternet(getBaseContext())) {
-                    loadOrders(Common.currentUser.getPhone());
+                    loadOrders(Paper.book().read("userPhone").toString());
                 } else {
                     Toast.makeText(getBaseContext(), getResources().getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
                     return;

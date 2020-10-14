@@ -87,6 +87,9 @@ public class MainActivity extends AppCompatActivity {
         if (language == null)
             Paper.book().write("language", "en");
 
+        if (Paper.book().read("usd") == null)
+            Paper.book().write("usd", false);
+
         if (Paper.book().read("sub_new") == null) {
             FirebaseMessaging.getInstance().subscribeToTopic(Common.topicName);
             Paper.book().write("sub_new", "true");

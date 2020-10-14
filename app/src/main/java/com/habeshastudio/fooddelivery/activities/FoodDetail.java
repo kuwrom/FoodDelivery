@@ -382,7 +382,7 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
 
                 //Set Image
                 Picasso.with(getBaseContext()).load(currentFood.getImage())
-                        .networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.cover).into(food_image, new Callback() {
+                        .networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.foodbg).into(food_image, new Callback() {
                     @Override
                     public void onSuccess() {
 
@@ -390,7 +390,7 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
 
                     @Override
                     public void onError() {
-                        Picasso.with(getBaseContext()).load(currentFood.getImage()).placeholder(R.drawable.cover).into(food_image);
+                        Picasso.with(getBaseContext()).load(currentFood.getImage()).placeholder(R.drawable.foodbg).into(food_image);
                     }
                 });
 

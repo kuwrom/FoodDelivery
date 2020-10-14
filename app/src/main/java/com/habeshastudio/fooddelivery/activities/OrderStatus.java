@@ -42,7 +42,6 @@ import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.database.Database;
 import com.habeshastudio.fooddelivery.helper.EmptyRecyclerView;
 import com.habeshastudio.fooddelivery.helper.LocaleHelper;
-import com.habeshastudio.fooddelivery.helper.MyExceptionHandler;
 import com.habeshastudio.fooddelivery.interfaces.ItemClickListener;
 import com.habeshastudio.fooddelivery.models.Order;
 import com.habeshastudio.fooddelivery.models.Request;
@@ -50,6 +49,7 @@ import com.habeshastudio.fooddelivery.models.User;
 import com.habeshastudio.fooddelivery.viewHolder.OrderViewHolder;
 
 import java.text.NumberFormat;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -100,7 +100,7 @@ public class OrderStatus extends AppCompatActivity {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             getWindow().setStatusBarColor(Color.WHITE);
         }
-        Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
+        Thread.setDefaultUncaughtExceptionHandler(Thread.getDefaultUncaughtExceptionHandler());
         Paper.init(OrderStatus.this);
         //Init Firebase
         database = FirebaseDatabase.getInstance();
@@ -146,7 +146,7 @@ public class OrderStatus extends AppCompatActivity {
             public void onRefresh() {
                 refreshOrders.setRefreshing(false);
                 if (Common.isConnectedToInternet(getBaseContext())) {
-                    loadOrders(Common.currentUser.getPhone());
+                    loadOrders(Paper.book().read("userPhone").toString());
                 } else {
                     Toast.makeText(getBaseContext(), getResources().getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
                     return;
@@ -275,69 +275,81 @@ public class OrderStatus extends AppCompatActivity {
         history.child(key).child("status").setValue("4").addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-
-            }
-        });
-
-        requests.child(key)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-//                        double amount = 0.0;
-//                        try{
-//                            amount = Common.formatCurrency( dataSnapshot.child("total").getValue().toString(), Locale.US).doubleValue();
-//                        } catch (ParseException e) {
-//                            e.printStackTrace();
-//                            return;
-//                        }
-
-                        //refund
-                        //double balance = Double.parseDouble(Common.currentUser.getBalance().toString()) + amount;
-                        //Map<String, Object> update_balance = new HashMap<>();
-                        //update_balance.put("balance", balance);
-//                        FirebaseDatabase.getInstance().getReference("User")
-//                                .child(Paper.book().read("userPhone").toString())
-//                                .updateChildren(update_balance)
-//                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-//                                    @Override
-//                                    public void onComplete(@NonNull Task<Void> task) {
-//                                        if (task.isSuccessful()) {
-                                            requests.child(key)
-                                                    .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                requests.child(key)
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                final String orderNumber = dataSnapshot.getKey();
+                                final String timeNow = String.valueOf(System.currentTimeMillis());
+                                final double amount = Double.parseDouble(dataSnapshot.child("total").getValue().toString().split(" ")[1]);
+                                if (dataSnapshot.child("paymentState").getValue().toString().equals("Paid")) {
+                                    //refund
+                                    users.child(Paper.book().read("userPhone").toString()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            final double balance = Double.parseDouble(dataSnapshot.child("balance").getValue().toString()) + amount;
+                                            users.child(Paper.book().read("userPhone").toString()).child("balance").setValue(balance).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    //Toast.makeText(OrderStatus.this, new StringBuilder("Order ").append(key).append(" has been deleted!").toString(), Toast.LENGTH_SHORT).show();
-                                                }
-                                            }).addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    Toast.makeText(OrderStatus.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    HashMap<String, Object> hashMap = new HashMap<>();
+                                                    hashMap.put("amount", amount);
+                                                    hashMap.put("method", "Order Refund");
+                                                    hashMap.put("comments", "order number: " + orderNumber);
+                                                    hashMap.put("newBalance", balance);
+                                                    FirebaseDatabase.getInstance().getReference("confidential").child("transactionHistory").child("refund").child(Paper.book().read("userPhone").toString())
+                                                            .child(timeNow).updateChildren(hashMap);
                                                 }
                                             });
-                        //Refresh user status
-                        FirebaseDatabase.getInstance().getReference("User")
-                                .child(Paper.book().read("userPhone").toString())
-                                .addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        Common.currentUser = dataSnapshot.getValue(User.class);
-                                    }
-
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
-
-                                    }
-                                                    });
                                         }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+                                    });
+                                }
+
+                                requests.child(key)
+                                        .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        //Toast.makeText(OrderStatus.this, new StringBuilder("Order ").append(key).append(" has been deleted!").toString(), Toast.LENGTH_SHORT).show();
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(OrderStatus.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+
+                                //Refresh user status
+                                FirebaseDatabase.getInstance().getReference("User")
+                                        .child(Paper.book().read("userPhone").toString())
+                                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                                Common.currentUser = dataSnapshot.getValue(User.class);
+                                            }
+
+                                            @Override
+                                            public void onCancelled(DatabaseError databaseError) {
+
+                                            }
+                                        });
+                            }
 //                                    }
 //                                });
 //                    }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
 
-                    }
-                });
+                            }
+                        });
+            }
+        });
+
+
     }
 
     @Override

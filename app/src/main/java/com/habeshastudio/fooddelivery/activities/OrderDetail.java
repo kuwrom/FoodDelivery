@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import com.habeshastudio.fooddelivery.R;
 import com.habeshastudio.fooddelivery.common.Common;
-import com.habeshastudio.fooddelivery.helper.MyExceptionHandler;
 import com.habeshastudio.fooddelivery.viewHolder.OrderDetailAdapter;
 
 public class OrderDetail extends AppCompatActivity {
@@ -28,11 +27,11 @@ public class OrderDetail extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_detail);
 
-        Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
+        //Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle((CharSequence) "Order Details");
-        toolbar.setNavigationIcon((int) R.drawable.ic_baseline_arrow_back_ios_24);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("Order Details");
+        toolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_ios_24);
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
@@ -41,14 +40,14 @@ public class OrderDetail extends AppCompatActivity {
         });
         setSupportActionBar(toolbar);
 
-        order_id = (TextView) findViewById(R.id.order_id);
-        order_phone = (TextView) findViewById(R.id.order_phone);
-        order_address = (TextView) findViewById(R.id.order_addres);
-        order_total = (TextView) findViewById(R.id.order_total);
-        order_comment = (TextView) findViewById(R.id.order_comment);
+        order_id = findViewById(R.id.order_id);
+        order_phone = findViewById(R.id.order_phone);
+        order_address = findViewById(R.id.order_addres);
+        order_total = findViewById(R.id.order_total);
+        order_comment = findViewById(R.id.order_comment);
         processed = findViewById(R.id.order_processed);
         //callRestaurant = findViewById(R.id.btn_call_restaurant);
-        listFoods = (RecyclerView) findViewById(R.id.lstFoods);
+        listFoods = findViewById(R.id.lstFoods);
         listFoods.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         listFoods.setLayoutManager(layoutManager);

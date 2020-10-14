@@ -316,8 +316,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:bt_active="true"
-            app:bt_colorActive="@color/colorPrimaryDark"
-            app:bt_colorInactive="@color/blue_active"
+            app:bt_colorActive="@color/red_active"
+            app:bt_colorInactive="@color/red_inactive"
             app:bt_icon="@drawable/ic_home_black_24dp"
             app:bt_shape="@drawable/transition_background_drawable_home"
             app:bt_title="@string/home" />

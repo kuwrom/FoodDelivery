@@ -184,5 +184,7 @@
     <string name="comment">Comment</string>
     <string name="track_order">Track Order</string>
     <string name="favs">favs</string>
+    <string name="history">History</string>
+    <string name="my_favourites">My Favourites</string>
 
 </resources>

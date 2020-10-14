@@ -695,7 +695,6 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
 
 
         mSlider.setPresetTransformer(SliderLayout.Transformer.Default);
-        mSlider.setPresetIndicator(SliderLayout.PresetIndicators.Left_Bottom);
         mSlider.setCustomAnimation(new DescriptionAnimation());
         mSlider.setDuration(15000);
     }
@@ -730,6 +729,8 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
     @Override
     protected void onStop() {
         super.onStop();
+        if (mSlider != null)
+            mSlider.stopAutoCycle();
         //adapter.stopListening();
         //mSlider.stopAutoCycle();
         if (geoQuery != null) {
