@@ -117,7 +117,7 @@
     <string name="removed_from_fav">አልወደዱትም</string>
     <string name="no_favourite_items_yet">እስካሁን የወደዱት ነገር የለም</string>
     <string name="no_ordered_items_yet">እስካሁን ያዘዙት ነገር የለም</string>
-    <string name="status">Status: </string>
+    <string name="status">የትዛዙ ሁኔታ: </string>
     <string name="order_pending">አልተሰራም</string>
     <string name="food_ordered">እየተሰራ ነው</string>
     <string name="order_shipped">ተጭኗል</string>
@@ -187,4 +187,13 @@
     <string name="balance_available">ያሎት ቀሪ ሂሳብ:</string>
     <string name="birr">ብር</string>
     <string name="recharge_balance">ሂሳብዎን ይሙሉ</string>
+    <string name="order_id">መከታተያ ቁጥር:</string>
+    <string name="ordered_from">የታዘዘው ከ:</string>
+    <string name="assigned_handler">ትዛዙን የተቀበሎት:</string>
+    <string name="pending">Pending</string>
+    <string name="ordered_by">የታዘዘው በ:</string>
+    <string name="total_price">ጠቅላላ ሂሳብ:</string>
+    <string name="payment_state">ክፍያ:</string>
+    <string name="failed_attempts_naccount_will_be_blocked_after_reaching_5">የተሳሳቱ ሙከራዎች, \n5 ከደረሱ አካውንቶ ይታገዳል</string>
+    <string name="too_many_attempts_naccount_blocked">ብዙ የተሳሳቱ ሙከራዎች, \nአካውንቶ ታግዷል!</string>
 </resources>

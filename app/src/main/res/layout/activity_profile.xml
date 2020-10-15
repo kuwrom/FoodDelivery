@@ -141,7 +141,6 @@
                                         android:textColor="@color/com_facebook_messenger_blue"
                                         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                                         android:textStyle="bold" />
-
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
@@ -387,7 +386,7 @@
                                 android:layout_width="24dp"
                                 android:layout_height="24dp"
                                 android:contentDescription="TODO"
-                                android:src="@drawable/ic_payment_black_24dp"
+                                android:src="@drawable/ic_account_balance_black_24dp"
                                 android:tint="@color/orange_active" />
 
                             <TextView

@@ -214,10 +214,12 @@ public class OrderStatus extends AppCompatActivity {
                 @Override
                 protected void onBindViewHolder(@NonNull final OrderViewHolder viewHolder, @SuppressLint("RecyclerView") final int position, @NonNull final Request model) {
 
-                    viewHolder.txtOrderId.setText(adapter.getRef(position).getKey());
+                    viewHolder.txtOrderId.setText(new StringBuilder(getResources().getString(R.string.order_id) + " " + adapter.getRef(position).getKey()));
                     viewHolder.txtOrderStatus.setText(Common.convertCodeToStatus(model.getStatus()));
-                    viewHolder.txtOrderAddress.setText(model.getAddress());
-                    viewHolder.txtOrderphone.setText(model.getPhone());
+                    viewHolder.txtAssignedHandler.setText(new StringBuilder(getResources().getString(R.string.assigned_handler) + " " + model.getOrderHandler()));
+                    viewHolder.txtOrderBy.setText(new StringBuilder(getResources().getString(R.string.ordered_by) + " " + model.getName()));
+                    viewHolder.txtTotalPrice.setText(new StringBuilder(getResources().getString(R.string.total_price) + " " + model.getTotal()));
+                    viewHolder.txtPaymentState.setText(new StringBuilder(getResources().getString(R.string.payment_state) + " " + model.getPaymentState()));
                     viewHolder.setItemClickListener(new ItemClickListener() {
                         @Override
                         public void onClick(View view, int position, boolean isLongClick) {

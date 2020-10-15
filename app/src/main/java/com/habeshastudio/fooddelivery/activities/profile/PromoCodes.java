@@ -1,16 +1,15 @@
 package com.habeshastudio.fooddelivery.activities.profile;
 
-import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -30,13 +29,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import io.paperdb.Paper;
+
 public class PromoCodes extends AppCompatActivity {
 
     DatabaseReference users, database;
     Button submit;
-    MaterialEditText refererPhone, promocode;
-    AlertDialog dialog_verifying;
-    private String rPhone, rPromo;
+    public ProgressDialog mDialog;
+    boolean isBlocked;
+    TextView blockedText, counterText;
+    MaterialEditText promocode;
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -49,54 +51,84 @@ public class PromoCodes extends AppCompatActivity {
         setContentView(R.layout.activity_promo_codes);
         users = FirebaseDatabase.getInstance().getReference("User");
         database = FirebaseDatabase.getInstance().getReference("voucher");
-
-        LayoutInflater inflater = getLayoutInflater();
-        View alertLayout = inflater.inflate(R.layout.processing_dialog, null);
-        AlertDialog.Builder show = new AlertDialog.Builder(PromoCodes.this);
-        show.setView(alertLayout);
-        show.setCancelable(true);
-        dialog_verifying = show.create();
-        dialog_verifying.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-
+        counterText = findViewById(R.id.counter_note);
+        blockedText = findViewById(R.id.blocked_note);
+        mDialog = new ProgressDialog(this);
+        mDialog.setMessage("Loading ...");
+        mDialog.setCancelable(false);
+        mDialog.setCanceledOnTouchOutside(false);
         promocode = findViewById(R.id.text_promo_code);
-        refererPhone = findViewById(R.id.text_referer_phone);
         submit = findViewById(R.id.btn_confirm);
+
+        Paper.init(PromoCodes.this);
+        if (Paper.book().read("counter") != null)
+            initView(Integer.parseInt(Paper.book().read("counter").toString()));
+
+        FirebaseDatabase.getInstance().getReference("User").child((Paper.book().read("userPhone").toString()))
+                .child("failedVoucherAttempts").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists())
+                    Paper.book().write("counter", Objects.requireNonNull(dataSnapshot.getValue()).toString());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         final Animation animShake = AnimationUtils.loadAnimation(this, R.anim.shake);
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (Common.isConnectedToInternet(getBaseContext())) {
-                    if (!Objects.requireNonNull(refererPhone.getText()).toString().isEmpty()
-                            && !Objects.requireNonNull(promocode.getText()).toString().isEmpty()) {
-                        rPhone = refererPhone.getText().toString();
-                        rPromo = promocode.getText().toString();
-                        dialog_verifying.show();
-                        database.addValueEventListener(new ValueEventListener() {
+                    if (!Objects.requireNonNull(promocode.getText()).toString().isEmpty() && promocode.getText() != null) {
+                        final String rPromo = promocode.getText().toString();
+                        mDialog.show();
+                        database.keepSynced(true);
+                        database.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                if (dataSnapshot.child(rPromo).exists()
-                                        && dataSnapshot.child(rPromo).child("phone").getValue().toString().equals(rPhone)) {
+                            public void onDataChange(final DataSnapshot dataSnapshot) {
+                                if (dataSnapshot.child(rPromo).exists()) {
                                     // Balance
-                                    double balance = Double.parseDouble(Common.currentUser.getBalance().toString()) +
-                                            Double.parseDouble(dataSnapshot.child(rPromo).child("amount").getValue().toString());
+                                    final String timeNow = String.valueOf(System.currentTimeMillis());
+                                    final double balanceAmount = Double.parseDouble(dataSnapshot.child(rPromo).child("amount").getValue().toString());
+                                    final double balance = Double.parseDouble(Common.currentUser.getBalance().toString()) + balanceAmount;
                                     Map<String, Object> update_balance = new HashMap<>();
                                     update_balance.put("balance", balance);
                                     FirebaseDatabase.getInstance().getReference("User")
-                                            .child(Common.currentUser.getPhone())
+                                            .child(Paper.book().read("userPhone").toString())
                                             .updateChildren(update_balance)
                                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
                                                     if (task.isSuccessful()) {
+                                                        database.child(rPromo).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<Void> task) {
+                                                                HashMap<String, Object> hashMap = new HashMap<>();
+                                                                hashMap.put("amount", balanceAmount);
+                                                                hashMap.put("method", "Recharge using Voucher");
+                                                                hashMap.put("comments", rPromo);
+                                                                hashMap.put("newBalance", balance);
+                                                                FirebaseDatabase.getInstance().getReference("confidential").child("transactionHistory").child("recharge").child(Paper.book().read("userPhone").toString())
+                                                                        .child(timeNow).updateChildren(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                    @Override
+                                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                                        database.child(rPromo).removeValue();
+                                                                    }
+                                                                });
+                                                            }
+                                                        });
                                                         //Refresh user status
                                                         FirebaseDatabase.getInstance().getReference("User")
-                                                                .child(Common.currentUser.getPhone())
+                                                                .child(Paper.book().read("userPhone").toString())
                                                                 .addListenerForSingleValueEvent(new ValueEventListener() {
                                                                     @Override
                                                                     public void onDataChange(DataSnapshot dataSnapshot) {
                                                                         Common.currentUser = dataSnapshot.getValue(User.class);
-                                                                        dialog_verifying.dismiss();
+                                                                        mDialog.dismiss();
                                                                     }
 
                                                                     @Override
@@ -108,8 +140,20 @@ public class PromoCodes extends AppCompatActivity {
                                                 }
                                             });
                                 } else {
-                                    dialog_verifying.dismiss();
+                                    mDialog.dismiss();
                                     Toast.makeText(PromoCodes.this, "no such a promo", Toast.LENGTH_SHORT).show();
+                                    if (Paper.book().read("counter") != null) {
+                                        int counts = Integer.parseInt(Paper.book().read("counter").toString());
+                                        Paper.book().write("counter", ++counts);
+                                        FirebaseDatabase.getInstance().getReference("User").child((Paper.book().read("userPhone").toString()))
+                                                .child("failedVoucherAttempts").setValue(String.valueOf(counts));
+                                        initView(counts);
+                                    } else {
+                                        Paper.book().write("counter", "1");
+                                        FirebaseDatabase.getInstance().getReference("User").child((Paper.book().read("userPhone").toString()))
+                                                .child("failedVoucherAttempts").setValue("1");
+                                        initView(1);
+                                    }
                                 }
                             }
 
@@ -119,7 +163,6 @@ public class PromoCodes extends AppCompatActivity {
                             }
                         });
                     } else {
-                        Toast.makeText(PromoCodes.this, "Please Fill in all info", Toast.LENGTH_SHORT).show();
                         submit.startAnimation(animShake);
                     }
                 } else {
@@ -127,6 +170,18 @@ public class PromoCodes extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void initView(int counts) {
+        if (counts < 5) {
+            counterText.setText(counts + "/5 " + getResources().getString(R.string.failed_attempts_naccount_will_be_blocked_after_reaching_5));
+            counterText.setVisibility(View.VISIBLE);
+        } else {
+            counterText.setVisibility(View.GONE);
+            promocode.setVisibility(View.GONE);
+            blockedText.setVisibility(View.VISIBLE);
+            submit.setVisibility(View.GONE);
+        }
     }
 
     @Override

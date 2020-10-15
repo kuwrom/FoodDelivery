@@ -244,10 +244,13 @@ public class OrderHistory extends AppCompatActivity {
                 @Override
                 protected void onBindViewHolder(@NonNull final OrderViewHolder viewHolder, @SuppressLint("RecyclerView") final int position, @NonNull final Request model) {
 
-                    viewHolder.txtOrderId.setText(adapter.getRef(position).getKey());
+                    viewHolder.txtOrderId.setText(new StringBuilder(getResources().getString(R.string.order_id) + " " + adapter.getRef(position).getKey()));
+                    viewHolder.txtAssignedHandler.setVisibility(View.GONE);
+                    //viewHolder.txtOrderedFrom.setText(adapter.getRef(position).getKey());
+                    viewHolder.txtOrderBy.setText(new StringBuilder(getResources().getString(R.string.ordered_by) + " " + model.getName()));
+                    viewHolder.txtTotalPrice.setText(new StringBuilder(getResources().getString(R.string.total_price) + " " + model.getTotal()));
+                    viewHolder.txtPaymentState.setVisibility(View.GONE);
                     viewHolder.txtOrderStatus.setText(Common.convertCodeToStatus(model.getStatus()));
-                    viewHolder.txtOrderAddress.setText(model.getAddress());
-                    viewHolder.txtOrderphone.setText(model.getPhone());
                     viewHolder.btn_delete.setVisibility(View.GONE);
                     viewHolder.setItemClickListener(new ItemClickListener() {
                         @Override

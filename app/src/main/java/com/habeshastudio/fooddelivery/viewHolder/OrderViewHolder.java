@@ -15,7 +15,7 @@ import com.habeshastudio.fooddelivery.interfaces.ItemClickListener;
 
 public class OrderViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-    public TextView txtOrderId, txtOrderStatus, txtOrderphone, txtOrderAddress;
+    public TextView txtOrderId, txtOrderStatus, txtOrderBy, txtOrderedFrom, txtAssignedHandler, txtTotalPrice, txtPaymentState;
     public ImageView btn_delete;
     private ItemClickListener itemClickListener;
 
@@ -23,10 +23,13 @@ public class OrderViewHolder extends RecyclerView.ViewHolder implements View.OnC
     public OrderViewHolder(View itemView) {
         super(itemView);
 
-        txtOrderAddress = itemView.findViewById(R.id.order_address);
+        txtOrderBy = itemView.findViewById(R.id.order_by);
+        txtOrderedFrom = itemView.findViewById(R.id.order_from);
+        txtAssignedHandler = itemView.findViewById(R.id.order_handler);
+        txtTotalPrice = itemView.findViewById(R.id.total_price);
+        txtPaymentState = itemView.findViewById(R.id.payment_state);
         txtOrderId = itemView.findViewById(R.id.order_id);
         txtOrderStatus = itemView.findViewById(R.id.order_status);
-        txtOrderphone = itemView.findViewById(R.id.order_address);
         btn_delete = itemView.findViewById(R.id.btn_delete);
 
         itemView.setOnClickListener(this);

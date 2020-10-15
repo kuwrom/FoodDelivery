@@ -14,9 +14,9 @@
         android:layout_alignParentTop="true"
         android:gravity="center_horizontal"
         android:layout_marginTop="32dp"
-        android:text="@string/promo_codes"
+        android:text="@string/recharge_balance"
         android:textStyle="bold"
-        android:textColor="@color/media"
+        android:textColor="@color/colorPrimary"
         android:textSize="32sp" />
 
 
@@ -36,35 +36,35 @@
             android:layout_marginStart="32dp"
             android:layout_marginEnd="32dp"
             android:hint="@string/enter_your_promo_code_here"
-            android:inputType="phone"
             android:visibility="visible"
-            android:maxLength="10"
             android:textColor="@color/blue_grey_active"
             android:textColorHint="@color/blue_grey_active"
             android:textSize="18sp"
             app:met_baseColor="@color/blue_grey_active"
             app:met_floatingLabel="highlight"
-            app:met_maxCharacters="10"
+            app:met_maxCharacters="6"
             app:met_primaryColor="@color/blue_grey_active"
             app:met_singleLineEllipsis="true" />
 
-        <com.rengwuxian.materialedittext.MaterialEditText
-            android:id="@+id/text_referer_phone"
+        <TextView
+            android:layout_width="match_parent"
+            android:id="@+id/blocked_note"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:gravity="center_horizontal"
+            android:paddingTop="32dp"
+            android:text="@string/too_many_attempts_naccount_blocked"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/counter_note"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginEnd="32dp"
-            android:visibility="visible"
-            android:hint="@string/referer_phone_number"
-            android:inputType="phone"
-            android:textColor="@color/blue_grey_active"
-            android:textColorHint="@color/blue_grey_active"
-            android:textSize="18sp"
-            app:met_baseColor="@color/blue_grey_active"
-            app:met_floatingLabel="highlight"
-            app:met_primaryColor="@color/blue_grey_active"
-            app:met_singleLineEllipsis="true" />
+            android:gravity="center_horizontal"
+            android:text="@string/failed_attempts_naccount_will_be_blocked_after_reaching_5"
+            android:textColor="@color/red_active" />
 
 
     </LinearLayout>
@@ -75,8 +75,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/layout"
         android:layout_margin="32dp"
-        android:background="@drawable/bg_ui"
-        android:backgroundTint="@color/media"
+        android:background="@drawable/bg_ui_cart"
         android:text="@string/confirm"
         android:textColor="@android:color/white"
         android:textStyle="bold" />

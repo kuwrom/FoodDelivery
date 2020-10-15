@@ -553,7 +553,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
                                     txtTotalPrice.getText().toString() + " [D: " + deliveryFeeView.getText().toString() + "]",
                                     "0",
                                     comment,
-                                    "Unpaid",
+                                    "Not paid yet",
                                     "COD",
                                     String.format("%s,%s", mLastLocation.getLatitude(), mLastLocation.getLongitude()),
                                     cart,

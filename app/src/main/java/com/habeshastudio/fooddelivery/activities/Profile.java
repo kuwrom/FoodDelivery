@@ -418,7 +418,7 @@ public class Profile extends AppCompatActivity {
         mAnimationSet.start();
         /////////////////////////////////////////////////////
 
-        availableBalance.setText(balance.intValue());
+        availableBalance.setText(getResources().getString(R.string.balance_available) + " " + balance.intValue() + " " + getResources().getString(R.string.birr));
 
 
         final TextView five, ten, fifteen, twentyFive, fifty, hundred;

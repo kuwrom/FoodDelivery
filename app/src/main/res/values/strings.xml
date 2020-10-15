@@ -120,7 +120,7 @@
     <string name="removed_from_fav">removed from favorites!</string>
     <string name="no_favourite_items_yet">No favourite items yet</string>
     <string name="no_ordered_items_yet">No ordered items yet</string>
-    <string name="status">Status:</string>
+    <string name="status">Order Status:</string>
     <string name="order_pending">Your Order is Pending</string>
     <string name="food_ordered">Your Food is Ordered</string>
     <string name="order_shipped">Food Shipped</string>
@@ -190,5 +190,14 @@
     <string name="balance_available">Balance Available:</string>
     <string name="birr">birr</string>
     <string name="recharge_balance">Recharge Balance</string>
+    <string name="order_id">Order Id:</string>
+    <string name="ordered_from">Ordered from:</string>
+    <string name="assigned_handler">Assigned Handler:</string>
+    <string name="pending">Pending</string>
+    <string name="ordered_by">Ordered by:</string>
+    <string name="total_price">Total Price:</string>
+    <string name="payment_state">Payment State:</string>
+    <string name="failed_attempts_naccount_will_be_blocked_after_reaching_5">failed attempts, \nAccount will be blocked after reaching 5</string>
+    <string name="too_many_attempts_naccount_blocked">Too Many Attempts, \nAccount Blocked!</string>
 
 </resources>
