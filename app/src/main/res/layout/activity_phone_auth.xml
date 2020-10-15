@@ -102,7 +102,6 @@
             android:layout_height="wrap_content"
             android:layout_margin="32dp"
             android:background="@drawable/bg_ui_cart"
-            android:backgroundTint="@color/media"
             android:text="@string/cont"
             android:textColor="@android:color/white"
             android:textStyle="bold" />
@@ -133,6 +132,4 @@
         android:textColor="@color/grey_active"
         android:focusable="true"
         android:textStyle="bold" />
-
-
 </RelativeLayout>

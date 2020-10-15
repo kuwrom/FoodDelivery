@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.habeshastudio.fooddelivery.R;
 import com.habeshastudio.fooddelivery.common.Common;
+import com.habeshastudio.fooddelivery.helper.MyExceptionHandler;
 import com.habeshastudio.fooddelivery.viewHolder.OrderDetailAdapter;
 
 public class OrderDetail extends AppCompatActivity {
@@ -27,7 +28,7 @@ public class OrderDetail extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_detail);
 
-        //Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
+        Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Order Details");

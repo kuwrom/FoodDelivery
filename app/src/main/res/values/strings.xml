@@ -186,5 +186,9 @@
     <string name="favs">favs</string>
     <string name="history">History</string>
     <string name="my_favourites">My Favourites</string>
+    <string name="account_balance_etb">Account Balance:</string>
+    <string name="balance_available">Balance Available:</string>
+    <string name="birr">birr</string>
+    <string name="recharge_balance">Recharge Balance</string>
 
 </resources>

@@ -3,7 +3,7 @@
     <string name="title_notifications">Notifications</string>
     <string name="home">ማውጫ</string>
     <string name="search">Search</string>
-    <string name="profile">ስለኔ</string>
+    <string name="profile">የኔ</string>
     <string name="notification">Notify</string>
     <string name="likes">የወደዷቸው</string>
     <string name="happy">Happy</string>
@@ -114,7 +114,7 @@
     <string name="rate_this">ምን ያክል ወደዱት</string>
     <string name="submit">ላክ</string>
     <string name="only_from_one">ይቅርታ፣ ባንድ ጊዜ ከ አንድ ሬስቶራንት ብቻ ነው ማዘዝ ሚችሉት</string>
-    <string name="removed_from_fav">ከውድድ ወቷል</string>
+    <string name="removed_from_fav">አልወደዱትም</string>
     <string name="no_favourite_items_yet">እስካሁን የወደዱት ነገር የለም</string>
     <string name="no_ordered_items_yet">እስካሁን ያዘዙት ነገር የለም</string>
     <string name="status">Status: </string>
@@ -125,7 +125,7 @@
     <string name="delete_order">ትዛዙን ልሰርዝ?</string>
     <string name="cant_delete_order">ይቅርታ, ትዛዙን መሰረዝ አልተቻለም</string>
     <string name="orders">ያዘዝዋቸው</string>
-    <string name="favorites">የወደድዋቸው</string>
+    <string name="favorites">የወደድኳቸው</string>
     <string name="comments">አስተያየቶች</string>
     <string name="processing">በመተግበር ላይ</string>
     <string name="success">ተሳክቷል</string>
@@ -182,5 +182,9 @@
     <string name="track_order">ትዛዙ የት ደረሰ</string>
     <string name="favs">favs</string>
     <string name="history">ማህደር</string>
-    <string name="my_favourites">እኔ የወደድኳቸው</string>
+    <string name="my_favourites">የወደድኳቸው</string>
+    <string name="account_balance_etb">ያሎት ቀሪ ሂሳብ:</string>
+    <string name="balance_available">ያሎት ቀሪ ሂሳብ:</string>
+    <string name="birr">ብር</string>
+    <string name="recharge_balance">ሂሳብዎን ይሙሉ</string>
 </resources>

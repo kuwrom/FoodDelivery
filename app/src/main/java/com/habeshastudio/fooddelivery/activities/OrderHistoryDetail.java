@@ -51,7 +51,7 @@ public class OrderHistoryDetail extends AppCompatActivity {
             }
         });
         setSupportActionBar(toolbar);
-        //Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
+        Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
 
         if (getIntent() != null)
             order_id_value = getIntent().getStringExtra("OrderId");

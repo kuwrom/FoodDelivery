@@ -34,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:padding="8dp"
-                android:text="Balance Available: 80 birr"
+                android:text="@string/balance_available"
                 android:textSize="12sp"
                 android:textStyle="bold" />
 
@@ -44,7 +44,6 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="32dp"
                 android:background="@drawable/bg_ui"
-                android:backgroundTint="@color/media"
                 android:text="@string/_1_buy_a_mobile_card"
                 android:textColor="@android:color/white"
                 android:textStyle="bold" />

@@ -120,7 +120,7 @@ public class Register extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (Common.isConnectedToInternet(getBaseContext())) {
-                    if (!Objects.requireNonNull(edtPhone.getText()).toString().isEmpty() && Integer.parseInt(edtPhone.getText().toString().substring(1)) > 900000000) {
+                    if (!Objects.requireNonNull(edtPhone.getText()).toString().isEmpty() && Integer.parseInt(edtPhone.getText().toString()) > 900000000) {
                         phone = edtPhone.getText().toString().trim();
                         if (phone.startsWith("0"))
                             phone = "+251" + phone.substring(1);

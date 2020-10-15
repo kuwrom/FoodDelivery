@@ -57,6 +57,7 @@ import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.common.Config;
 import com.habeshastudio.fooddelivery.database.Database;
 import com.habeshastudio.fooddelivery.helper.LocaleHelper;
+import com.habeshastudio.fooddelivery.helper.MyExceptionHandler;
 import com.habeshastudio.fooddelivery.helper.RecyclerItemTouchHelper;
 import com.habeshastudio.fooddelivery.interfaces.RecyclerItemTouchHelperListener;
 import com.habeshastudio.fooddelivery.models.DataMessage;
@@ -155,8 +156,8 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
 
         mGoogleMapService = Common.getGoogleMapApi();
         mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        //Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
-        Thread.setDefaultUncaughtExceptionHandler(Thread.getDefaultUncaughtExceptionHandler());
+        Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
+        //Thread.setDefaultUncaughtExceptionHandler(Thread.getDefaultUncaughtExceptionHandler());
 
         //Runtime permission
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {

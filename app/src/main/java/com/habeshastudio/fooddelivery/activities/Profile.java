@@ -52,6 +52,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.habeshastudio.fooddelivery.BuildConfig;
 import com.habeshastudio.fooddelivery.R;
+import com.habeshastudio.fooddelivery.activities.profile.PromoCodes;
 import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.database.Database;
 import com.habeshastudio.fooddelivery.helper.LocaleHelper;
@@ -85,12 +86,12 @@ public class Profile extends AppCompatActivity {
     public ProgressDialog mDialog;
     LinearLayout checkoutButton, balanceWithdraw;
     String isSubscribed;
-    LinearLayout paymentMethod, promoCode, transactions, share, help;
+    LinearLayout paymentMethod, promoCode, transactions, share, help, addBalance;
     Button about, history, orders, feedBack;
     TextView voucher;
     CardView voucherCard;
     DatabaseReference myReference;
-    TextView name_display, address_display, balance_display, moreOptions, textPaymentMethod, textDeliveryAddress, favourites, textShare, textHelp;
+    TextView name_display, address_display, balance_display, moreOptions, textPaymentMethod, textDeliveryAddress, favourites, textShare, textHelp, textAddVoucher;
     ImageView profile;
     boolean isUsd, isAmharic;
     FloatingActionButton notificationSwitch, languageSwitch, nightModeSwitch, currencySwitch;
@@ -121,7 +122,9 @@ public class Profile extends AppCompatActivity {
         textDeliveryAddress = findViewById(R.id.txt_delivery);
         favourites = findViewById(R.id.favourites);
         textShare = findViewById(R.id.txt_share);
+        addBalance = findViewById(R.id.add_voucher);
         textHelp = findViewById(R.id.txt_help);
+        textAddVoucher = findViewById(R.id.txt_add_voucher);
         profileItemsHolder = findViewById(R.id.profile_items_holder);
         moreOptions = findViewById(R.id.more_options);
         users = FirebaseDatabase.getInstance().getReference("User");
@@ -221,13 +224,21 @@ public class Profile extends AppCompatActivity {
                     Intent shareIntent = new Intent(Intent.ACTION_SEND);
                     shareIntent.setType("text/plain");
                     shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Dine");
-                    String shareMessage= "\nDine is an amazing Food Delivery app. Check it out\n\n";
-                    shareMessage = shareMessage + "https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID +"\n\n";
+                    String shareMessage = "\nDine is an amazing Food Delivery app. Check it out\n\n";
+                    shareMessage = shareMessage + "https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID + "\n\n";
                     shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
                     startActivity(Intent.createChooser(shareIntent, "Choose one"));
-                } catch(Exception e) {
+                } catch (Exception e) {
                     //e.toString();
                 }
+            }
+        });
+
+        addBalance.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Profile.this, PromoCodes.class));
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             }
         });
         help.setOnClickListener(new View.OnClickListener() {
@@ -407,7 +418,7 @@ public class Profile extends AppCompatActivity {
         mAnimationSet.start();
         /////////////////////////////////////////////////////
 
-        availableBalance.setText("Available Balance: " + balance.intValue() + " birr");
+        availableBalance.setText(balance.intValue());
 
 
         final TextView five, ten, fifteen, twentyFive, fifty, hundred;
@@ -626,6 +637,7 @@ public class Profile extends AppCompatActivity {
         favourites.setText(resources.getString(R.string.my_favourites));
         textShare.setText(resources.getString(R.string.share_dine));
         textHelp.setText(resources.getString(R.string.help));
+        textAddVoucher.setText(resources.getString(R.string.recharge_balance));
 
         about.setText(resources.getString(R.string.about));
         feedBack.setText(resources.getString(R.string.send_feedback));
@@ -761,7 +773,7 @@ public class Profile extends AppCompatActivity {
                 Common.currentUser = dataSnapshot.getValue(User.class);
                 assert Common.currentUser != null;
                 name_display.setText(Common.currentUser.getName());
-                balance_display.setText(Common.currentUser.getBalance().toString());
+                balance_display.setText(" " + Common.currentUser.getBalance().toString() + " ");
                 if (!TextUtils.isEmpty(Common.currentUser.getHomeAddress()) ||
                         Common.currentUser.getHomeAddress() != null) {
                     address_display.setText(Common.currentUser.getHomeAddress());

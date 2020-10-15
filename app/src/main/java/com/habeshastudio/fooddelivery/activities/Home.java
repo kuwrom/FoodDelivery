@@ -66,6 +66,7 @@ import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.database.Database;
 import com.habeshastudio.fooddelivery.helper.EmptyRecyclerView;
 import com.habeshastudio.fooddelivery.helper.LocaleHelper;
+import com.habeshastudio.fooddelivery.helper.MyExceptionHandler;
 import com.habeshastudio.fooddelivery.models.Banner;
 import com.habeshastudio.fooddelivery.models.Category;
 import com.habeshastudio.fooddelivery.models.Order;
@@ -300,7 +301,7 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             getWindow().setStatusBarColor(Color.WHITE);
         }
-        //Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
+        Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
 
         bodyLayout = findViewById(R.id.body_linear_layout);
 

@@ -281,7 +281,7 @@ public class PhoneAuth extends AppCompatActivity {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
 
-                                    mDialog.dismiss();
+                                    //mDialog.dismiss();
 //                                    FirebaseUser cursor = FirebaseAuth.getInstance().getCurrentUser();
 //                                    assert cursor != null;
 //                                    phone = cursor.getPhoneNumber();
