@@ -196,4 +196,5 @@
     <string name="payment_state">ክፍያ:</string>
     <string name="failed_attempts_naccount_will_be_blocked_after_reaching_5">የተሳሳቱ ሙከራዎች, \n5 ከደረሱ አካውንቶ ይታገዳል</string>
     <string name="too_many_attempts_naccount_blocked">ብዙ የተሳሳቱ ሙከራዎች, \nአካውንቶ ታግዷል!</string>
+    <string name="loading_user">Loading User …</string>
 </resources>

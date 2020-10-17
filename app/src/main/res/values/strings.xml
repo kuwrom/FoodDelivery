@@ -199,5 +199,6 @@
     <string name="payment_state">Payment State:</string>
     <string name="failed_attempts_naccount_will_be_blocked_after_reaching_5">failed attempts, \nAccount will be blocked after reaching 5</string>
     <string name="too_many_attempts_naccount_blocked">Too Many Attempts, \nAccount Blocked!</string>
+    <string name="loading_user">Loading User …</string>
 
 </resources>

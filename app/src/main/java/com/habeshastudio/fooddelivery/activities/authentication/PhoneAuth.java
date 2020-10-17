@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,17 +51,18 @@ import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 public class PhoneAuth extends AppCompatActivity {
 
     public String phone;
-    TextView textTitle, firstText, phoneText, secondText, btnTrouble;
+    TextView textTitle, firstText, phoneText, secondText, btnTrouble, headerText;
     Button btnContinue;
     PinView pinView;
     boolean firstTime = true;
     int interval = 1;
-    ProgressBar progressBar;
+    ProgressBar progressBar, Loading;
     boolean canResend = false;
     boolean canVerify = false;
     DatabaseReference users;
     ProgressDialog mDialog;
     FirebaseDatabase database;
+    LinearLayout linearLayout;
     boolean isJobDone = false;
     private FirebaseAuth mAuth;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
@@ -100,7 +102,10 @@ public class PhoneAuth extends AppCompatActivity {
         btnContinue = findViewById(R.id.btnVerify);
         btnTrouble = findViewById(R.id.btn_trouble);
         pinView = findViewById(R.id.pinView);
+        headerText = findViewById(R.id.last_lable);
+        linearLayout = findViewById(R.id.layout);
         mAuth = FirebaseAuth.getInstance();
+        Loading = findViewById(R.id.loading_progress);
         database = FirebaseDatabase.getInstance();
         users = database.getReference().child("User");
         mDialog = new ProgressDialog(PhoneAuth.this);
@@ -272,20 +277,20 @@ public class PhoneAuth extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            mDialog.dismiss();
                             isJobDone = true;
                             //Toast.makeText(PhoneAuth.this, "Verification Succeed!", Toast.LENGTH_SHORT).show();
                             users.child(phone).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
-                                    User user = new User(phone);
+                                    //linearLayout.setVisibility(View.GONE);
+                                    Loading.setVisibility(View.VISIBLE);
+                                    headerText.setText(getResources().getString(R.string.loading_user));
+                                    // mDialog.dismiss();
                                     if (!dataSnapshot.exists()) {
-                                        mDialog.dismiss();
                                         startActivity(new Intent(PhoneAuth.this, Config.class));
                                         finish();
                                     } else {
                                         Common.currentUser = dataSnapshot.getValue(User.class);
-                                        mDialog.dismiss();
                                         startActivity(new Intent(PhoneAuth.this, Home.class));
                                         finish();
                                     }
