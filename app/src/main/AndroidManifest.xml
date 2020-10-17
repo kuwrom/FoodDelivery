@@ -23,17 +23,31 @@
         tools:ignore="LockedOrientationActivity">
         <activity
             android:name=".activities.OrderHistoryDetail"
+            android:configChanges="orientation"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
             android:parentActivityName=".activities.OrderHistory" />
         <activity
             android:name=".activities.OrderDetail"
+            android:configChanges="orientation"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
             android:parentActivityName=".activities.OrderStatus" />
-        <activity android:name=".activities.Config" />
+        <activity
+            android:name=".activities.Config"
+            android:configChanges="orientation"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.OrderHistory"
+            android:configChanges="orientation"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
             android:parentActivityName=".activities.Profile" />
         <activity
             android:name=".activities.profile.PromoCodes"
             android:configChanges="orientation"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -130,10 +144,6 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.authentication.Register"
-            android:configChanges="orientation"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".activities.authentication.TroubleAuth"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
         <activity

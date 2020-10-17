@@ -36,7 +36,6 @@ public class PromoCodes extends AppCompatActivity {
     DatabaseReference users, database;
     Button submit;
     public ProgressDialog mDialog;
-    boolean isBlocked;
     TextView blockedText, counterText;
     MaterialEditText promocode;
 
@@ -61,8 +60,7 @@ public class PromoCodes extends AppCompatActivity {
         submit = findViewById(R.id.btn_confirm);
 
         Paper.init(PromoCodes.this);
-        if (Paper.book().read("counter") != null)
-            initView(Integer.parseInt(Paper.book().read("counter").toString()));
+
 
         FirebaseDatabase.getInstance().getReference("User").child((Paper.book().read("userPhone").toString()))
                 .child("failedVoucherAttempts").addValueEventListener(new ValueEventListener() {
@@ -77,6 +75,10 @@ public class PromoCodes extends AppCompatActivity {
 
             }
         });
+
+        if (Paper.book().read("counter") != null)
+            if (!Paper.book().read("counter").toString().isEmpty())
+                initView(Integer.parseInt(Paper.book().read("counter").toString()));
 
         final Animation animShake = AnimationUtils.loadAnimation(this, R.anim.shake);
         submit.setOnClickListener(new View.OnClickListener() {
@@ -117,6 +119,10 @@ public class PromoCodes extends AppCompatActivity {
                                                                     @Override
                                                                     public void onComplete(@NonNull Task<Void> task) {
                                                                         database.child(rPromo).removeValue();
+                                                                        Paper.book().write("counter", "0");
+                                                                        FirebaseDatabase.getInstance().getReference("User").child((Paper.book().read("userPhone").toString()))
+                                                                                .child("failedVoucherAttempts").setValue("0");
+                                                                        counterText.setVisibility(View.GONE);
                                                                     }
                                                                 });
                                                             }
@@ -173,7 +179,8 @@ public class PromoCodes extends AppCompatActivity {
     }
 
     private void initView(int counts) {
-        if (counts < 5) {
+        if (counts == 0) counterText.setVisibility(View.GONE);
+        else if (counts < 5) {
             counterText.setText(counts + "/5 " + getResources().getString(R.string.failed_attempts_naccount_will_be_blocked_after_reaching_5));
             counterText.setVisibility(View.VISIBLE);
         } else {

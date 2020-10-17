@@ -778,7 +778,7 @@ public class Profile extends AppCompatActivity {
                         Common.currentUser.getHomeAddress() != null) {
                     address_display.setText(Common.currentUser.getHomeAddress());
                 }
-                Picasso.with(getBaseContext()).load(Common.currentUser.getImage()).networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.bg)
+                Picasso.with(getBaseContext()).load(dataSnapshot.child("image").getValue().toString()).networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.bg)
                         .into(profile, new Callback() {
                             @Override
                             public void onSuccess() {

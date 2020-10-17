@@ -83,6 +83,8 @@ public class MainActivity extends AppCompatActivity {
 
         //notification
         Paper.init(MainActivity.this);
+
+
         String language = Paper.book().read("language");
         if (language == null)
             Paper.book().write("language", "en");

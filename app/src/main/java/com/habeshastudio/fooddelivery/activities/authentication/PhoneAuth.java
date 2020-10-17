@@ -111,8 +111,6 @@ public class PhoneAuth extends AppCompatActivity {
         btnTrouble.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(PhoneAuth.this, TroubleAuth.class));
-                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             }
         });
 
@@ -277,34 +275,17 @@ public class PhoneAuth extends AppCompatActivity {
                             mDialog.dismiss();
                             isJobDone = true;
                             //Toast.makeText(PhoneAuth.this, "Verification Succeed!", Toast.LENGTH_SHORT).show();
-                            users.addValueEventListener(new ValueEventListener() {
+                            users.child(phone).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
-
-                                    //mDialog.dismiss();
-//                                    FirebaseUser cursor = FirebaseAuth.getInstance().getCurrentUser();
-//                                    assert cursor != null;
-//                                    phone = cursor.getPhoneNumber();
                                     User user = new User(phone);
-                                    if (!dataSnapshot.child(phone).exists()) {
-
-//                                        user.setBalance(0.0);
-//                                        user.setCreatedAt(new SimpleDateFormat
-//                                                ("dd-MMM-yyyy hh:mm a", Locale.getDefault()).format(new Date()));
-//                                        users.child(phone).setValue(user);
-
-                                        //users.child(phone).setValue(user);
-                                        Common.currentUser = user;
-                                        //Toast.makeText(PhoneAuth.this, "Signed in Successfully !", Toast.LENGTH_SHORT).show();
-                                        startActivity(new Intent(PhoneAuth.this, Config.class).putExtra("phone", phone));
+                                    if (!dataSnapshot.exists()) {
+                                        mDialog.dismiss();
+                                        startActivity(new Intent(PhoneAuth.this, Config.class));
                                         finish();
                                     } else {
-                                        user.setBalance(users.child(phone).child("balance"));
-                                        user.setHomeAddress(users.child(phone).child("homeAddress").toString());
-                                        user.setName(users.child(phone).child("name").toString());
-                                        //users.child(phone).setValue(user);
-                                        Common.currentUser = user;
-                                        //Toast.makeText(PhoneAuth.this, "Signed in Successfully !", Toast.LENGTH_SHORT).show();
+                                        Common.currentUser = dataSnapshot.getValue(User.class);
+                                        mDialog.dismiss();
                                         startActivity(new Intent(PhoneAuth.this, Home.class));
                                         finish();
                                     }
