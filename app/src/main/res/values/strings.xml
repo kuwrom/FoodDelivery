@@ -99,7 +99,7 @@
     <string name="your_order">Your Order</string>
     <string name="i_e_swipe_from_right_to_delete">i.e: Swipe from right to delete</string>
     <string name="add_promo_code">Add promo code</string>
-    <string name="add_a_note">add a note …</string>
+    <string name="add_a_note">Say something …</string>
     <string name="subtotal">Subtotal</string>
     <string name="tax">Tax</string>
     <string name="delivery_fee">Delivery Fee</string>
@@ -200,5 +200,6 @@
     <string name="failed_attempts_naccount_will_be_blocked_after_reaching_5">failed attempts, \nAccount will be blocked after reaching 5</string>
     <string name="too_many_attempts_naccount_blocked">Too Many Attempts, \nAccount Blocked!</string>
     <string name="loading_user">Loading User …</string>
+    <string name="delivering_to_your_current_location"> 📍 Delivering to your current Location</string>
 
 </resources>

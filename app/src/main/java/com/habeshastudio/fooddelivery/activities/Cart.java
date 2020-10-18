@@ -2,7 +2,6 @@ package com.habeshastudio.fooddelivery.activities;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -56,6 +55,8 @@ import com.habeshastudio.fooddelivery.R;
 import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.common.Config;
 import com.habeshastudio.fooddelivery.database.Database;
+import com.habeshastudio.fooddelivery.helper.ACProgressConstant;
+import com.habeshastudio.fooddelivery.helper.ACProgressFlower;
 import com.habeshastudio.fooddelivery.helper.LocaleHelper;
 import com.habeshastudio.fooddelivery.helper.MyExceptionHandler;
 import com.habeshastudio.fooddelivery.helper.RecyclerItemTouchHelper;
@@ -127,7 +128,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
     APIService mService;
     String address, comment;
     Place shippingAddress;
-    ProgressDialog mDialog;
+    //ProgressDialog mDialog;
     //Google Map API Retrofit
     IGoogleService mGoogleMapService;
     RelativeLayout rootLayout;
@@ -136,6 +137,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
     private LocationRequest mLocationRequest;
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
+    private ACProgressFlower mDialog;
 
 
     @Override
@@ -279,11 +281,10 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
         if (!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             showGpsDisabledDialog();
         }
-        mDialog = new ProgressDialog(this);
-        mDialog.setMessage(getResources().getString(R.string.calculating_total));
-        mDialog.setCancelable(false);
-        mDialog.setCanceledOnTouchOutside(false);
-        mDialog.show();
+        mDialog = new ACProgressFlower.Builder(this)
+                .direction(ACProgressConstant.DIRECT_CLOCKWISE)
+                .themeColor(getResources().getColor(R.color.colorPrimary))
+                .fadeColor(Color.WHITE).build();
 
         if (Paper.book().read("cartGuide") == null)
             guide.setVisibility(View.VISIBLE);

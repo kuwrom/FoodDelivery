@@ -30,6 +30,13 @@
         <item name="android:textStyle">normal</item>
     </style>
 
+    <style name="ACPLDialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+
     <!--rating bar-->
     <style name="RatingDialogueStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="android:background">@android:color/white</item>

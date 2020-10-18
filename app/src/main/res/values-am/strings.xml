@@ -197,4 +197,5 @@
     <string name="failed_attempts_naccount_will_be_blocked_after_reaching_5">የተሳሳቱ ሙከራዎች, \n5 ከደረሱ አካውንቶ ይታገዳል</string>
     <string name="too_many_attempts_naccount_blocked">ብዙ የተሳሳቱ ሙከራዎች, \nአካውንቶ ታግዷል!</string>
     <string name="loading_user">Loading User …</string>
+    <string name="delivering_to_your_current_location"> 📍 አሁን ወዳሉበት እናደርስሎታለን</string>
 </resources>

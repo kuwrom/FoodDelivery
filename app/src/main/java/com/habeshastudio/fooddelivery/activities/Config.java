@@ -1,6 +1,7 @@
 package com.habeshastudio.fooddelivery.activities;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -18,7 +19,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.habeshastudio.fooddelivery.R;
+import com.habeshastudio.fooddelivery.activities.authentication.PhoneAuth;
 import com.habeshastudio.fooddelivery.common.Common;
+import com.habeshastudio.fooddelivery.helper.ACProgressConstant;
+import com.habeshastudio.fooddelivery.helper.ACProgressFlower;
 import com.habeshastudio.fooddelivery.helper.MyExceptionHandler;
 import com.habeshastudio.fooddelivery.models.User;
 
@@ -38,6 +42,7 @@ public class Config extends AppCompatActivity {
     TextView addReferer;
     EditText editName, refererPhone;
     DatabaseReference users, referralAmount;
+    private ACProgressFlower mDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,11 +57,18 @@ public class Config extends AppCompatActivity {
         addReferer = findViewById(R.id.btn_add_referer);
         users = FirebaseDatabase.getInstance().getReference().child("User");
         referralAmount = FirebaseDatabase.getInstance().getReference().child("referralAmount");
+        if (PhoneAuth.phoneAuthentication != null)
+            PhoneAuth.phoneAuthentication.finish();
 
+        mDialog = new ACProgressFlower.Builder(this)
+                .direction(ACProgressConstant.DIRECT_CLOCKWISE)
+                .themeColor(getResources().getColor(R.color.colorPrimary))
+                .fadeColor(Color.WHITE).build();
         addName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                mDialog.show();
                 if (!editName.getText().toString().isEmpty() || editName != null) {
                     User user = new User(Paper.book().read("userPhone").toString());
                     user.setBalance(0.0);
@@ -103,6 +115,7 @@ public class Config extends AppCompatActivity {
                                                                         public void onComplete(@NonNull Task<Void> task) {
                                                                             //Toast.makeText(Config.this, "Success", Toast.LENGTH_SHORT).show();
                                                                             startActivity(new Intent(Config.this, Home.class));
+                                                                            mDialog.dismiss();
                                                                             finish();
                                                                         }
                                                                     });
@@ -129,6 +142,7 @@ public class Config extends AppCompatActivity {
 
                             } else {
                                 startActivity(new Intent(Config.this, Home.class));
+                                mDialog.dismiss();
                                 finish();
                             }
                         }

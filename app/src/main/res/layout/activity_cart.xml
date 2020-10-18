@@ -19,13 +19,21 @@
 
             <TextView
                 android:layout_width="wrap_content"
-                android:text="@string/your_order"
+                android:text="@string/delivering_to_your_current_location"
                 android:layout_margin="16dp"
                 android:layout_gravity="left"
                 android:gravity="left"
                 android:textColor="@color/colorLightBlack"
                 android:textSize="18sp"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:background="@color/gery_inactive" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:id="@+id/cart_guide_text"
@@ -53,16 +61,15 @@
                 android:clickable="true"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:padding="8dp">
+                android:padding="16dp">
 
                 <ImageView
                     android:id="@+id/cart_image"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:contentDescription="TODO"
-                    android:padding="8dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/add_more"
+                    android:src="@drawable/ic_baseline_add_circle_24"
                     android:tint="@color/colorPrimary" />
 
                 <TextView
@@ -70,11 +77,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
-                    android:layout_marginTop="8dp"
-                    android:gravity="center_vertical|start"
+                    android:layout_gravity="center_vertical"
                     android:text="Add More Food"
                     android:textAllCaps="true"
-                    android:textColor="@color/colorPrimary"
                     android:textSize="18dp"
                     android:textStyle="bold" />
 
@@ -112,7 +117,7 @@
                     android:layout_height="24dp"
                     android:src="@drawable/ic_local_offer_black_24dp"
                     android:contentDescription="TODO"
-                    android:tint="@color/blue_grey_active" />
+                    android:tint="@color/colorPrimary" />
 
                 <TextView
                     android:id="@+id/add_promo_text"
@@ -135,9 +140,10 @@
             <EditText
                 android:id="@+id/add_note"
                 android:layout_width="match_parent"
-                android:layout_height="54dp"
-                android:layout_marginLeft="16dp"
-                android:background="@color/white"
+                android:layout_height="100dp"
+                android:layout_margin="16dp"
+                android:background="@drawable/edit_text_border"
+                android:padding="8dp"
                 android:hint="@string/add_a_note" />
             <View
                 android:layout_width="match_parent"
@@ -319,7 +325,7 @@
         android:layout_width="match_parent"
         android:id="@+id/checkout_layout"
         android:layout_height="56dp"
-        android:background="@drawable/bg_ui"
+        android:background="@drawable/bg_ui_cart"
         android:layout_margin="16dp"
         android:text="@string/place_order"
         app:backgroundTint="@color/colorPrimary"

@@ -1,7 +1,7 @@
 package com.habeshastudio.fooddelivery.activities.profile;
 
-import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -21,6 +21,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.habeshastudio.fooddelivery.R;
 import com.habeshastudio.fooddelivery.common.Common;
+import com.habeshastudio.fooddelivery.helper.ACProgressConstant;
+import com.habeshastudio.fooddelivery.helper.ACProgressFlower;
 import com.habeshastudio.fooddelivery.helper.LocaleHelper;
 import com.habeshastudio.fooddelivery.models.User;
 import com.rengwuxian.materialedittext.MaterialEditText;
@@ -35,9 +37,9 @@ public class PromoCodes extends AppCompatActivity {
 
     DatabaseReference users, database;
     Button submit;
-    public ProgressDialog mDialog;
     TextView blockedText, counterText;
     MaterialEditText promocode;
+    private ACProgressFlower mDialog;
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -52,10 +54,10 @@ public class PromoCodes extends AppCompatActivity {
         database = FirebaseDatabase.getInstance().getReference("voucher");
         counterText = findViewById(R.id.counter_note);
         blockedText = findViewById(R.id.blocked_note);
-        mDialog = new ProgressDialog(this);
-        mDialog.setMessage("Loading ...");
-        mDialog.setCancelable(false);
-        mDialog.setCanceledOnTouchOutside(false);
+        mDialog = new ACProgressFlower.Builder(this)
+                .direction(ACProgressConstant.DIRECT_CLOCKWISE)
+                .themeColor(getResources().getColor(R.color.colorPrimary))
+                .fadeColor(Color.WHITE).build();
         promocode = findViewById(R.id.text_promo_code);
         submit = findViewById(R.id.btn_confirm);
 

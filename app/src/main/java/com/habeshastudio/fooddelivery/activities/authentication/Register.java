@@ -1,7 +1,6 @@
 package com.habeshastudio.fooddelivery.activities.authentication;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -39,7 +38,6 @@ public class Register extends AppCompatActivity {
     TextView btnTrouble, registerLable;
     FloatingActionButton btnSignMeUp;
     RelativeLayout rootLayout;
-    ProgressDialog mDialog;
     FirebaseDatabase database;
     DatabaseReference users;
     AlertDialog dialog_verifying;

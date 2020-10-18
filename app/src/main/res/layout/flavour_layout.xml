@@ -48,7 +48,7 @@
             android:layout_width="28dp"
             android:layout_alignParentEnd="true"
             android:src="@drawable/ic_shopping_cart_black_24dp"
-            android:tint="@color/green_active"
+            android:tint="@color/colorPrimary"
             android:layout_height="28dp"
             android:contentDescription="TODO" />
     </RelativeLayout>

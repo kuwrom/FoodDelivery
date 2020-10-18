@@ -1,7 +1,6 @@
 package com.habeshastudio.fooddelivery.activities;
 
 import android.Manifest;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -62,8 +61,11 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.habeshastudio.fooddelivery.MainActivity;
 import com.habeshastudio.fooddelivery.R;
+import com.habeshastudio.fooddelivery.activities.authentication.PhoneAuth;
 import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.database.Database;
+import com.habeshastudio.fooddelivery.helper.ACProgressConstant;
+import com.habeshastudio.fooddelivery.helper.ACProgressFlower;
 import com.habeshastudio.fooddelivery.helper.EmptyRecyclerView;
 import com.habeshastudio.fooddelivery.helper.LocaleHelper;
 import com.habeshastudio.fooddelivery.helper.MyExceptionHandler;
@@ -101,7 +103,8 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
 
 
     FirebaseDatabase database;
-    public ProgressDialog mDialog;
+    //public ProgressDialog mDialog;
+    ACProgressFlower mDialog;
     DatabaseReference users;
     Query filteredRestaurant;
 
@@ -302,6 +305,7 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
             getWindow().setStatusBarColor(Color.WHITE);
         }
         Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
+        //Thread.setDefaultUncaughtExceptionHandler(Thread.getDefaultUncaughtExceptionHandler());
 
         bodyLayout = findViewById(R.id.body_linear_layout);
 
@@ -313,6 +317,8 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
                 R.anim.slide_up);
 
         isInternet();
+        if (PhoneAuth.phoneAuthentication != null)
+            PhoneAuth.phoneAuthentication.finish();
         //Init Firebase
         Paper.init(Home.this);
         database = FirebaseDatabase.getInstance();
@@ -576,10 +582,16 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
                 createLocationRequest();
             }
         }
-        mDialog = new ProgressDialog(this);
-        mDialog.setMessage(getResources().getString(R.string.loading_restaurants));
-        mDialog.setCancelable(false);
-        mDialog.setCanceledOnTouchOutside(false);
+//        mDialog = new ProgressDialog(this);
+//        mDialog.setMessage(getResources().getString(R.string.loading_restaurants));
+//        mDialog.setCancelable(false);
+//        mDialog.setCanceledOnTouchOutside(false);
+//        mDialog.show();
+
+        mDialog = new ACProgressFlower.Builder(this)
+                .direction(ACProgressConstant.DIRECT_CLOCKWISE)
+                .themeColor(getResources().getColor(R.color.colorPrimary))
+                .fadeColor(Color.WHITE).build();
         mDialog.show();
 //        mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 //        if (mLocationManager.getAllProviders().indexOf(LocationManager.GPS_PROVIDER) >= 0) {

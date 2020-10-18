@@ -55,6 +55,8 @@ import com.habeshastudio.fooddelivery.R;
 import com.habeshastudio.fooddelivery.activities.profile.PromoCodes;
 import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.database.Database;
+import com.habeshastudio.fooddelivery.helper.ACProgressConstant;
+import com.habeshastudio.fooddelivery.helper.ACProgressFlower;
 import com.habeshastudio.fooddelivery.helper.LocaleHelper;
 import com.habeshastudio.fooddelivery.helper.MyExceptionHandler;
 import com.habeshastudio.fooddelivery.models.Card;
@@ -83,7 +85,7 @@ public class Profile extends AppCompatActivity {
     TextView itemsCount, priceTag;
     CardView profileItemsHolder;
     Animation slide_up, slide_down;
-    public ProgressDialog mDialog;
+    //public ProgressDialog mDialog;
     LinearLayout checkoutButton, balanceWithdraw;
     String isSubscribed;
     LinearLayout paymentMethod, promoCode, transactions, share, help, addBalance;
@@ -95,6 +97,7 @@ public class Profile extends AppCompatActivity {
     ImageView profile;
     boolean isUsd, isAmharic;
     FloatingActionButton notificationSwitch, languageSwitch, nightModeSwitch, currencySwitch;
+    private ACProgressFlower mDialog;
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -113,6 +116,7 @@ public class Profile extends AppCompatActivity {
             getWindow().setStatusBarColor(Color.WHITE);
         }
         Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
+//        Thread.setDefaultUncaughtExceptionHandler(Thread.getDefaultUncaughtExceptionHandler());
         name_display = findViewById(R.id.name_display);
         profile = findViewById(R.id.profile_pic);
         address_display = findViewById(R.id.address_display);
@@ -514,11 +518,10 @@ public class Profile extends AppCompatActivity {
 
     //todo before calling this set processing dialogue
     private void requestVoucher(final int amount) {
-        mDialog = new ProgressDialog(this);
-        mDialog.setMessage("Requesting a Mobile Card");
-        mDialog.setCancelable(false);
-        mDialog.setCanceledOnTouchOutside(false);
-        mDialog.show();
+        mDialog = new ACProgressFlower.Builder(this)
+                .direction(ACProgressConstant.DIRECT_CLOCKWISE)
+                .themeColor(getResources().getColor(R.color.colorPrimary))
+                .fadeColor(Color.WHITE).build();
         final android.support.v7.app.AlertDialog.Builder alertDialog = new AlertDialog.Builder(Profile.this);
         alertDialog.setTitle("This will cost you " + amount + " birr.");
         alertDialog.setMessage("Are you sure, do you want to continue?");
@@ -778,19 +781,20 @@ public class Profile extends AppCompatActivity {
                         Common.currentUser.getHomeAddress() != null) {
                     address_display.setText(Common.currentUser.getHomeAddress());
                 }
-                Picasso.with(getBaseContext()).load(dataSnapshot.child("image").getValue().toString()).networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.bg)
-                        .into(profile, new Callback() {
-                            @Override
-                            public void onSuccess() {
+                if (dataSnapshot.child("image").exists())
+                    Picasso.with(getBaseContext()).load(dataSnapshot.child("image").getValue().toString()).networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.bg)
+                            .into(profile, new Callback() {
+                                @Override
+                                public void onSuccess() {
 
-                            }
+                                }
 
-                            @Override
-                            public void onError() {
-                                Picasso.with(getBaseContext()).load(Common.currentUser.getImage()).placeholder(R.drawable.bg)
-                                        .into(profile);
-                            }
-                        });
+                                @Override
+                                public void onError() {
+                                    Picasso.with(getBaseContext()).load(Common.currentUser.getImage()).placeholder(R.drawable.bg)
+                                            .into(profile);
+                                }
+                            });
                     }
 
                     @Override

@@ -1,5 +1,6 @@
 package com.habeshastudio.fooddelivery.activities.authentication;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -60,6 +61,7 @@ public class PhoneAuth extends AppCompatActivity {
     boolean canResend = false;
     boolean canVerify = false;
     DatabaseReference users;
+    public static Activity phoneAuthentication;
     ProgressDialog mDialog;
     FirebaseDatabase database;
     LinearLayout linearLayout;
@@ -83,6 +85,7 @@ public class PhoneAuth extends AppCompatActivity {
                 .build());
         setContentView(R.layout.activity_phone_auth);
 
+        phoneAuthentication = this;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             getWindow().setStatusBarColor(Color.WHITE);
@@ -288,11 +291,9 @@ public class PhoneAuth extends AppCompatActivity {
                                     // mDialog.dismiss();
                                     if (!dataSnapshot.exists()) {
                                         startActivity(new Intent(PhoneAuth.this, Config.class));
-                                        finish();
                                     } else {
                                         Common.currentUser = dataSnapshot.getValue(User.class);
                                         startActivity(new Intent(PhoneAuth.this, Home.class));
-                                        finish();
                                     }
 
                                 }

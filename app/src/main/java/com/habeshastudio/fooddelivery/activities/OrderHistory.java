@@ -1,7 +1,6 @@
 package com.habeshastudio.fooddelivery.activities;
 
 import android.annotation.SuppressLint;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -36,6 +35,8 @@ import com.habeshastudio.fooddelivery.MainActivity;
 import com.habeshastudio.fooddelivery.R;
 import com.habeshastudio.fooddelivery.common.Common;
 import com.habeshastudio.fooddelivery.database.Database;
+import com.habeshastudio.fooddelivery.helper.ACProgressConstant;
+import com.habeshastudio.fooddelivery.helper.ACProgressFlower;
 import com.habeshastudio.fooddelivery.helper.EmptyRecyclerView;
 import com.habeshastudio.fooddelivery.helper.LocaleHelper;
 import com.habeshastudio.fooddelivery.helper.MyExceptionHandler;
@@ -64,9 +65,10 @@ public class OrderHistory extends AppCompatActivity {
     DatabaseReference users;
     LinearLayout checkoutButton;
     TextView itemsCount, priceTag;
-    public ProgressDialog mDialog;
+    //public ProgressDialog mDialog;
     LinearLayoutManager layoutManager;
     SwipeRefreshLayout refreshOrders;
+    private ACProgressFlower mDialog;
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -112,10 +114,10 @@ public class OrderHistory extends AppCompatActivity {
         layoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(layoutManager);
 
-        mDialog = new ProgressDialog(this);
-        mDialog.setMessage("Loading Orders");
-        mDialog.setCancelable(false);
-        mDialog.setCanceledOnTouchOutside(false);
+        mDialog = new ACProgressFlower.Builder(this)
+                .direction(ACProgressConstant.DIRECT_CLOCKWISE)
+                .themeColor(getResources().getColor(R.color.colorPrimary))
+                .fadeColor(Color.WHITE).build();
         mDialog.show();
 
         checkoutButton = findViewById(R.id.btn_checkout_cart);
