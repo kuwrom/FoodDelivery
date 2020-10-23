@@ -108,7 +108,7 @@ public class Config extends AppCompatActivity {
                                                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                 @Override
                                                                 public void onComplete(@NonNull Task<Void> task) {
-                                                                    String timeNow = String.valueOf(System.currentTimeMillis());
+                                                                    final String timeNow = String.valueOf(System.currentTimeMillis());
                                                                     FirebaseDatabase.getInstance().getReference("confidential").child("transactionHistory").child("referralReward")
                                                                             .child(phoneMe).child(timeNow).updateChildren(referralReward).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                         @Override
